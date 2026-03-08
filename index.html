@@ -3,63 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SAIDJON AI V26 - HYPER REAL</title>
+    <title>SAIDJON AI V28 - ULTIMATE</title>
     <style>
         :root { --bg: #0e1621; --panel: #17212b; --blue: #2481cc; --accent: #00ff9d; --text: #f5f5f5; --premium: #f39c12; --error: #e74c3c; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
         body { background: #000; color: var(--text); height: 100dvh; overflow: hidden; }
 
-        /* AUTH (V22) */
+        /* AUTH */
         .auth-container { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .auth-card { background: var(--panel); padding: 30px; border-radius: 25px; width: 100%; max-width: 400px; border: 1px solid #232e3c; }
         .hidden { display: none !important; }
         input { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #2f3942; background: #0e1621; color: white; outline: none; }
         .btn-blue { width: 100%; padding: 15px; background: var(--blue); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
 
-        /* APP STRUCTURE */
+        /* APP LAYOUT */
         #app { width: 100%; max-width: 500px; height: 100%; margin: auto; display: flex; flex-direction: column; background: var(--bg); position: relative; }
         .header { padding: 10px 15px; background: var(--panel); display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #000; }
         .avatar { width: 45px; height: 45px; border-radius: 50%; background: var(--accent); color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; overflow: hidden; cursor: pointer; border: 2px solid transparent; }
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
         .prem-border { border-color: var(--premium) !important; box-shadow: 0 0 10px var(--premium); }
 
-        /* CHAT (V9-V20) */
+        /* CHAT */
         #chat-window { flex: 1; overflow-y: auto; padding: 15px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 10px; }
         .msg { max-width: 80%; padding: 10px 14px; border-radius: 18px; font-size: 15px; position: relative; }
         .bot { align-self: flex-start; background: #182533; }
         .user { align-self: flex-end; background: #2b5278; }
 
-        /* MODALS (V12-V25) */
+        /* MODALS */
         .modal { position: absolute; inset: 0; background: var(--bg); z-index: 1000; transform: translateX(100%); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; }
         .modal.open { transform: translateX(0); }
         .m-header { padding: 15px; background: var(--panel); display: flex; align-items: center; gap: 15px; font-weight: bold; border-bottom: 1px solid #232e3c; }
         .back-btn { font-size: 24px; cursor: pointer; color: var(--blue); }
 
-        /* REAL PAYMENT UI (V26) */
-        .payment-card { background: linear-gradient(135deg, #1e2a3a, #2b5278); padding: 25px; border-radius: 20px; margin-bottom: 20px; color: white; }
-        .pay-input { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 12px; border-radius: 10px; width: 100%; color: white; margin-bottom: 10px; }
-        
+        /* WALLET & WITHDRAW */
+        .payment-card { background: linear-gradient(135deg, #1e2a3a, #2b5278); padding: 25px; border-radius: 20px; margin: 15px; }
+        .list-item { padding: 16px 20px; background: var(--panel); border-bottom: 1px solid #232e3c; display: flex; justify-content: space-between; cursor: pointer; }
+
         .footer { padding: 10px; background: var(--panel); display: flex; align-items: center; gap: 10px; }
         textarea { flex: 1; background: var(--bg); border: 1px solid #2f3942; border-radius: 20px; color: white; padding: 10px; outline: none; height: 40px; resize: none; }
+        
+        /* ADMIN SPECIAL PAGE UI */
+        #admin-page { background: #000; color: #fff; }
+        .stat-card { background: #1a1a1a; padding: 20px; border-radius: 15px; margin-bottom: 15px; border-left: 5px solid var(--blue); }
     </style>
 </head>
 <body>
 
 <div id="auth-screen" class="auth-container">
     <div id="login-card" class="auth-card">
-        <h2 style="text-align:center; color:var(--blue)">SAIDJON AI V26</h2>
-        <input type="text" id="lCont" placeholder="Телефон ё Email">
+        <h2 style="text-align:center; color:var(--blue)">SAIDJON AI V28</h2>
+        <input type="text" id="lCont" placeholder="Логин (admin ё Телефон)">
         <input type="password" id="lPass" placeholder="Парол">
         <button class="btn-blue" onclick="handleLogin()">Ворид шудан</button>
-        <p style="text-align:center; margin-top:15px; font-size:13px; color:var(--blue); cursor:pointer" onclick="toggleAuth()">Регистратсияи нав</p>
+        <p style="text-align:center; margin-top:20px; font-size:13px; color:var(--blue); cursor:pointer" onclick="toggleAuth()">Регистратсияи нав</p>
     </div>
     <div id="reg-card" class="auth-card hidden">
         <h2 style="text-align:center">Регистратсия</h2>
         <input type="text" id="rName" placeholder="Номи пурра">
-        <input type="text" id="rCont" placeholder="Телефон / Email">
-        <input type="password" id="rPass" placeholder="Пароли нав">
+        <input type="text" id="rCont" placeholder="Телефон">
+        <input type="password" id="rPass" placeholder="Парол">
         <button class="btn-blue" onclick="handleReg()">Сохтан</button>
-        <p style="text-align:center; margin-top:15px; font-size:13px; color:var(--blue); cursor:pointer" onclick="toggleAuth()">Баргаштан</p>
+        <p style="text-align:center; margin-top:20px; font-size:13px; color:var(--blue); cursor:pointer" onclick="toggleAuth()">Баргаштан</p>
     </div>
 </div>
 
@@ -68,9 +72,9 @@
         <div id="h-av" class="avatar" onclick="openM('sidebar')">S</div>
         <div style="flex:1" onclick="openM('sidebar')">
             <h4 id="h-name">Saidjon</h4>
-            <p id="h-status" style="font-size:11px; color:var(--blue)">online</p>
+            <p id="h-status" style="font-size:11px; color:var(--blue)">онлайн</p>
         </div>
-        <div id="adm-btn" class="hidden" onclick="openM('admin-p')" style="cursor:pointer; color:var(--accent)">⚙️ Админ</div>
+        <div id="adm-btn" class="hidden" onclick="openM('admin-page')" style="cursor:pointer; color:var(--accent)">⚙️ ADMIN PAGE</div>
     </div>
 
     <div id="chat-window"></div>
@@ -85,84 +89,69 @@
         <div class="m-header"><span class="back-btn" onclick="closeM('sidebar')">←</span> Профил</div>
         <div style="text-align:center; padding:30px; background:var(--panel)">
             <div id="p-av" class="avatar" style="width:100px; height:100px; font-size:40px; margin:auto">S</div>
-            <label style="color:var(--blue); font-size:13px; cursor:pointer; display:block; margin-top:10px">
-                📷 Ивази сурат (Главный)
-                <input type="file" hidden accept="image/*" onchange="changeMainPhoto(this)">
-            </label>
+            <label style="color:var(--blue); font-size:13px; cursor:pointer; display:block; margin-top:10px">📷 Ивази сурат<input type="file" hidden onchange="changeMainPhoto(this)"></label>
             <h3 id="p-name" style="margin-top:15px">Saidjon</h3>
             <p id="p-nick" style="color:var(--blue)">@id0000</p>
         </div>
-        <div class="list-item" onclick="openM('wallet-p')" style="background:var(--panel); padding:15px; border-bottom:1px solid #232e3c; cursor:pointer; display:flex; justify-content:space-between">
-            <span>👛 Кошелёк (Сомон)</span> <span id="p-bal" style="color:var(--accent)">0.00 TJS</span>
-        </div>
-        <div class="list-item" onclick="openM('settings-p')" style="background:var(--panel); padding:15px; border-bottom:1px solid #232e3c; cursor:pointer">
-            ✏️ Танзимот (Settings)
-        </div>
-        <div class="list-item" onclick="openM('prem-p')" style="background:var(--panel); padding:15px; cursor:pointer; display:flex; justify-content:space-between">
-            <span>👑 Saidjon Premium</span> <span id="p-prem-tag" style="color:var(--premium)">Active</span>
-        </div>
+        <div class="list-item" onclick="openM('wallet-p')"><span>👛 Кошелёк</span> <span id="p-bal" style="color:var(--accent)">0.00 TJS</span></div>
+        <div class="list-item" onclick="openM('prem-p')"><span>👑 Premium</span> <span id="p-prem-tag" style="color:var(--premium)">Active</span></div>
+        <div class="list-item" onclick="openM('settings-p')">✏️ Танзимот</div>
         <button class="btn-blue" style="background:var(--error); width:90%; margin:30px 5%" onclick="location.reload()">🚪 Баромадан</button>
     </div>
 
     <div id="wallet-p" class="modal">
-        <div class="m-header"><span class="back-btn" onclick="closeM('wallet-p')">←</span> Пардохти Реалӣ</div>
-        <div style="padding:20px">
-            <div class="payment-card">
-                <p style="font-size:12px; opacity:0.8">БАЛАНСИ ШУМО</p>
-                <h1 id="wall-val" style="font-size:40px">0.00 TJS</h1>
-            </div>
+        <div class="m-header"><span class="back-btn" onclick="closeM('wallet-p')">←</span> Кошелёк</div>
+        <div class="payment-card">
+            <p style="opacity:0.8; font-size:12px">БАЛАНСИ ШУМО</p>
+            <h1 id="wall-val" style="font-size:40px">0.00 TJS</h1>
+        </div>
+        <div style="padding:15px">
+            <button class="btn-blue" style="background:var(--accent); color:#000; margin-bottom:10px" onclick="openM('topup-p')">➕ Пур кардан</button>
+            <button class="btn-blue" style="background:var(--blue)" onclick="openM('withdraw-p')">📤 Баровардан (Вывод)</button>
+        </div>
+    </div>
 
-            <div id="pay-system" style="background:var(--panel); padding:20px; border-radius:15px">
-                <h4>Пур кардани Баланс</h4>
-                <p style="font-size:12px; color:#808b97; margin-bottom:15px">Корти худро барои пардохт ворид кунед</p>
-                <input type="text" class="pay-input" placeholder="0000 0000 0000 0000" maxlength="16">
-                <div style="display:flex; gap:10px">
-                    <input type="text" class="pay-input" placeholder="MM/YY" maxlength="5">
-                    <input type="password" class="pay-input" placeholder="CVV" maxlength="3">
+    <div id="topup-p" class="modal">
+        <div class="m-header"><span class="back-btn" onclick="closeM('topup-p')">←</span> Пур кардани баланс</div>
+        <div style="padding:20px">
+            <input type="text" placeholder="Карта (16 рақам)">
+            <input type="number" id="payAmt" placeholder="Маблағ (TJS)">
+            <button class="btn-blue" onclick="processPay()">Пардохт</button>
+        </div>
+    </div>
+
+    <div id="withdraw-p" class="modal">
+        <div class="m-header"><span class="back-btn" onclick="closeM('withdraw-p')">←</span> Баровардани маблағ</div>
+        <div style="padding:20px">
+            <h4 style="margin-bottom:15px">Вывод ба рақами телефон</h4>
+            <input type="text" id="wPhone" placeholder="+992 XXX XX XX XX">
+            <input type="number" id="wAmt" placeholder="Маблағ (TJS)">
+            <p style="font-size:12px; color:var(--error); margin:10px 0">Комиссия: 0%</p>
+            <button class="btn-blue" style="background:var(--accent); color:#000" onclick="handleWithdraw()">Ирсол кардан</button>
+        </div>
+    </div>
+
+    <div id="admin-page" class="modal">
+        <div class="m-header"><span class="back-btn" onclick="closeM('admin-page')">←</span> ADMIN PANEL (Secret)</div>
+        <div style="padding:20px">
+            <div class="stat-card">
+                <h3>Обзор Система</h3>
+                <p>Корбарони умумӣ: 1,405</p>
+                <p>Фоидаи имрӯза: 450 TJS</p>
+            </div>
+            <div style="background:var(--panel); padding:20px; border-radius:15px">
+                <h4>Идоракунии Транзаксияҳо</h4>
+                <div style="font-size:13px; margin-top:10px; border-top:1px solid #333; padding-top:10px">
+                    <p>ID: 445 - Вывод: 100 TJS - <span style="color:var(--accent)">Муваффақ</span></p>
+                    <p>ID: 446 - Пур кардан: 50 TJS - <span style="color:var(--accent)">Муваффақ</span></p>
                 </div>
-                <input type="number" id="payAmount" class="pay-input" placeholder="Маблағ (TJS)">
-                <button id="pay-btn" class="btn-blue" style="background:var(--accent); color:#000" onclick="processRealPay()">Пардохт кардан (Автоматӣ)</button>
             </div>
-            <div id="loader-box" class="hidden" style="text-align:center; padding:20px">
-                <div style="border: 4px solid #f3f3f3; border-top: 4px solid var(--blue); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: auto;"></div>
-                <p style="margin-top:10px">Система пардохтро месанҷад...</p>
-            </div>
+            <button class="btn-blue" style="margin-top:20px; background:var(--error)" onclick="alert('Система баста шуд')">STOP SYSTEM</button>
         </div>
     </div>
 
-    <div id="settings-p" class="modal">
-        <div class="m-header"><span class="back-btn" onclick="closeM('settings-p')">←</span> Танзимот</div>
-        <div style="padding:20px">
-            <input type="text" id="newN" placeholder="Номи нав">
-            <input type="text" id="newB" placeholder="Bio (Дар бораи худ)">
-            <button class="btn-blue" onclick="saveSet()">Захира кардан</button>
-        </div>
-    </div>
-
-    <div id="admin-p" class="modal">
-        <div class="m-header"><span class="back-btn" onclick="closeM('admin-p')">←</span> Панели Админ</div>
-        <div style="padding:20px">
-            <div style="background:var(--blue); padding:15px; border-radius:15px; margin-bottom:20px">
-                <h3>V26 Management</h3>
-                <p>Транзаксияҳои автоматӣ: ФАЪОЛ</p>
-            </div>
-            <div id="admin-users" style="background:var(--panel); padding:15px; border-radius:15px">
-                <p>Рӯйхати корбарон: 1 (Саидҷон)</p>
-                <hr style="margin:10px 0; opacity:0.1">
-                <button class="btn-blue" style="background:var(--error)" onclick="alert('База тоза шуд')">Тоза кардани База</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="prem-p" class="modal">
-        <div class="m-header"><span class="back-btn" onclick="closeM('prem-p')">←</span> Saidjon Premium</div>
-        <div style="padding:30px; text-align:center">
-            <h1 style="color:var(--premium); font-size:60px">⭐️</h1>
-            <h2>Premium-ро фаъол кунед</h2>
-            <p style="margin:15px 0; opacity:0.7">Нарх: 50.00 TJS</p>
-            <button class="btn-blue" style="background:var(--premium)" onclick="autoBuyPremium()">Харидан (Автоматӣ)</button>
-        </div>
-    </div>
+    <div id="settings-p" class="modal"><div class="m-header"><span class="back-btn" onclick="closeM('settings-p')">←</span> Танзимот</div><div style="padding:20px"><input type="text" id="newN" placeholder="Номи нав"><button class="btn-blue" onclick="saveSet()">Захира</button></div></div>
+    <div id="prem-p" class="modal"><div class="m-header"><span class="back-btn" onclick="closeM('prem-p')">←</span> Premium</div><div style="padding:40px; text-align:center"><h1>⭐️</h1><button class="btn-blue" style="background:var(--premium)" onclick="buyPrem()">Хариди Premium (50 TJS)</button></div></div>
 </div>
 
 <script>
@@ -176,7 +165,7 @@
         u.cont = document.getElementById('rCont').value;
         u.id = Math.floor(10000 + Math.random() * 89999);
         if(!u.name || !u.cont) return alert("Пур кунед!");
-        alert("Бомуваффақият! Ворид шавед.");
+        alert("Омода! Ворид шавед.");
         toggleAuth();
     }
 
@@ -184,9 +173,9 @@
         const c = document.getElementById('lCont').value;
         const p = document.getElementById('lPass').value;
         if(c === "admin" && p === "saidjon777") {
-            u = { name: "Админ Саидҷон", id: "777", bal: 1000, role: "admin", isPrem: true };
+            u = { name: "Админ Саидҷон", id: "777", bal: 9999, role: "admin", isPrem: true };
             launch();
-        } else if(c === u.cont) { launch(); } else alert("Логин хато!");
+        } else if(c === u.cont && c !== "") { launch(); } else alert("Хато!");
     }
 
     function launch() {
@@ -194,58 +183,47 @@
         document.getElementById('app').classList.remove('hidden');
         if(u.role === "admin") document.getElementById('adm-btn').classList.remove('hidden');
         sync();
-        addMsg(`Салом ${u.name}! V26 SMART омода аст. Акнун шумо метавонед сурати профилро (Главный) иваз кунед ва балансро бо корти реалӣ пур кунед.`, "bot");
+        addMsg(`Салом ${u.name}! V28 ULTIMATE бо саҳифаи алоҳидаи Админ ва системаи Вывод омода аст.`, "bot");
     }
 
-    // V26: СИСТЕМАИ ИВАЗИ СУРАТИ ГЛАВНЫЙ
     function changeMainPhoto(inp) {
         if(inp.files[0]) {
             const r = new FileReader();
-            r.onload = e => {
-                u.photo = e.target.result;
-                sync();
-                alert("Сурати профил иваз шуд!");
-            };
+            r.onload = e => { u.photo = e.target.result; sync(); };
             r.readAsDataURL(inp.files[0]);
         }
     }
 
-    // V26: СИСТЕМАИ ПАРДОХТИ РЕАЛИИ АВТОМАТӢ
-    function processRealPay() {
-        const amt = parseFloat(document.getElementById('payAmount').value);
-        if(!amt || amt <= 0) return alert("Маблағро дуруст ворид кунед!");
+    // ВЫВОД (BAROVARDAN)
+    function handleWithdraw() {
+        const ph = document.getElementById('wPhone').value;
+        const amt = parseFloat(document.getElementById('wAmt').value);
+        if(!ph || amt <= 0) return alert("Маълумотро дуруст ворид кунед!");
+        if(u.bal < amt) return alert("Маблағ кифоя нест!");
         
-        document.getElementById('pay-system').classList.add('hidden');
-        document.getElementById('loader-box').classList.remove('hidden');
-
-        setTimeout(() => {
-            u.bal += amt;
-            sync();
-            document.getElementById('loader-box').classList.add('hidden');
-            document.getElementById('pay-system').classList.remove('hidden');
-            alert(`Пардохти ${amt} TJS тасдиқ шуд! Баланс автоматӣ пур шуд.`);
-            closeM('wallet-p');
-        }, 3000);
+        u.bal -= amt;
+        sync();
+        alert(`Дархост қабул шуд! ${amt} TJS ба рақами ${ph} фиристода шуд.`);
+        closeM('withdraw-p');
     }
 
-    function autoBuyPremium() {
-        if(u.bal >= 50) {
-            u.bal -= 50;
-            u.isPrem = true;
-            sync();
-            alert("Табрик! Premium автоматӣ фаъол шуд ⭐️");
-        } else alert("Маблағ кифоя нест! Аввал балансро пур кунед.");
+    function processPay() {
+        const amt = parseFloat(document.getElementById('payAmt').value);
+        if(amt > 0) { u.bal += amt; sync(); alert("Баланс пур шуд!"); closeM('topup-p'); }
+    }
+
+    function buyPrem() {
+        if(u.bal >= 50) { u.bal -= 50; u.isPrem = true; sync(); alert("Premium фаъол шуд!"); }
     }
 
     function sync() {
-        const nameDisplay = u.name + (u.isPrem ? " ⭐️" : "");
-        document.getElementById('h-name').innerText = nameDisplay;
+        const n = u.name + (u.isPrem ? " ⭐️" : "");
+        document.getElementById('h-name').innerText = n;
         document.getElementById('p-name').innerText = u.name;
         document.getElementById('p-nick').innerText = "@id" + u.id;
         document.getElementById('p-bal').innerText = u.bal.toFixed(2) + " TJS";
         document.getElementById('wall-val').innerText = u.bal.toFixed(2) + " TJS";
         document.getElementById('p-prem-tag').innerText = u.isPrem ? "Active 👑" : "Regular";
-        
         const avs = [document.getElementById('h-av'), document.getElementById('p-av')];
         avs.forEach(av => {
             if(u.photo) av.innerHTML = `<img src="${u.photo}">`;
@@ -267,7 +245,7 @@
             });
             const data = await res.json();
             addMsg(data.candidates[0].content.parts[0].text, "bot");
-        } catch(e) { addMsg("API Error", "bot"); }
+        } catch(e) { addMsg("Error AI", "bot"); }
     }
 
     function addMsg(t, s) {
@@ -282,9 +260,7 @@
     function openM(id) { document.getElementById(id).classList.add('open'); }
     function closeM(id) { document.getElementById(id).classList.remove('open'); }
     function saveSet() { u.name = document.getElementById('newN').value || u.name; sync(); closeM('settings-p'); }
-    function handleFile(inp) { if(inp.files[0]) addMsg("📎 Файл бор шуд: " + inp.files[0].name, "user"); }
+    function handleFile(inp) { if(inp.files[0]) addMsg("📎 Файл: " + inp.files[0].name, "user"); }
 </script>
-
-<style> @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } </style>
 </body>
 </html>
