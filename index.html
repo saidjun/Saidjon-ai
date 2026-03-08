@@ -3,206 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SAIDJON AI V16 SUPER</title>
+    <title>SAIDJON AI V17 ULTIMATE</title>
     <style>
-        :root { --tg-bg: #0e1621; --tg-panel: #17212b; --tg-blue: #2481cc; --tg-accent: #00ff9d; --tg-text: #f5f5f5; }
+        :root { --tg-bg: #0e1621; --tg-panel: #17212b; --tg-blue: #2481cc; --tg-accent: #00ff9d; --tg-text: #f5f5f5; --premium: #f39c12; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
         body { background: #000; color: var(--tg-text); height: 100dvh; overflow: hidden; }
 
-        /* Auth & Recovery */
-        #auth-screen { position: fixed; inset: 0; background: var(--tg-bg); z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: var(--tg-panel); padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; border: 1px solid #232e3c; position: relative; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #2f3942; background: #0e1621; color: white; outline: none; }
+        /* Auth Screen & Tabs */
+        #auth-screen { position: fixed; inset: 0; background: var(--tg-bg); z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+        .auth-card { background: var(--tg-panel); padding: 25px; border-radius: 20px; width: 100%; max-width: 420px; border: 1px solid #232e3c; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab { flex: 1; padding: 10px; text-align: center; cursor: pointer; border-bottom: 2px solid transparent; opacity: 0.6; }
+        .tab.active { border-color: var(--tg-accent); opacity: 1; color: var(--tg-accent); }
+        
+        input, select { width: 100%; padding: 12px; margin: 6px 0; border-radius: 10px; border: 1px solid #2f3942; background: #0e1621; color: white; outline: none; font-size: 14px; }
         .btn-main { width: 100%; padding: 14px; background: var(--tg-accent); color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .link-text { color: var(--tg-blue); font-size: 13px; cursor: pointer; display: block; margin-top: 10px; text-align: center; }
 
         /* Main App */
         #app { width: 100%; max-width: 500px; height: 100%; margin: auto; display: flex; flex-direction: column; background: var(--tg-bg); position: relative; }
         .header { padding: 10px 15px; background: var(--tg-panel); display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #000; }
-        
-        /* Chat Area */
+
+        /* Premium & Verified */
+        .badge-prem { background: var(--premium); color: black; font-size: 9px; padding: 2px 5px; border-radius: 4px; font-weight: bold; margin-left: 5px; }
+        .prem-glow { box-shadow: 0 0 15px var(--premium) !important; border: 2px solid var(--premium) !important; }
+
+        /* Chat & Bubbles */
         #chat-window { flex: 1; overflow-y: auto; padding: 15px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 8px; }
-        .msg { max-width: 80%; padding: 10px; border-radius: 15px; font-size: 15px; animation: slideUp 0.2s ease; position: relative; }
+        .msg { max-width: 80%; padding: 10px; border-radius: 15px; font-size: 15px; position: relative; }
         .bot { align-self: flex-start; background: var(--tg-panel); }
         .user { align-self: flex-end; background: #2b5278; }
-        .emoji-big { font-size: 50px; background: none !important; animation: pulse 1s infinite; }
-
-        /* Footer */
-        .footer { padding: 10px; background: var(--tg-panel); display: flex; align-items: center; gap: 8px; }
-        .input-box { flex: 1; background: var(--tg-bg); border-radius: 20px; padding: 5px 12px; display: flex; align-items: center; border: 1px solid #2f3942; }
-        textarea { flex: 1; background: transparent; border: none; color: white; padding: 8px; outline: none; resize: none; max-height: 100px; }
 
         /* Modals */
-        .modal { position: absolute; inset: 0; background: var(--tg-bg); z-index: 1000; transform: translateX(100%); transition: 0.3s ease; }
+        .modal { position: absolute; inset: 0; background: var(--tg-bg); z-index: 1000; transform: translateX(100%); transition: 0.3s; }
         .modal.open { transform: translateX(0); }
-        .modal-header { padding: 15px; background: var(--tg-panel); display: flex; align-items: center; gap: 20px; font-weight: bold; }
+        .modal-header { padding: 15px; background: var(--tg-panel); display: flex; align-items: center; gap: 20px; border-bottom: 1px solid #000; }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        .verified { color: #2481cc; font-size: 14px; margin-left: 5px; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <div id="auth-screen">
-    <div class="auth-card" id="auth-box">
-        <h2 id="auth-title">SAIDJON AI V16</h2>
-        <div id="reg-fields">
-            <input type="text" id="regName" placeholder="Ном">
-            <input type="text" id="regNick" placeholder="Никнейм (@)">
-            <input type="email" id="regEmail" placeholder="Email">
-            <input type="tel" id="regPhone" placeholder="Телефон">
-            <input type="password" id="regPass" placeholder="Парол">
-            <button class="btn-main" onclick="initUser()">Эҷод кардани Профил</button>
-            <span class="link-text" onclick="showRecovery()">Паролро фаромӯш кардам?</span>
+    <div class="auth-card">
+        <div class="tabs">
+            <div class="tab active" onclick="switchAuth('reg')">Регистратсия</div>
+            <div class="tab" onclick="switchAuth('login')">Войти</div>
         </div>
-        <div id="recovery-fields" style="display:none">
-            <p style="font-size:12px; margin-bottom:10px;">Email ё Номерро ворид кунед:</p>
-            <input type="text" id="recoverInput" placeholder="Email ё Номер">
-            <button class="btn-main" onclick="processRecovery()">Ҷустуҷӯ</button>
-            <span class="link-text" onclick="showLogin()">Бозгашт</span>
+
+        <div id="reg-form">
+            <input type="text" id="regName" placeholder="Номи пурра">
+            <input type="text" id="regNick" placeholder="Никнейм (@)">
+            <select id="regCountry">
+                <option value="TJ">Тоҷикистон 🇹🇯</option>
+                <option value="RU">Россия 🇷🇺</option>
+                <option value="UZ">Узбекистан 🇺🇿</option>
+                <option value="US">USA 🇺🇸</option>
+            </select>
+            <select id="regLang">
+                <option value="tg">Забони Тоҷикӣ</option>
+                <option value="ru">Русский язык</option>
+                <option value="en">English</option>
+            </select>
+            <input type="password" id="regPass" placeholder="Парол">
+            <button class="btn-main" onclick="handleAuth('reg')">Эҷод кардан</button>
+        </div>
+
+        <div id="login-form" class="hidden">
+            <input type="text" id="loginNick" placeholder="Никнейм">
+            <input type="password" id="loginPass" placeholder="Парол">
+            <button class="btn-main" onclick="handleAuth('login')">Даромадан</button>
         </div>
     </div>
 </div>
 
 <div id="app">
     <div class="header">
-        <div style="width:40px; height:40px; border-radius:50%; background:var(--tg-accent); color:black; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer" onclick="openModal('sidebar')">S</div>
+        <div id="headerAvatar" class="avatar" style="width:40px; height:40px; border-radius:50%; background:var(--tg-accent); color:black; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer" onclick="openModal('sidebar')">S</div>
         <div style="flex:1">
-            <h4 id="headTitle">Saidjon AI <span class="verified">✔</span></h4>
+            <h4 id="headTitle">Saidjon AI</h4>
             <p id="status" style="font-size:11px; color:var(--tg-accent)">online</p>
         </div>
-        <div style="cursor:pointer" onclick="openAdmin()">⋮</div>
+        <button style="background:none; border:none; color:white; font-size:20px;" onclick="checkAdmin()">⋮</button>
     </div>
 
     <div id="chat-window"></div>
 
-    <div class="footer">
-        <button style="background:none; border:none; color:#6c7883; font-size:22px;">📎</button>
-        <div class="input-box">
-            <textarea id="userInput" placeholder="Паём..." rows="1"></textarea>
-            <button id="micBtn" style="background:none; border:none; color:#6c7883;" onclick="startVoice()">🎤</button>
-        </div>
-        <button class="btn-main" style="width:40px; height:40px; margin:0; border-radius:50%" onclick="sendMessage()">➤</button>
+    <div class="footer" style="padding:10px; display:flex; gap:10px; background:var(--tg-panel)">
+        <textarea id="userInput" style="flex:1; background:var(--tg-bg); color:white; border:1px solid #333; border-radius:15px; padding:10px; outline:none; height:40px;" placeholder="Паём..."></textarea>
+        <button class="btn-main" style="width:45px; height:40px; margin:0;" onclick="send()">➤</button>
     </div>
 
     <div id="sidebar" class="modal">
-        <div class="modal-header">
-            <span style="cursor:pointer" onclick="closeModal('sidebar')">←</span>
-            <span>Меню</span>
-        </div>
-        <div style="padding:20px">
-            <div style="text-align:center; margin-bottom:20px;">
-                <div style="width:80px; height:80px; background:var(--tg-accent); border-radius:50%; margin:auto; display:flex; align-items:center; justify-content:center; font-size:30px; color:black" id="sideAvatar">S</div>
-                <h3 id="sideName">Корбар</h3>
-                <p id="sideID" style="color:var(--tg-accent); font-size:12px">ID: 00000</p>
+        <div class="modal-header"><span onclick="closeModal('sidebar')" style="cursor:pointer">←</span> <span>Профил</span></div>
+        <div style="padding:20px; text-align:center;">
+            <div id="profAvatar" style="width:100px; height:100px; border-radius:50%; background:var(--tg-accent); margin:auto; display:flex; align-items:center; justify-content:center; font-size:40px; color:black">S</div>
+            <h2 id="profName" style="margin-top:10px">Корбар</h2>
+            <p id="profNick" style="color:var(--tg-accent)">@nick</p>
+            <hr style="margin:20px 0; border:0; border-top:1px solid #333">
+            <div style="text-align:left; background:var(--tg-panel); padding:15px; border-radius:10px;">
+                <p>Давлат: <span id="profCountry">TJ</span></p>
+                <p>Забон: <span id="profLang">TG</span></p>
+                <p>Ҳолат: <span id="profStatus">Regular</span></p>
             </div>
-            <div style="padding:15px; border-bottom:1px solid #333;" onclick="createGroup()">👥 Эҷоди Гурӯҳи Нав</div>
-            <div style="padding:15px; border-bottom:1px solid #333;" onclick="alert('Профил фаъол аст!')">👤 Профили ман</div>
-            <div style="padding:15px; border-bottom:1px solid #333;" onclick="alert('Танзимот ислоҳ шуд!')">⚙️ Танзимот</div>
+            <button class="btn-main" style="background:var(--premium); margin-top:15px;" onclick="openModal('premium-modal')">👑 ГУЗАШТАН БА ПРЕМИУМ</button>
+        </div>
+    </div>
+
+    <div id="premium-modal" class="modal">
+        <div class="modal-header"><span onclick="closeModal('premium-modal')" style="cursor:pointer">←</span> <span>Saidjon Premium</span></div>
+        <div style="padding:20px; text-align:center;">
+            <h3>Афзалиятҳои Премиум:</h3>
+            <ul style="text-align:left; margin:15px 0; font-size:14px; color:#ccc">
+                <li>✅ Нишони тиллоӣ дар профил</li>
+                <li>✅ Имконияти фиристодани файлҳои калон</li>
+                <li>✅ Бот тезтар ҷавоб медиҳад</li>
+            </ul>
+            <div style="background:#fff; color:black; padding:15px; border-radius:10px;">
+                <p>Пардохт бо СБП (Сбербанк):</p>
+                <h2 style="margin:10px 0">+79005778557</h2>
+                <p style="font-size:12px">Пас аз пардохт, чекро ба админ фиристед.</p>
+            </div>
+            <button class="btn-main" style="margin-top:20px" onclick="alert('Чек фиристода шуд! Интизори тасдиқ бошед.')">ФИРИСТОДАНИ ЧЕК</button>
+        </div>
+    </div>
+
+    <div id="admin-modal" class="modal">
+        <div class="modal-header"><span onclick="closeModal('admin-modal')" style="cursor:pointer">←</span> <span>Админ Панел</span></div>
+        <div style="padding:20px">
+            <div style="background:rgba(0,255,157,0.1); padding:15px; border-radius:10px;">
+                <p>Шумораи корбарон: 124</p>
+                <p>Дархостҳои Премиум: 3</p>
+                <p>Ҳолати API: Фаъол</p>
+            </div>
+            <button class="btn-main" style="background:red; color:white; margin-top:20px" onclick="alert('База тоза шуд!')">ТОЗА КАРДАНИ ТАЪРИХ</button>
         </div>
     </div>
 </div>
 
 <script>
-    const API_KEY = atob("QUl6YVN5QVFjNGY1Um9LdlhXTklwN2ZSeFlOX2QxNlFLSFVlTk9N");
-    let userData = {};
+    const KEY = atob("QUl6YVN5QVFjNGY1Um9LdlhXTklwN2ZSeFlOX2QxNlFLSFVlTk9N");
+    let user = { nick: "", pass: "", name: "", isPremium: false };
 
-    function initUser() {
-        const name = document.getElementById('regName').value;
-        const nick = document.getElementById('regNick').value;
-        if(!name || !nick) return alert("Пур кунед!");
-        
-        userData = { 
-            name, nick, 
-            id: Math.floor(10000 + Math.random() * 90000),
-            pass: document.getElementById('regPass').value 
-        };
-        
-        document.getElementById('sideName').innerText = name;
-        document.getElementById('sideID').innerText = "ID: " + userData.id;
+    function switchAuth(type) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('reg-form').classList.toggle('hidden', type !== 'reg');
+        document.getElementById('login-form').classList.toggle('hidden', type !== 'login');
+    }
+
+    function handleAuth(type) {
+        if(type === 'reg') {
+            user.name = document.getElementById('regName').value;
+            user.nick = document.getElementById('regNick').value;
+            user.pass = document.getElementById('regPass').value;
+            user.country = document.getElementById('regCountry').value;
+            user.lang = document.getElementById('regLang').value;
+            if(!user.name || !user.nick) return alert("Пур кунед!");
+        } else {
+            const lNick = document.getElementById('loginNick').value;
+            const lPass = document.getElementById('loginPass').value;
+            if(lNick === "admin" && lPass === "saidjon777") {
+                user.name = "Saidjon Admin"; user.nick = "admin"; user.isPremium = true;
+            } else if (lNick !== user.nick || lPass !== user.pass) {
+                return alert("Логин ё парол хатост!");
+            }
+        }
+        setupApp();
+    }
+
+    function setupApp() {
         document.getElementById('auth-screen').style.display = 'none';
-        addMsg("Хуш омадед ба Версияи Супер V16! 🚀", "bot");
+        document.getElementById('profName').innerText = user.name;
+        document.getElementById('profNick').innerText = "@" + user.nick;
+        document.getElementById('headerAvatar').innerText = user.name[0];
+        document.getElementById('profAvatar').innerText = user.name[0];
+        if(user.isPremium) {
+            document.getElementById('profAvatar').classList.add('prem-glow');
+            document.getElementById('headTitle').innerHTML += ' <span class="badge-prem">PREMIUM</span>';
+        }
+        addMsg("Хуш омадед ба V17! Системаи пардохт ва админка фаъол аст.", "bot");
     }
 
-    function showRecovery() {
-        document.getElementById('reg-fields').style.display = 'none';
-        document.getElementById('recovery-fields').style.display = 'block';
-        document.getElementById('auth-title').innerText = "Барқароркунӣ";
-    }
-
-    function showLogin() {
-        document.getElementById('reg-fields').style.display = 'block';
-        document.getElementById('recovery-fields').style.display = 'none';
-        document.getElementById('auth-title').innerText = "SAIDJON AI V16";
-    }
-
-    function processRecovery() {
-        const val = document.getElementById('recoverInput').value;
-        if(!val) return alert("Маълумотро ворид кунед!");
-        alert("Код барои барқароркунӣ ба " + val + " фиристода шуд!");
-        showLogin();
-    }
-
-    async function sendMessage() {
+    async function send() {
         const inp = document.getElementById('userInput');
         const txt = inp.value.trim();
         if(!txt) return;
-
         addMsg(txt, "user");
         inp.value = "";
         document.getElementById('status').innerText = "typing...";
-
         try {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: [{ parts: [{ text: txt }] }] })
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${KEY}`, {
+                method: "POST", headers: {"Content-Type":"application/json"},
+                body: JSON.stringify({contents: [{parts:[{text: txt}]}]})
             });
             const data = await res.json();
             addMsg(data.candidates[0].content.parts[0].text, "bot");
-        } catch (e) {
-            addMsg("Хатогии пайвастшавӣ.", "bot");
-        }
+        } catch(e) { addMsg("Хатогии API", "bot"); }
         document.getElementById('status').innerText = "online";
     }
 
-    function addMsg(txt, side) {
+    function addMsg(t, s) {
         const win = document.getElementById('chat-window');
-        const div = document.createElement('div');
-        const isEmoji = /^\p{Emoji_Presentation}$/u.test(txt);
-        div.className = `msg ${side} ${isEmoji ? 'emoji-big' : ''}`;
-        div.innerHTML = txt + `<br><small style="font-size:9px; opacity:0.5">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</small>`;
-        win.appendChild(div);
+        const d = document.createElement('div');
+        d.className = `msg ${s}`;
+        d.innerHTML = t + `<br><small style="opacity:0.5;font-size:10px">${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} ✓✓</small>`;
+        win.appendChild(d);
         win.scrollTop = win.scrollHeight;
     }
 
-    function createGroup() {
-        const gName = prompt("Номи гурӯҳро нависед:");
-        if(gName) {
-            document.getElementById('headTitle').innerText = gName;
-            document.getElementById('status').innerText = "3 аъзо, 1 онлайн";
-            closeModal('sidebar');
-            addMsg("Гурӯҳи '" + gName + "' эҷод шуд. Акнун метавонед дар ин ҷо чат кунед.", "bot");
-        }
+    function checkAdmin() {
+        if(user.nick === "admin") openModal('admin-modal');
+        else alert("Ин тугма танҳо барои Админ аст!");
     }
 
     function openModal(id) { document.getElementById(id).classList.add('open'); }
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-    function openAdmin() {
-        const p = prompt("Пароли Админ:");
-        if(p === "saidjon777") alert("Хуш омадӣ Админ! Ҳамаи системаҳо дар назорати туст.");
-    }
-
-    function startVoice() {
-        const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        rec.lang = 'ru-RU';
-        document.getElementById('micBtn').style.color = "red";
-        rec.onresult = (e) => { document.getElementById('userInput').value = e.results[0][0].transcript; };
-        rec.onend = () => { document.getElementById('micBtn').style.color = "#6c7883"; };
-        rec.start();
-    }
 </script>
 </body>
 </html>
