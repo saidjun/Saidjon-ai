@@ -1,129 +1,23 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saidjon AI Pro</title>
-    
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#020617">
-
     <style>
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            margin: 0; padding: 0; background: #020617; color: white; 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
-            display: flex; align-items: center; justify-content: center; 
-            height: 100vh; width: 100vw; overflow: hidden;
-        }
-
-        canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
-
-        #app-card { 
-            position: relative; z-index: 10; width: 88%; max-width: 380px; 
-            padding: 50px 25px; text-align: center; 
-            background: rgba(15, 23, 42, 0.8);
-            border-radius: 45px; backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
-        }
-
-        .neon-logo {
-            width: 110px; height: 110px; 
-            background: linear-gradient(135deg, #0ea5e9, #6366f1, #a855f7);
-            margin: 0 auto 30px; border-radius: 35px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 65px; font-weight: bold; color: white;
-            box-shadow: 0 0 40px rgba(14, 165, 233, 0.5);
-            animation: pulse-glow 3s infinite ease-in-out;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        h1 { font-size: 26px; letter-spacing: 5px; margin: 0; font-weight: 900; text-transform: uppercase; }
-        
-        .welcome-msg { 
-            font-size: 18px; color: #38bdf8; margin: 20px 0 40px; 
-            font-weight: 500; min-height: 24px;
-        }
-
-        /* Ислоҳи тугма - Акнун ин ссылка аст, ки 100% кор мекунад */
-        .action-link {
-            display: block;
-            background: linear-gradient(90deg, #0ea5e9, #6366f1);
-            color: white; 
-            text-decoration: none;
-            width: 100%; padding: 22px; 
-            border-radius: 25px; font-size: 20px; font-weight: bold; 
-            box-shadow: 0 15px 35px rgba(14, 165, 233, 0.4);
-            transition: 0.3s;
-        }
-
-        .action-link:active { transform: scale(0.95); opacity: 0.9; }
-
-        .version { margin-top: 35px; font-size: 11px; opacity: 0.4; letter-spacing: 3px; }
+        body { margin: 0; background: #020617; color: white; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; }
+        .card { width: 85%; max-width: 400px; padding: 45px 25px; background: rgba(15, 23, 42, 0.9); border: 1.5px solid #0ea5e9; border-radius: 40px; box-shadow: 0 0 35px rgba(14, 165, 233, 0.4); backdrop-filter: blur(10px); }
+        .logo { width: 90px; height: 90px; background: linear-gradient(135deg, #0ea5e9, #6366f1); border-radius: 25px; margin: 0 auto 25px; display: flex; align-items: center; justify-content: center; font-size: 55px; font-weight: bold; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        h1 { font-size: 26px; margin-bottom: 35px; letter-spacing: 3px; font-weight: 900; }
+        .btn { display: block; background: linear-gradient(90deg, #0ea5e9, #6366f1); color: white; text-decoration: none; padding: 22px; border-radius: 25px; font-weight: bold; font-size: 20px; box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3); transition: 0.3s; }
+        .btn:active { transform: scale(0.95); opacity: 0.9; }
     </style>
 </head>
 <body>
-
-    <canvas id="stars"></canvas>
-
-    <div id="app-card">
-        <div class="neon-logo">S</div>
+    <div class="card">
+        <div class="logo">S</div>
         <h1>SAIDJON AI</h1>
-        <div class="welcome-msg" id="greetLine">Хуш омадед!</div>
-        
-        <a href="https://gemini.google.com/app" class="action-link">ОҒОЗИ СӮҲБАТ</a>
-        
-        <div class="version">V2.0 PRO</div>
+        <a href="https://gemini.google.com/app" class="btn">ОҒОЗИ СӮҲБАТ</a>
     </div>
-
-    <script>
-        // Вақти рӯз ва Салом
-        function updateGreeting() {
-            const hr = new Date().getHours();
-            const greet = document.getElementById('greetLine');
-            let timeText = (hr < 12) ? "Субҳ ба хайр" : (hr < 18) ? "Рӯз ба хайр" : "Шом ба хайр";
-            greet.innerText = timeText + ", Саидҷон!";
-        }
-
-        // Аниматсияи ситораҳо
-        const canvas = document.getElementById('stars');
-        const ctx = canvas.getContext('2d');
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.onresize = resize;
-        resize();
-
-        let stars = [];
-        for(let i=0; i<60; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                r: Math.random() * 1.5,
-                s: Math.random() * 0.5
-            });
-        }
-
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "rgba(14, 165, 233, 0.4)";
-            stars.forEach(s => {
-                ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
-                s.y -= s.s; if(s.y < 0) s.y = canvas.height;
-            });
-            requestAnimationFrame(draw);
-        }
-        
-        updateGreeting();
-        draw();
-    </script>
 </body>
 </html>
