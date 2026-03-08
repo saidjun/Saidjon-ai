@@ -2,167 +2,228 @@
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SAIDJON TELEGRAM AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>SAIDJON SUPER APP</title>
     <style>
         :root { --tg-bg: #0e1621; --tg-panel: #17212b; --tg-blue: #2481cc; --tg-accent: #00ff9d; --tg-text: #f5f5f5; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, system-ui, sans-serif; }
-        body { background: #000; color: var(--tg-text); height: 100dvh; display: flex; justify-content: center; overflow: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
+        body { background: #000; color: var(--tg-text); height: 100dvh; overflow: hidden; }
 
-        /* НАВГОНИ: Splash Screen */
-        #splash { position: fixed; inset: 0; background: var(--tg-bg); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.5s; }
-        .s-logo { width: 80px; height: 80px; background: var(--tg-accent); border-radius: 25px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #000; font-weight: bold; box-shadow: 0 0 20px var(--tg-accent); animation: pulse 2s infinite; }
+        /* Auth Screen */
+        #auth-screen { position: fixed; inset: 0; background: var(--tg-bg); z-index: 5000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .auth-card { background: var(--tg-panel); padding: 30px; border-radius: 20px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; border: 1px solid #30363d; background: #0e1621; color: white; outline: none; }
+        .btn-main { width: 100%; padding: 14px; background: var(--tg-accent); color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-main:active { transform: scale(0.95); }
 
-        #app-wrapper { width: 100%; max-width: 450px; height: 100%; background: var(--tg-bg); display: flex; flex-direction: column; position: relative; }
+        /* Main App Structure */
+        #app { width: 100%; max-width: 500px; height: 100%; margin: auto; display: flex; flex-direction: column; background: var(--tg-bg); position: relative; }
 
-        /* Sidebar */
-        #sidebar { position: absolute; left: -100%; top: 0; width: 85%; height: 100%; background: var(--tg-panel); z-index: 100; transition: 0.3s; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
-        #sidebar.open { left: 0; }
-        .sidebar-header { padding: 30px 20px; background: #242f3d; }
-        .side-avatar { width: 60px; height: 60px; background: var(--tg-accent); border-radius: 50%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; font-size: 24px; }
-        
-        /* НАВГОНИ: Search дар Sidebar */
-        .side-search { margin: 10px 20px; background: var(--tg-bg); padding: 8px; border-radius: 8px; border: 1px solid #30363d; display: flex; gap: 5px; }
-        .side-search input { background: transparent; border: none; color: white; outline: none; font-size: 14px; width: 100%; }
+        /* Header */
+        .header { padding: 12px 15px; background: var(--tg-panel); display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #000; }
+        .menu-btn { font-size: 22px; cursor: pointer; color: #6c7883; background: none; border: none; }
 
-        .side-item { padding: 15px 20px; display: flex; align-items: center; gap: 20px; cursor: pointer; }
-        .side-item:hover { background: rgba(255,255,255,0.05); }
+        /* Chat Window */
+        #chat-window { flex: 1; overflow-y: auto; padding: 15px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 80%; padding: 10px 14px; border-radius: 15px; font-size: 15px; position: relative; line-height: 1.4; }
+        .bot { align-self: flex-start; background: var(--tg-panel); border-bottom-left-radius: 2px; }
+        .user { align-self: flex-end; background: #2b5278; border-bottom-right-radius: 2px; }
 
-        .header { padding: 10px 15px; background: var(--tg-panel); display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #000; }
-        .menu-btn { font-size: 24px; cursor: pointer; color: #6c7883; }
-        .user-info { flex: 1; }
-        .user-info h4 { font-size: 16px; }
-        .user-info p { font-size: 12px; color: #6c7883; }
+        /* Footer */
+        .footer { padding: 10px; background: var(--tg-panel); display: flex; align-items: flex-end; gap: 8px; }
+        .input-area { flex: 1; background: var(--tg-bg); border-radius: 22px; padding: 5px 12px; display: flex; align-items: center; border: 1px solid #30363d; }
+        textarea { flex: 1; background: transparent; border: none; color: white; padding: 10px; outline: none; font-size: 16px; resize: none; max-height: 120px; }
 
-        #chat-content { flex: 1; overflow-y: auto; padding: 15px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 10px; }
-        
-        .bubble { max-width: 85%; padding: 8px 12px; border-radius: 12px; font-size: 15px; line-height: 1.4; position: relative; }
-        .bot-msg { align-self: flex-start; background: var(--tg-panel); border-bottom-left-radius: 2px; }
-        .user-msg { align-self: flex-end; background: #2b5278; border-bottom-right-radius: 2px; }
-        
-        /* НАВГОНИ: Галочкаҳо */
-        .msg-info { font-size: 10px; color: #6c7883; float: right; margin-top: 5px; margin-left: 8px; display: flex; align-items: center; gap: 3px; }
-        .ticks { color: var(--tg-accent); }
+        /* Sidebar & Modals */
+        .modal { position: absolute; inset: 0; background: var(--tg-bg); z-index: 100; transform: translateX(-100%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .modal.open { transform: translateX(0); }
+        .modal-header { padding: 15px; background: var(--tg-panel); display: flex; align-items: center; gap: 20px; border-bottom: 1px solid #000; }
 
-        .footer { padding: 10px; background: var(--tg-panel); display: flex; align-items: flex-end; gap: 10px; }
-        .input-box { flex: 1; background: var(--tg-bg); border-radius: 20px; padding: 5px 12px; display: flex; align-items: center; }
-        textarea { flex: 1; background: transparent; border: none; color: white; padding: 8px; outline: none; font-size: 16px; resize: none; max-height: 120px; }
-        
-        .btn { background: transparent; border: none; color: #6c7883; font-size: 22px; cursor: pointer; }
-        .send-btn { background: var(--tg-accent); color: #000; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; }
-        
-        .overlay { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.5); z-index: 90; }
-        .overlay.active { display: block; }
+        /* Admin Page UI */
+        #admin-page { background: #000; }
+        .admin-box { background: #1c1c1c; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #333; }
+        .tag { background: var(--tg-accent); color: #000; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
 
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div id="splash">
-    <div class="s-logo">S</div>
-    <p style="margin-top: 20px; color: var(--tg-accent); letter-spacing: 2px;">SAIDJON AI</p>
+<div id="auth-screen">
+    <div class="auth-card">
+        <h2 style="color:var(--tg-accent); margin-bottom: 5px;">SAIDJON AI</h2>
+        <p style="color:#6c7883; font-size: 13px; margin-bottom: 25px;">Воридшавӣ ба система</p>
+        <input type="text" id="regName" placeholder="Логин ё Ном">
+        <div id="admin-pass-wrap" class="hidden">
+            <input type="password" id="adminPass" placeholder="Пароли махфии Админ">
+        </div>
+        <button class="btn-main" id="loginBtn" onclick="handleLogin()">Ворид шудан</button>
+    </div>
 </div>
 
-<div id="app-wrapper">
-    <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
-
-    <div id="sidebar">
-        <div class="sidebar-header">
-            <div class="side-avatar">S</div>
-            <div>Саидҷон</div>
-            <div style="font-size: 12px; color: #6c7883;">online</div>
-        </div>
-        <div class="side-search"><span>🔍</span><input type="text" placeholder="Ҷустуҷӯ..."></div>
-        <div class="side-item">👤 Профили ман</div>
-        <div class="side-item">🔖 Паёмҳои ҳифзшуда</div>
-        <div class="side-item">⚙️ Танзимот</div>
-    </div>
-
+<div id="app">
     <div class="header">
-        <div class="menu-btn" onclick="toggleMenu()">☰</div>
-        <div class="user-info">
-            <h4>SAIDJON AI PRO</h4>
-            <p id="status">online</p>
+        <button class="menu-btn" onclick="openModal('sidebar')">☰</button>
+        <div style="flex:1">
+            <h4 id="displayTitle">SAIDJON AI PRO</h4>
+            <p id="status" style="font-size: 11px; color: var(--tg-accent);">online</p>
         </div>
-        <div class="menu-btn">⋮</div>
+        <button class="menu-btn" id="admin-entry-btn" onclick="openAdminModal()" style="display:none">⋮</button>
     </div>
 
-    <div id="chat-content">
-        <div class="bubble bot-msg">
-            Хуш омадед! Ҳама функсияҳо фаъоланд.
-            <div class="msg-info">00:00</div>
-        </div>
-    </div>
+    <div id="chat-window"></div>
 
     <div class="footer">
-        <button class="btn">📎</button>
-        <div class="input-box">
-            <button class="btn">😊</button>
+        <button class="menu-btn" onclick="document.getElementById('fileIn').click()">📎</button>
+        <input type="file" id="fileIn" class="hidden">
+        <div class="input-area">
+            <button class="menu-btn">😊</button>
             <textarea id="userInput" placeholder="Паём..." rows="1" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
-            <button class="btn" id="micBtn" onclick="runMic()">🎤</button>
+            <button class="menu-btn" id="micBtn" onclick="startVoice()">🎤</button>
         </div>
-        <button class="send-btn" onclick="sendMsg()">➤</button>
+        <button class="btn-main" style="width: 45px; margin: 0;" onclick="send()">➤</button>
+    </div>
+
+    <div id="sidebar" class="modal">
+        <div class="modal-header">
+            <button class="menu-btn" onclick="closeModal('sidebar')">←</button>
+            <h3>Меню</h3>
+        </div>
+        <div style="padding: 20px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div style="width:70px; height:70px; background:var(--tg-accent); border-radius:50%; margin:auto; display:flex; align-items:center; justify-content:center; color:#000; font-size:28px; font-weight:bold" id="avatarIcon">S</div>
+                <h3 id="profileName" style="margin-top:10px;">Корбар</h3>
+                <p id="profileID" style="color:var(--tg-accent); font-size:12px;">ID: 00000</p>
+            </div>
+            <p style="padding:15px; border-bottom:1px solid #333;">👤 Профили ман</p>
+            <p style="padding:15px; border-bottom:1px solid #333;">⚙️ Танзимот</p>
+            <p style="padding:15px; color:red;" onclick="location.reload()">🚪 Баромадан</p>
+        </div>
+    </div>
+
+    <div id="admin-modal" class="modal">
+        <div class="modal-header">
+            <button class="menu-btn" onclick="closeModal('admin-modal')">←</button>
+            <h3>Админ Панели Оли</h3>
+        </div>
+        <div style="padding: 20px; overflow-y: auto; height: 90%;">
+            <div class="admin-box">
+                <p>Ҳолати Система: <span class="tag">ACTIVE</span></p>
+                <p style="margin-top:10px;">Корбарони онлайн: 1</p>
+            </div>
+            <div class="admin-box">
+                <p>Назорати API</p>
+                <input type="text" id="newApiKey" placeholder="Калиди нави API-ро гузоред">
+                <button class="btn-main" style="padding:8px; font-size:12px;" onclick="updateAPI()">Навсозии API</button>
+            </div>
+            <div class="admin-box">
+                <p>Назорати Чат</p>
+                <button class="btn-main" style="background:#444; color:white; margin-top:5px;" onclick="clearHistory()">Тоза кардани базаи паёмҳо</button>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-    const _parts = ["QUl6YVN5QVFjNGY1Um9LdlhXTklwN2ZSeFlOX2QxNlFLSFVlTk9N"];
-    const KEY = atob(_parts[0]);
+    let currentKey = atob("QUl6YVN5QVFjNGY1Um9LdlhXTklwN2ZSeFlOX2QxNlFLSFVlTk9N");
+    let isAdmin = false;
 
-    // Splash Screen нест кардан пас аз 2 сония
-    setTimeout(() => { document.getElementById('splash').style.opacity = '0'; setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 500); }, 2000);
+    // Логикаи воридшавӣ
+    document.getElementById('regName').addEventListener('input', function(e) {
+        if(e.target.value.toLowerCase() === 'admin') {
+            document.getElementById('admin-pass-wrap').classList.remove('hidden');
+        } else {
+            document.getElementById('admin-pass-wrap').classList.add('hidden');
+        }
+    });
 
-    function toggleMenu() {
-        document.getElementById('sidebar').classList.toggle('open');
-        document.getElementById('overlay').classList.toggle('active');
+    function handleLogin() {
+        const name = document.getElementById('regName').value;
+        const adminPass = document.getElementById('adminPass').value;
+
+        if(!name) return alert("Номро ворид кунед!");
+
+        if(name.toLowerCase() === 'admin') {
+            if(adminPass === "saidjon777") { // ПАРОЛИ МАХФИИ ТУ
+                isAdmin = true;
+                document.getElementById('admin-entry-btn').style.display = 'block';
+                setupUser("Администратор", "77777");
+            } else {
+                return alert("Пароли админ хатост!");
+            }
+        } else {
+            setupUser(name, Math.floor(10000 + Math.random() * 90000));
+        }
+
+        document.getElementById('auth-screen').style.opacity = '0';
+        setTimeout(() => document.getElementById('auth-screen').style.display = 'none', 500);
+        addMsg("Система бо муваффақият фаъол шуд. Салом, " + name + "!", "bot");
     }
 
-    async function sendMsg() {
+    function setupUser(name, id) {
+        document.getElementById('profileName').innerText = name;
+        document.getElementById('profileID').innerText = "ID: " + id;
+        document.getElementById('avatarIcon').innerText = name[0].toUpperCase();
+    }
+
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    function openAdminModal() { openModal('admin-modal'); }
+
+    async function send() {
         const inp = document.getElementById('userInput');
         const txt = inp.value.trim();
         if(!txt) return;
 
-        addBubble(txt, 'user-msg', true);
+        addMsg(txt, 'user');
         inp.value = "";
-        inp.style.height = "auto";
         document.getElementById('status').innerText = "typing...";
 
         try {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${KEY}`, {
-                method: "POST", headers: { "Content-Type": "application/json" },
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${currentKey}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ contents: [{ parts: [{ text: txt }] }] })
             });
             const data = await res.json();
             const reply = data.candidates[0].content.parts[0].text;
-            document.getElementById('status').innerText = "online";
-            addBubble(reply, 'bot-msg', false);
+            addMsg(reply, 'bot');
         } catch (e) {
+            addMsg("Хатогии API: Калид шояд блок шуда бошад.", "bot");
+        } finally {
             document.getElementById('status').innerText = "online";
-            addBubble("Хатогии техникӣ.", 'bot-msg', false);
         }
     }
 
-    function addBubble(text, type, isUser) {
-        const chat = document.getElementById('chat-content');
-        const d = new Date();
-        const time = d.getHours() + ":" + (d.getMinutes()<10?'0':'') + d.getMinutes();
-        const ticks = isUser ? '<span class="ticks">✓✓</span>' : '';
-        
-        const b = document.createElement('div');
-        b.className = `bubble ${type}`;
-        b.innerHTML = `${text} <div class="msg-info">${time} ${ticks}</div>`;
-        chat.appendChild(b);
-        chat.scrollTop = chat.scrollHeight;
+    function addMsg(t, s) {
+        const win = document.getElementById('chat-window');
+        const d = document.createElement('div');
+        d.className = `msg ${s}`;
+        d.innerHTML = t + `<br><small style="font-size:9px; opacity:0.5; display:block; text-align:right;">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${s==='user'?'✓✓':''}</small>`;
+        win.appendChild(d);
+        win.scrollTop = win.scrollHeight;
     }
 
-    let recognition;
-    if ('webkitSpeechRecognition' in window) {
-        recognition = new webkitSpeechRecognition();
-        recognition.lang = 'ru-RU';
-        recognition.onresult = (e) => { document.getElementById('userInput').value = e.results[0][0].transcript; };
+    function startVoice() {
+        const btn = document.getElementById('micBtn');
+        btn.style.color = "red";
+        const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        rec.lang = 'ru-RU';
+        rec.onresult = (e) => { document.getElementById('userInput').value = e.results[0][0].transcript; };
+        rec.onend = () => { btn.style.color = "#6c7883"; };
+        rec.start();
     }
-    function runMic() { recognition.start(); }
+
+    function updateAPI() {
+        const key = document.getElementById('newApiKey').value;
+        if(key) { currentKey = key; alert("API нав карда шуд!"); }
+    }
+
+    function clearHistory() {
+        document.getElementById('chat-window').innerHTML = "";
+        alert("Таърихи чат тоза карда шуд!");
+    }
 </script>
+
 </body>
 </html>
