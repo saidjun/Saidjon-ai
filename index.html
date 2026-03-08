@@ -3,74 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Saidjon AI Pro</title>
+    <title>SAIDJON AI PRO</title>
     
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#000000">
-    <link rel="manifest" href="data:application/manifest+json,{'display':'standalone','start_url':'/','name':'Saidjon AI Pro','short_name':'SaidjonAI'}">
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: 'Courier New', monospace; }
         
-        body { 
-            background: #000; 
-            color: #fff; 
-            height: 100vh; 
-            overflow: hidden; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-        }
+        canvas { display: block; position: absolute; top: 0; left: 0; z-index: 1; }
 
-        /* Эффекти Matrix дар замина */
-        #matrix {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            opacity: 0.15;
-        }
-
-        .container {
+        .ui-content {
             position: relative;
-            z-index: 2;
-            width: 90%;
-            max-width: 400px;
-            padding: 50px 25px;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(0, 255, 157, 0.3);
-            border-radius: 40px;
-            text-align: center;
-            box-shadow: 0 0 50px rgba(0, 255, 157, 0.1);
-        }
-
-        .logo-box {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #00ff9d, #00b8ff);
-            border-radius: 30px;
-            margin: 0 auto 25px;
+            z-index: 10;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 60px;
-            font-weight: 900;
-            color: #000;
-            box-shadow: 0 0 30px rgba(0, 255, 157, 0.5);
-            animation: pulse 2s infinite;
+            height: 100%;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
         }
 
-        h1 { font-size: 26px; letter-spacing: 5px; margin-bottom: 10px; color: #00ff9d; text-shadow: 0 0 10px rgba(0, 255, 157, 0.5); }
-        p { color: #888; font-size: 14px; margin-bottom: 40px; }
+        .box {
+            padding: 40px 20px;
+            background: rgba(0, 40, 20, 0.2);
+            border: 2px solid #00ff9d;
+            border-radius: 25px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.4);
+            width: 85%;
+            max-width: 350px;
+        }
 
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 22px;
-            background: transparent;
-            color: #00
+        .logo {
+            font-size: 70px;
+            font-weight: bold;
+            color: #00ff9d;
+            text-shadow: 0 0 20px #00ff9d;
+            margin-bottom: 10px;
+        }
+
+        h1 { color: #00ff9d; font-size: 22px; letter-spacing: 5px; margin-bottom: 30px; }
+
+        .main-btn {
+            display: inline-block;
+            text-decoration: none;
+            color: #000;
+            background: #00ff9d;
+            padding: 18px 30px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 18px;
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(0, 255, 157, 0.4);
+            transition: 0.3s;
+        }
+
+        .main-btn:active { transform: scale(0.9); box-shadow: 0 0 40px #00ff9d; }
+    </style>
+</head>
+<body>
+
+<canvas id="m"></canvas>
+
+<div class="ui-content">
+    <div class="box">
+        <div class="logo">S</div>
+        <h1>SAIDJON AI</h1>
+        <a href="https://gemini.google.com/app" class="main-btn">ОҒОЗИ СӮҲБАТ</a>
+    </div>
+</div>
+
+<script>
+    const c = document.getElementById("m");
+    const ctx = c.getContext("2d");
+
+    c.height = window.innerHeight;
+    c.width = window.innerWidth;
+
+    const txts = "0101SaidjonAI0101";
+    const fz = 16;
+    const cols = c.width / fz;
+    const drops = [];
+
+    for (let x = 0; x < cols; x++) drops[x] = 1;
+
+    function draw() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+        ctx.fillRect(0, 0, c.width, c.height);
+        ctx.fillStyle = "#00ff9d";
+        ctx.font = fz + "px monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+            const text = txts.charAt(Math.floor(Math.random() * txts.length));
+            ctx.fillText(text, i * fz, drops[i] * fz);
+            if (drops[i] * fz > c.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        }
+    }
+    setInterval(draw, 35);
+</script>
+
+</body>
+</html>
