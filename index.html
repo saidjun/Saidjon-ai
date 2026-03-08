@@ -3,227 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SAIDJON SUPER APP</title>
+    <title>SAIDJON AI V16 SUPER</title>
     <style>
         :root { --tg-bg: #0e1621; --tg-panel: #17212b; --tg-blue: #2481cc; --tg-accent: #00ff9d; --tg-text: #f5f5f5; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
         body { background: #000; color: var(--tg-text); height: 100dvh; overflow: hidden; }
 
-        /* Auth Screen */
-        #auth-screen { position: fixed; inset: 0; background: var(--tg-bg); z-index: 5000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: var(--tg-panel); padding: 30px; border-radius: 20px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; border: 1px solid #30363d; background: #0e1621; color: white; outline: none; }
-        .btn-main { width: 100%; padding: 14px; background: var(--tg-accent); color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-main:active { transform: scale(0.95); }
+        /* Auth & Recovery */
+        #auth-screen { position: fixed; inset: 0; background: var(--tg-bg); z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-card { background: var(--tg-panel); padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; border: 1px solid #232e3c; position: relative; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #2f3942; background: #0e1621; color: white; outline: none; }
+        .btn-main { width: 100%; padding: 14px; background: var(--tg-accent); color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .link-text { color: var(--tg-blue); font-size: 13px; cursor: pointer; display: block; margin-top: 10px; text-align: center; }
 
-        /* Main App Structure */
+        /* Main App */
         #app { width: 100%; max-width: 500px; height: 100%; margin: auto; display: flex; flex-direction: column; background: var(--tg-bg); position: relative; }
-
-        /* Header */
-        .header { padding: 12px 15px; background: var(--tg-panel); display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #000; }
-        .menu-btn { font-size: 22px; cursor: pointer; color: #6c7883; background: none; border: none; }
-
-        /* Chat Window */
-        #chat-window { flex: 1; overflow-y: auto; padding: 15px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 10px; }
-        .msg { max-width: 80%; padding: 10px 14px; border-radius: 15px; font-size: 15px; position: relative; line-height: 1.4; }
-        .bot { align-self: flex-start; background: var(--tg-panel); border-bottom-left-radius: 2px; }
-        .user { align-self: flex-end; background: #2b5278; border-bottom-right-radius: 2px; }
+        .header { padding: 10px 15px; background: var(--tg-panel); display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #000; }
+        
+        /* Chat Area */
+        #chat-window { flex: 1; overflow-y: auto; padding: 15px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 8px; }
+        .msg { max-width: 80%; padding: 10px; border-radius: 15px; font-size: 15px; animation: slideUp 0.2s ease; position: relative; }
+        .bot { align-self: flex-start; background: var(--tg-panel); }
+        .user { align-self: flex-end; background: #2b5278; }
+        .emoji-big { font-size: 50px; background: none !important; animation: pulse 1s infinite; }
 
         /* Footer */
-        .footer { padding: 10px; background: var(--tg-panel); display: flex; align-items: flex-end; gap: 8px; }
-        .input-area { flex: 1; background: var(--tg-bg); border-radius: 22px; padding: 5px 12px; display: flex; align-items: center; border: 1px solid #30363d; }
-        textarea { flex: 1; background: transparent; border: none; color: white; padding: 10px; outline: none; font-size: 16px; resize: none; max-height: 120px; }
+        .footer { padding: 10px; background: var(--tg-panel); display: flex; align-items: center; gap: 8px; }
+        .input-box { flex: 1; background: var(--tg-bg); border-radius: 20px; padding: 5px 12px; display: flex; align-items: center; border: 1px solid #2f3942; }
+        textarea { flex: 1; background: transparent; border: none; color: white; padding: 8px; outline: none; resize: none; max-height: 100px; }
 
-        /* Sidebar & Modals */
-        .modal { position: absolute; inset: 0; background: var(--tg-bg); z-index: 100; transform: translateX(-100%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        /* Modals */
+        .modal { position: absolute; inset: 0; background: var(--tg-bg); z-index: 1000; transform: translateX(100%); transition: 0.3s ease; }
         .modal.open { transform: translateX(0); }
-        .modal-header { padding: 15px; background: var(--tg-panel); display: flex; align-items: center; gap: 20px; border-bottom: 1px solid #000; }
+        .modal-header { padding: 15px; background: var(--tg-panel); display: flex; align-items: center; gap: 20px; font-weight: bold; }
 
-        /* Admin Page UI */
-        #admin-page { background: #000; }
-        .admin-box { background: #1c1c1c; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #333; }
-        .tag { background: var(--tg-accent); color: #000; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
-
-        .hidden { display: none; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .verified { color: #2481cc; font-size: 14px; margin-left: 5px; }
     </style>
 </head>
 <body>
 
 <div id="auth-screen">
-    <div class="auth-card">
-        <h2 style="color:var(--tg-accent); margin-bottom: 5px;">SAIDJON AI</h2>
-        <p style="color:#6c7883; font-size: 13px; margin-bottom: 25px;">Воридшавӣ ба система</p>
-        <input type="text" id="regName" placeholder="Логин ё Ном">
-        <div id="admin-pass-wrap" class="hidden">
-            <input type="password" id="adminPass" placeholder="Пароли махфии Админ">
+    <div class="auth-card" id="auth-box">
+        <h2 id="auth-title">SAIDJON AI V16</h2>
+        <div id="reg-fields">
+            <input type="text" id="regName" placeholder="Ном">
+            <input type="text" id="regNick" placeholder="Никнейм (@)">
+            <input type="email" id="regEmail" placeholder="Email">
+            <input type="tel" id="regPhone" placeholder="Телефон">
+            <input type="password" id="regPass" placeholder="Парол">
+            <button class="btn-main" onclick="initUser()">Эҷод кардани Профил</button>
+            <span class="link-text" onclick="showRecovery()">Паролро фаромӯш кардам?</span>
         </div>
-        <button class="btn-main" id="loginBtn" onclick="handleLogin()">Ворид шудан</button>
+        <div id="recovery-fields" style="display:none">
+            <p style="font-size:12px; margin-bottom:10px;">Email ё Номерро ворид кунед:</p>
+            <input type="text" id="recoverInput" placeholder="Email ё Номер">
+            <button class="btn-main" onclick="processRecovery()">Ҷустуҷӯ</button>
+            <span class="link-text" onclick="showLogin()">Бозгашт</span>
+        </div>
     </div>
 </div>
 
 <div id="app">
     <div class="header">
-        <button class="menu-btn" onclick="openModal('sidebar')">☰</button>
+        <div style="width:40px; height:40px; border-radius:50%; background:var(--tg-accent); color:black; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer" onclick="openModal('sidebar')">S</div>
         <div style="flex:1">
-            <h4 id="displayTitle">SAIDJON AI PRO</h4>
-            <p id="status" style="font-size: 11px; color: var(--tg-accent);">online</p>
+            <h4 id="headTitle">Saidjon AI <span class="verified">✔</span></h4>
+            <p id="status" style="font-size:11px; color:var(--tg-accent)">online</p>
         </div>
-        <button class="menu-btn" id="admin-entry-btn" onclick="openAdminModal()" style="display:none">⋮</button>
+        <div style="cursor:pointer" onclick="openAdmin()">⋮</div>
     </div>
 
     <div id="chat-window"></div>
 
     <div class="footer">
-        <button class="menu-btn" onclick="document.getElementById('fileIn').click()">📎</button>
-        <input type="file" id="fileIn" class="hidden">
-        <div class="input-area">
-            <button class="menu-btn">😊</button>
-            <textarea id="userInput" placeholder="Паём..." rows="1" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
-            <button class="menu-btn" id="micBtn" onclick="startVoice()">🎤</button>
+        <button style="background:none; border:none; color:#6c7883; font-size:22px;">📎</button>
+        <div class="input-box">
+            <textarea id="userInput" placeholder="Паём..." rows="1"></textarea>
+            <button id="micBtn" style="background:none; border:none; color:#6c7883;" onclick="startVoice()">🎤</button>
         </div>
-        <button class="btn-main" style="width: 45px; margin: 0;" onclick="send()">➤</button>
+        <button class="btn-main" style="width:40px; height:40px; margin:0; border-radius:50%" onclick="sendMessage()">➤</button>
     </div>
 
     <div id="sidebar" class="modal">
         <div class="modal-header">
-            <button class="menu-btn" onclick="closeModal('sidebar')">←</button>
-            <h3>Меню</h3>
+            <span style="cursor:pointer" onclick="closeModal('sidebar')">←</span>
+            <span>Меню</span>
         </div>
-        <div style="padding: 20px;">
-            <div style="text-align: center; margin-bottom: 30px;">
-                <div style="width:70px; height:70px; background:var(--tg-accent); border-radius:50%; margin:auto; display:flex; align-items:center; justify-content:center; color:#000; font-size:28px; font-weight:bold" id="avatarIcon">S</div>
-                <h3 id="profileName" style="margin-top:10px;">Корбар</h3>
-                <p id="profileID" style="color:var(--tg-accent); font-size:12px;">ID: 00000</p>
+        <div style="padding:20px">
+            <div style="text-align:center; margin-bottom:20px;">
+                <div style="width:80px; height:80px; background:var(--tg-accent); border-radius:50%; margin:auto; display:flex; align-items:center; justify-content:center; font-size:30px; color:black" id="sideAvatar">S</div>
+                <h3 id="sideName">Корбар</h3>
+                <p id="sideID" style="color:var(--tg-accent); font-size:12px">ID: 00000</p>
             </div>
-            <p style="padding:15px; border-bottom:1px solid #333;">👤 Профили ман</p>
-            <p style="padding:15px; border-bottom:1px solid #333;">⚙️ Танзимот</p>
-            <p style="padding:15px; color:red;" onclick="location.reload()">🚪 Баромадан</p>
-        </div>
-    </div>
-
-    <div id="admin-modal" class="modal">
-        <div class="modal-header">
-            <button class="menu-btn" onclick="closeModal('admin-modal')">←</button>
-            <h3>Админ Панели Оли</h3>
-        </div>
-        <div style="padding: 20px; overflow-y: auto; height: 90%;">
-            <div class="admin-box">
-                <p>Ҳолати Система: <span class="tag">ACTIVE</span></p>
-                <p style="margin-top:10px;">Корбарони онлайн: 1</p>
-            </div>
-            <div class="admin-box">
-                <p>Назорати API</p>
-                <input type="text" id="newApiKey" placeholder="Калиди нави API-ро гузоред">
-                <button class="btn-main" style="padding:8px; font-size:12px;" onclick="updateAPI()">Навсозии API</button>
-            </div>
-            <div class="admin-box">
-                <p>Назорати Чат</p>
-                <button class="btn-main" style="background:#444; color:white; margin-top:5px;" onclick="clearHistory()">Тоза кардани базаи паёмҳо</button>
-            </div>
+            <div style="padding:15px; border-bottom:1px solid #333;" onclick="createGroup()">👥 Эҷоди Гурӯҳи Нав</div>
+            <div style="padding:15px; border-bottom:1px solid #333;" onclick="alert('Профил фаъол аст!')">👤 Профили ман</div>
+            <div style="padding:15px; border-bottom:1px solid #333;" onclick="alert('Танзимот ислоҳ шуд!')">⚙️ Танзимот</div>
         </div>
     </div>
 </div>
 
 <script>
-    let currentKey = atob("QUl6YVN5QVFjNGY1Um9LdlhXTklwN2ZSeFlOX2QxNlFLSFVlTk9N");
-    let isAdmin = false;
+    const API_KEY = atob("QUl6YVN5QVFjNGY1Um9LdlhXTklwN2ZSeFlOX2QxNlFLSFVlTk9N");
+    let userData = {};
 
-    // Логикаи воридшавӣ
-    document.getElementById('regName').addEventListener('input', function(e) {
-        if(e.target.value.toLowerCase() === 'admin') {
-            document.getElementById('admin-pass-wrap').classList.remove('hidden');
-        } else {
-            document.getElementById('admin-pass-wrap').classList.add('hidden');
-        }
-    });
-
-    function handleLogin() {
+    function initUser() {
         const name = document.getElementById('regName').value;
-        const adminPass = document.getElementById('adminPass').value;
-
-        if(!name) return alert("Номро ворид кунед!");
-
-        if(name.toLowerCase() === 'admin') {
-            if(adminPass === "saidjon777") { // ПАРОЛИ МАХФИИ ТУ
-                isAdmin = true;
-                document.getElementById('admin-entry-btn').style.display = 'block';
-                setupUser("Администратор", "77777");
-            } else {
-                return alert("Пароли админ хатост!");
-            }
-        } else {
-            setupUser(name, Math.floor(10000 + Math.random() * 90000));
-        }
-
-        document.getElementById('auth-screen').style.opacity = '0';
-        setTimeout(() => document.getElementById('auth-screen').style.display = 'none', 500);
-        addMsg("Система бо муваффақият фаъол шуд. Салом, " + name + "!", "bot");
+        const nick = document.getElementById('regNick').value;
+        if(!name || !nick) return alert("Пур кунед!");
+        
+        userData = { 
+            name, nick, 
+            id: Math.floor(10000 + Math.random() * 90000),
+            pass: document.getElementById('regPass').value 
+        };
+        
+        document.getElementById('sideName').innerText = name;
+        document.getElementById('sideID').innerText = "ID: " + userData.id;
+        document.getElementById('auth-screen').style.display = 'none';
+        addMsg("Хуш омадед ба Версияи Супер V16! 🚀", "bot");
     }
 
-    function setupUser(name, id) {
-        document.getElementById('profileName').innerText = name;
-        document.getElementById('profileID').innerText = "ID: " + id;
-        document.getElementById('avatarIcon').innerText = name[0].toUpperCase();
+    function showRecovery() {
+        document.getElementById('reg-fields').style.display = 'none';
+        document.getElementById('recovery-fields').style.display = 'block';
+        document.getElementById('auth-title').innerText = "Барқароркунӣ";
     }
 
-    function openModal(id) { document.getElementById(id).classList.add('open'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-    function openAdminModal() { openModal('admin-modal'); }
+    function showLogin() {
+        document.getElementById('reg-fields').style.display = 'block';
+        document.getElementById('recovery-fields').style.display = 'none';
+        document.getElementById('auth-title').innerText = "SAIDJON AI V16";
+    }
 
-    async function send() {
+    function processRecovery() {
+        const val = document.getElementById('recoverInput').value;
+        if(!val) return alert("Маълумотро ворид кунед!");
+        alert("Код барои барқароркунӣ ба " + val + " фиристода шуд!");
+        showLogin();
+    }
+
+    async function sendMessage() {
         const inp = document.getElementById('userInput');
         const txt = inp.value.trim();
         if(!txt) return;
 
-        addMsg(txt, 'user');
+        addMsg(txt, "user");
         inp.value = "";
         document.getElementById('status').innerText = "typing...";
 
         try {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${currentKey}`, {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ contents: [{ parts: [{ text: txt }] }] })
             });
             const data = await res.json();
-            const reply = data.candidates[0].content.parts[0].text;
-            addMsg(reply, 'bot');
+            addMsg(data.candidates[0].content.parts[0].text, "bot");
         } catch (e) {
-            addMsg("Хатогии API: Калид шояд блок шуда бошад.", "bot");
-        } finally {
-            document.getElementById('status').innerText = "online";
+            addMsg("Хатогии пайвастшавӣ.", "bot");
         }
+        document.getElementById('status').innerText = "online";
     }
 
-    function addMsg(t, s) {
+    function addMsg(txt, side) {
         const win = document.getElementById('chat-window');
-        const d = document.createElement('div');
-        d.className = `msg ${s}`;
-        d.innerHTML = t + `<br><small style="font-size:9px; opacity:0.5; display:block; text-align:right;">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${s==='user'?'✓✓':''}</small>`;
-        win.appendChild(d);
+        const div = document.createElement('div');
+        const isEmoji = /^\p{Emoji_Presentation}$/u.test(txt);
+        div.className = `msg ${side} ${isEmoji ? 'emoji-big' : ''}`;
+        div.innerHTML = txt + `<br><small style="font-size:9px; opacity:0.5">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</small>`;
+        win.appendChild(div);
         win.scrollTop = win.scrollHeight;
     }
 
+    function createGroup() {
+        const gName = prompt("Номи гурӯҳро нависед:");
+        if(gName) {
+            document.getElementById('headTitle').innerText = gName;
+            document.getElementById('status').innerText = "3 аъзо, 1 онлайн";
+            closeModal('sidebar');
+            addMsg("Гурӯҳи '" + gName + "' эҷод шуд. Акнун метавонед дар ин ҷо чат кунед.", "bot");
+        }
+    }
+
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    function openAdmin() {
+        const p = prompt("Пароли Админ:");
+        if(p === "saidjon777") alert("Хуш омадӣ Админ! Ҳамаи системаҳо дар назорати туст.");
+    }
+
     function startVoice() {
-        const btn = document.getElementById('micBtn');
-        btn.style.color = "red";
         const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         rec.lang = 'ru-RU';
+        document.getElementById('micBtn').style.color = "red";
         rec.onresult = (e) => { document.getElementById('userInput').value = e.results[0][0].transcript; };
-        rec.onend = () => { btn.style.color = "#6c7883"; };
+        rec.onend = () => { document.getElementById('micBtn').style.color = "#6c7883"; };
         rec.start();
     }
-
-    function updateAPI() {
-        const key = document.getElementById('newApiKey').value;
-        if(key) { currentKey = key; alert("API нав карда шуд!"); }
-    }
-
-    function clearHistory() {
-        document.getElementById('chat-window').innerHTML = "";
-        alert("Таърихи чат тоза карда шуд!");
-    }
 </script>
-
 </body>
 </html>
