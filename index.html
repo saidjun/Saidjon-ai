@@ -3,112 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SAIDJON AI PRO</title>
+    <title>SAIDJON AI PRO MAX</title>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: sans-serif; }
-        canvas { display: block; position: absolute; top: 0; left: 0; z-index: 1; }
-        #welcome-screen { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: rgba(0, 0, 0, 0.7); }
-        .box { padding: 40px 25px; background: rgba(15, 23, 42, 0.85); border: 2px solid #00ff9d; border-radius: 35px; text-align: center; backdrop-filter: blur(15px); width: 85%; max-width: 350px; }
-        .logo { font-size: 70px; font-weight: 900; color: #00ff9d; text-shadow: 0 0 20px #00ff9d; margin-bottom: 10px; }
-        .start-btn { padding: 20px 40px; background: #00ff9d; color: #000; border-radius: 20px; font-weight: bold; cursor: pointer; border: none; font-size: 16px; box-shadow: 0 0 15px #00ff9d; }
-        #chat-interface { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 20; display: none; flex-direction: column; }
-        .chat-header { padding: 20px; background: #1e293b; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
-        .chat-header h2 { color: #00ff9d; font-size: 18px; margin: 0; }
-        #chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .msg { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
-        .bot { background: #334155; color: white; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .user { background: #00ff9d; color: black; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: bold; }
-        .input-area { padding: 15px; background: #1e293b; display: flex; gap: 10px; padding-bottom: 30px; border-top: 1px solid #334155; }
-        input { flex: 1; background: #0f172a; border: 1px solid #334155; padding: 15px; border-radius: 15px; color: white; outline: none; }
-        .send-btn { background: #00ff9d; border: none; width: 50px; height: 50px; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 20px; }
-        #typing { display: none; color: #00ff9d; font-size: 12px; padding: 5px 20px; font-style: italic; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: 'Courier New', monospace; }
+        canvas { display: block; position: absolute; top: 0; left: 0; z-index: 1; opacity: 0.5; }
+
+        #welcome-screen { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: #000; }
+        .box { padding: 40px; border: 2px solid #00ff9d; text-align: center; backdrop-filter: blur(10px); box-shadow: 0 0 20px #00ff9d; width: 85%; max-width: 380px; }
+        .start-btn { padding: 15px 30px; background: transparent; color: #00ff9d; border: 1px solid #00ff9d; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+
+        #chat-interface { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20; display: none; flex-direction: column; }
+        .header { padding: 15px; border-bottom: 1px solid #00ff9d; display: flex; justify-content: space-between; align-items: center; color: #00ff9d; }
+        
+        #chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px 15px; border-radius: 5px; max-width: 80%; font-size: 14px; border: 1px solid; }
+        .bot { border-color: #00ff9d; color: #00ff9d; align-self: flex-start; }
+        .user { background: #00ff9d; color: #000; align-self: flex-end; }
+
+        .input-area { padding: 15px; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #00ff9d; background: #000; padding-bottom: 30px; }
+        .controls { display: flex; gap: 10px; align-items: center; }
+        input { flex: 1; background: transparent; border: 1px solid #00ff9d; padding: 12px; color: #00ff9d; outline: none; }
+        
+        .icon-btn { background: transparent; border: 1px solid #00ff9d; color: #00ff9d; width: 45px; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 5px; }
+        .icon-btn.active { background: #ff4444; border-color: #ff4444; color: white; animation: pulse 1s infinite; }
+        .send-btn { background: #00ff9d; color: #000; border: none; padding: 0 20px; font-weight: bold; height: 45px; cursor: pointer; border-radius: 5px; }
+        
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        #status { display: none; color: #00ff9d; font-size: 11px; margin-left: 15px; }
     </style>
 </head>
 <body>
-<canvas id="m"></canvas>
+
+<canvas id="c"></canvas>
+
 <div id="welcome-screen">
     <div class="box">
-        <div class="logo">S</div>
-        <h1 style="color:#00ff9d; font-size: 20px; letter-spacing: 3px;">SAIDJON AI</h1>
-        <button class="start-btn" onclick="startApp()">ВАРУД БА СИСТЕМА</button>
+        <h1 style="color:#00ff9d">S-AI v5.0</h1>
+        <button class="start-btn" onclick="start()">ВУРУД</button>
     </div>
 </div>
+
 <div id="chat-interface">
-    <div class="chat-header">
-        <h2>SAIDJON AI PRO</h2>
-        <button onclick="location.reload()" style="background:none; border:none; color:#ff4444; font-size: 24px;">✕</button>
+    <div class="header">
+        <span>SAIDJON_AI_MULTIMODAL</span>
+        <span onclick="location.reload()" style="cursor:pointer">[X]</span>
     </div>
     <div id="chat-messages">
-        <div class="msg bot">Система фаъол шуд. Салом Саидҷон! Ман омодаи суҳбат ҳастам.</div>
+        <div class="msg bot">Система фаъол. Овоз ва Расм дастрас аст. Савол деҳ!</div>
     </div>
-    <div id="typing">Saidjon AI фикр мекунад...</div>
+    <div id="status">Система дар ҳоли кор...</div>
     <div class="input-area">
-        <input type="text" id="user-input" placeholder="Савол диҳед...">
-        <button class="send-btn" onclick="sendMessage()">➤</button>
+        <div class="controls">
+            <label class="icon-btn" for="file-input">📷</label>
+            <input type="file" id="file-input" style="display:none" accept="image/*">
+            
+            <button class="icon-btn" id="voice-btn" onclick="toggleVoice()">🎤</button>
+            
+            <input type="text" id="user-input" placeholder="Нависед ё гап занед...">
+            <button class="send-btn" onclick="send()">➤</button>
+        </div>
     </div>
 </div>
+
 <script>
     const API_KEY = "AIzaSyAQc4f5RoKvHWNIp7fRxYN_d16QKHUeNOM";
+    let recognition;
 
-    function startApp() {
+    function start() {
         document.getElementById('welcome-screen').style.display = 'none';
         document.getElementById('chat-interface').style.display = 'flex';
+        setupVoice();
     }
 
-    // Овози бот
-    function speak(text) {
-        if ('speechSynthesis' in window) {
-            const u = new SpeechSynthesisUtterance(text);
-            u.lang = 'ru-RU'; 
-            window.speechSynthesis.speak(u);
+    // Танзими Овоз (Speech to Text)
+    function setupVoice() {
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'ru-RU'; // Чун тоҷикиро Google суст мефаҳмад, дар ҳолати русӣ беҳтар кор мекунад
+
+            recognition.onresult = function(event) {
+                const result = event.results[0][0].transcript;
+                document.getElementById('user-input').value = result;
+                toggleVoice(); // Хомӯш кардани тугма пас аз фаҳмидан
+            };
+
+            recognition.onerror = function() { toggleVoice(); };
         }
     }
 
-    async function sendMessage() {
+    function toggleVoice() {
+        const btn = document.getElementById('voice-btn');
+        if (btn.classList.contains('active')) {
+            btn.classList.remove('active');
+            recognition.stop();
+        } else {
+            btn.classList.add('active');
+            recognition.start();
+        }
+    }
+
+    async function send() {
         const input = document.getElementById('user-input');
         const text = input.value.trim();
-        const typing = document.getElementById('typing');
         if (!text) return;
 
-        addMessage(text, 'user');
+        addMsg(text, 'user');
         input.value = "";
-        typing.style.display = "block";
+        document.getElementById('status').style.display = "block";
 
         try {
-            // Кӯшиши пайваст шудан ба Gemini
             const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
             });
-
             const data = await res.json();
+            const reply = data.candidates[0].content.parts[0].text;
             
-            if (data.candidates && data.candidates[0].content.parts[0].text) {
-                const reply = data.candidates[0].content.parts[0].text;
-                typing.style.display = "none";
-                addMessage(reply, 'bot');
-                speak(reply);
-            } else { throw new Error(); }
-
+            document.getElementById('status').style.display = "none";
+            addMsg(reply, 'bot');
         } catch (e) {
-            // Агар Gemini хато диҳад - Майнаи эҳтиётӣ (DuckDuckGo)
-            try {
-                const res2 = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(text)}&format=json`);
-                const data2 = await res2.json();
-                const reply2 = data2.AbstractText || "Ман дар ҳолати тестӣ ҳастам. Салом Саидҷон!";
-                typing.style.display = "none";
-                addMessage(reply2, 'bot');
-                speak(reply2);
-            } catch(e2) {
-                typing.style.display = "none";
-                addMessage("Хатогии техникӣ. Лутфан интернет ё API-ро тафтиш кунед.", 'bot');
-            }
+            document.getElementById('status').style.display = "none";
+            addMsg("Хатогии техникӣ. Пайвастшавӣ нашуд.", 'bot');
         }
     }
 
-    function addMessage(text, side) {
+    function addMsg(text, side) {
         const container = document.getElementById('chat-messages');
         const div = document.createElement('div');
         div.className = `msg ${side}`;
@@ -117,32 +139,22 @@
         container.scrollTop = container.scrollHeight;
     }
 
-    // Matrix Logic
-    const c = document.getElementById("m");
-    const ctx = c.getContext("2d");
-    c.height = window.innerHeight; c.width = window.innerWidth;
-    const txts = "01SAIDJONAI";
-    const fz = 16;
-    const cols = c.width / fz;
-    const drops = [];
-    for (let x = 0; x < cols; x++) drops[x] = 1;
+    // Matrix
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const columns = canvas.width / 20;
+    const drops = Array(Math.floor(columns)).fill(1);
     function draw() {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-        ctx.fillRect(0, 0, c.width, c.height);
-        ctx.fillStyle = "#00ff9d";
-        ctx.font = fz + "px monospace";
-        for (let i = 0; i < drops.length; i++) {
-            const text = txts.charAt(Math.floor(Math.random() * txts.length));
-            ctx.fillText(text, i * fz, drops[i] * fz);
-            if (drops[i] * fz > c.height && Math.random() > 0.975) drops[i] = 0;
+        ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = "#00ff9d"; ctx.font = "15px monospace";
+        drops.forEach((y, i) => {
+            ctx.fillText(String.fromCharCode(Math.random()*128), i*20, y*20);
+            if(y*20 > canvas.height && Math.random() > 0.975) drops[i] = 0;
             drops[i]++;
-        }
+        });
     }
-    setInterval(draw, 35);
-
-    document.getElementById('user-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
+    setInterval(draw, 33);
 </script>
 </body>
 </html>
