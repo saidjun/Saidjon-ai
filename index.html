@@ -3,185 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SAIDJON AI V17 ULTIMATE</title>
+    <title>SAIDJON TELEGRAM V19</title>
     <style>
         :root { --tg-bg: #0e1621; --tg-panel: #17212b; --tg-blue: #2481cc; --tg-accent: #00ff9d; --tg-text: #f5f5f5; --premium: #f39c12; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
         body { background: #000; color: var(--tg-text); height: 100dvh; overflow: hidden; }
 
-        /* Auth Screen & Tabs */
-        #auth-screen { position: fixed; inset: 0; background: var(--tg-bg); z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
-        .auth-card { background: var(--tg-panel); padding: 25px; border-radius: 20px; width: 100%; max-width: 420px; border: 1px solid #232e3c; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab { flex: 1; padding: 10px; text-align: center; cursor: pointer; border-bottom: 2px solid transparent; opacity: 0.6; }
-        .tab.active { border-color: var(--tg-accent); opacity: 1; color: var(--tg-accent); }
-        
-        input, select { width: 100%; padding: 12px; margin: 6px 0; border-radius: 10px; border: 1px solid #2f3942; background: #0e1621; color: white; outline: none; font-size: 14px; }
-        .btn-main { width: 100%; padding: 14px; background: var(--tg-accent); color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        /* Auth Screen */
+        #auth-screen { position: fixed; inset: 0; background: var(--tg-bg); z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-card { background: var(--tg-panel); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; border: 1px solid #232e3c; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #2f3942; background: #0e1621; color: white; outline: none; }
+        .btn-main { width: 100%; padding: 14px; background: var(--tg-accent); color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
 
-        /* Main App */
+        /* Layout */
         #app { width: 100%; max-width: 500px; height: 100%; margin: auto; display: flex; flex-direction: column; background: var(--tg-bg); position: relative; }
         .header { padding: 10px 15px; background: var(--tg-panel); display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #000; }
+        .avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--tg-accent); color: black; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; overflow: hidden; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Premium & Verified */
-        .badge-prem { background: var(--premium); color: black; font-size: 9px; padding: 2px 5px; border-radius: 4px; font-weight: bold; margin-left: 5px; }
-        .prem-glow { box-shadow: 0 0 15px var(--premium) !important; border: 2px solid var(--premium) !important; }
-
-        /* Chat & Bubbles */
-        #chat-window { flex: 1; overflow-y: auto; padding: 15px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 8px; }
+        /* Chat */
+        #chat-window { flex: 1; overflow-y: auto; padding: 15px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 10px; }
         .msg { max-width: 80%; padding: 10px; border-radius: 15px; font-size: 15px; position: relative; }
         .bot { align-self: flex-start; background: var(--tg-panel); }
         .user { align-self: flex-end; background: #2b5278; }
+        .ticks { color: var(--tg-accent); font-size: 10px; margin-left: 5px; }
 
         /* Modals */
-        .modal { position: absolute; inset: 0; background: var(--tg-bg); z-index: 1000; transform: translateX(100%); transition: 0.3s; }
+        .modal { position: absolute; inset: 0; background: var(--tg-bg); z-index: 1000; transform: translateX(100%); transition: 0.3s; overflow-y: auto; }
         .modal.open { transform: translateX(0); }
-        .modal-header { padding: 15px; background: var(--tg-panel); display: flex; align-items: center; gap: 20px; border-bottom: 1px solid #000; }
+        .modal-header { padding: 15px; background: var(--tg-panel); display: flex; align-items: center; gap: 20px; position: sticky; top: 0; }
 
-        .hidden { display: none; }
+        /* Settings Items */
+        .item { padding: 15px; background: var(--tg-panel); margin: 5px 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .item label { font-size: 12px; color: #6c7883; display: block; }
+
+        .footer { padding: 10px; background: var(--tg-panel); display: flex; align-items: center; gap: 8px; }
+        textarea { flex: 1; background: var(--tg-bg); border: 1px solid #333; border-radius: 20px; color: white; padding: 10px 15px; outline: none; resize: none; height: 42px; }
     </style>
 </head>
 <body>
 
 <div id="auth-screen">
     <div class="auth-card">
-        <div class="tabs">
-            <div class="tab active" onclick="switchAuth('reg')">Регистратсия</div>
-            <div class="tab" onclick="switchAuth('login')">Войти</div>
-        </div>
-
-        <div id="reg-form">
-            <input type="text" id="regName" placeholder="Номи пурра">
-            <input type="text" id="regNick" placeholder="Никнейм (@)">
-            <select id="regCountry">
-                <option value="TJ">Тоҷикистон 🇹🇯</option>
-                <option value="RU">Россия 🇷🇺</option>
-                <option value="UZ">Узбекистан 🇺🇿</option>
-                <option value="US">USA 🇺🇸</option>
-            </select>
-            <select id="regLang">
-                <option value="tg">Забони Тоҷикӣ</option>
-                <option value="ru">Русский язык</option>
-                <option value="en">English</option>
-            </select>
-            <input type="password" id="regPass" placeholder="Парол">
-            <button class="btn-main" onclick="handleAuth('reg')">Эҷод кардан</button>
-        </div>
-
-        <div id="login-form" class="hidden">
-            <input type="text" id="loginNick" placeholder="Никнейм">
-            <input type="password" id="loginPass" placeholder="Парол">
-            <button class="btn-main" onclick="handleAuth('login')">Даромадан</button>
-        </div>
+        <h2 style="color:var(--tg-accent); text-align:center; margin-bottom:15px">SAIDJON AI V19</h2>
+        <input type="text" id="regName" placeholder="Номи пурра">
+        <input type="text" id="regNick" placeholder="Никнейм (@saidjon)">
+        <select id="regCountry">
+            <option value="🇹🇯 Тоҷикистон">Тоҷикистон 🇹🇯</option>
+            <option value="🇷🇺 Россия">Россия 🇷🇺</option>
+        </select>
+        <input type="password" id="regPass" placeholder="Пароли муҳофизат">
+        <button class="btn-main" onclick="register()">Эҷод ва Воридшавӣ</button>
     </div>
 </div>
 
 <div id="app">
     <div class="header">
-        <div id="headerAvatar" class="avatar" style="width:40px; height:40px; border-radius:50%; background:var(--tg-accent); color:black; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer" onclick="openModal('sidebar')">S</div>
-        <div style="flex:1">
-            <h4 id="headTitle">Saidjon AI</h4>
+        <div id="headAv" class="avatar" onclick="openModal('sidebar')">S</div>
+        <div style="flex:1" onclick="openModal('sidebar')">
+            <h4 id="headName">Saidjon AI</h4>
             <p id="status" style="font-size:11px; color:var(--tg-accent)">online</p>
         </div>
-        <button style="background:none; border:none; color:white; font-size:20px;" onclick="checkAdmin()">⋮</button>
+        <div style="cursor:pointer" onclick="checkAdmin()">⋮</div>
     </div>
 
     <div id="chat-window"></div>
 
-    <div class="footer" style="padding:10px; display:flex; gap:10px; background:var(--tg-panel)">
-        <textarea id="userInput" style="flex:1; background:var(--tg-bg); color:white; border:1px solid #333; border-radius:15px; padding:10px; outline:none; height:40px;" placeholder="Паём..."></textarea>
-        <button class="btn-main" style="width:45px; height:40px; margin:0;" onclick="send()">➤</button>
+    <div class="footer">
+        <label>📎<input type="file" hidden onchange="uploadImage(event)"></label>
+        <textarea id="userInput" placeholder="Нависед..."></textarea>
+        <button class="btn-main" style="width:45px; height:45px; border-radius:50%; margin:0" onclick="send()">➤</button>
     </div>
 
     <div id="sidebar" class="modal">
-        <div class="modal-header"><span onclick="closeModal('sidebar')" style="cursor:pointer">←</span> <span>Профил</span></div>
-        <div style="padding:20px; text-align:center;">
-            <div id="profAvatar" style="width:100px; height:100px; border-radius:50%; background:var(--tg-accent); margin:auto; display:flex; align-items:center; justify-content:center; font-size:40px; color:black">S</div>
-            <h2 id="profName" style="margin-top:10px">Корбар</h2>
-            <p id="profNick" style="color:var(--tg-accent)">@nick</p>
-            <hr style="margin:20px 0; border:0; border-top:1px solid #333">
-            <div style="text-align:left; background:var(--tg-panel); padding:15px; border-radius:10px;">
-                <p>Давлат: <span id="profCountry">TJ</span></p>
-                <p>Забон: <span id="profLang">TG</span></p>
-                <p>Ҳолат: <span id="profStatus">Regular</span></p>
+        <div class="modal-header"><span onclick="closeModal('sidebar')" style="cursor:pointer; font-size:24px">←</span> <span>Профил ва Танзимот</span></div>
+        <div style="text-align:center; padding:20px">
+            <div id="profAv" class="avatar" style="width:100px; height:100px; font-size:40px; margin:auto; position:relative">
+                S
+                <label style="position:absolute; bottom:0; right:0; background:var(--tg-blue); padding:5px; border-radius:50%; cursor:pointer; font-size:12px">📷<input type="file" hidden onchange="changeProfilePic(event)"></label>
             </div>
-            <button class="btn-main" style="background:var(--premium); margin-top:15px;" onclick="openModal('premium-modal')">👑 ГУЗАШТАН БА ПРЕМИУМ</button>
+            <h2 id="pName" style="margin-top:10px">Ном</h2>
+            <p id="pNick" style="color:var(--tg-blue)">@username</p>
+            <p id="pID" style="font-size:12px; color:#6c7883">ID: 00000</p>
+            
+            <div style="margin-top:20px; text-align:left">
+                <div class="item"><div><label>Ном</label><input type="text" id="editName" style="margin:0; padding:5px; background:none; border:none; width:150px" onchange="updateProfile()"></div> <span>✏️</span></div>
+                <div class="item"><div><label>Никнейм</label><input type="text" id="editNick" style="margin:0; padding:5px; background:none; border:none; width:150px" onchange="updateProfile()"></div> <span>✏️</span></div>
+                <div class="item"><div><label>Давлат</label><span id="pCountry">TJ</span></div></div>
+            </div>
+
+            <button class="btn-main" style="background:var(--premium); margin-top:15px" onclick="openModal('premium-modal')">👑 ГУЗАШТАН БА ПРЕМИУМ</button>
+            <button class="btn-main" style="background:#e74c3c; color:white; margin-top:10px" onclick="location.reload()">🚪 БАРОМАДАН</button>
         </div>
     </div>
 
     <div id="premium-modal" class="modal">
         <div class="modal-header"><span onclick="closeModal('premium-modal')" style="cursor:pointer">←</span> <span>Saidjon Premium</span></div>
-        <div style="padding:20px; text-align:center;">
-            <h3>Афзалиятҳои Премиум:</h3>
-            <ul style="text-align:left; margin:15px 0; font-size:14px; color:#ccc">
-                <li>✅ Нишони тиллоӣ дар профил</li>
-                <li>✅ Имконияти фиристодани файлҳои калон</li>
-                <li>✅ Бот тезтар ҷавоб медиҳад</li>
-            </ul>
-            <div style="background:#fff; color:black; padding:15px; border-radius:10px;">
+        <div style="padding:20px; text-align:center">
+            <h3 style="color:var(--premium)">Премиум Имкониятҳо</h3>
+            <div style="background:#fff; color:#000; padding:20px; border-radius:15px; margin:20px 0">
                 <p>Пардохт бо СБП (Сбербанк):</p>
                 <h2 style="margin:10px 0">+79005778557</h2>
-                <p style="font-size:12px">Пас аз пардохт, чекро ба админ фиристед.</p>
+                <p style="font-size:12px">Чекро ба админ фиристед.</p>
+                <input type="file" id="checkFile" style="margin-top:10px; font-size:10px">
             </div>
-            <button class="btn-main" style="margin-top:20px" onclick="alert('Чек фиристода шуд! Интизори тасдиқ бошед.')">ФИРИСТОДАНИ ЧЕК</button>
+            <button class="btn-main" onclick="alert('Чек фиристода шуд!')">ФИРИСТОДАНИ ЧЕК</button>
         </div>
     </div>
 
-    <div id="admin-modal" class="modal">
-        <div class="modal-header"><span onclick="closeModal('admin-modal')" style="cursor:pointer">←</span> <span>Админ Панел</span></div>
+    <div id="admin-panel" class="modal">
+        <div class="modal-header"><span onclick="closeModal('admin-panel')" style="cursor:pointer">←</span> <span>Админ Панел</span></div>
         <div style="padding:20px">
-            <div style="background:rgba(0,255,157,0.1); padding:15px; border-radius:10px;">
-                <p>Шумораи корбарон: 124</p>
-                <p>Дархостҳои Премиум: 3</p>
-                <p>Ҳолати API: Фаъол</p>
+            <div style="background:var(--tg-panel); padding:15px; border-radius:10px; margin-bottom:10px">
+                <h4>Омори Система</h4>
+                <p>Корбарон: 1 | API: Фаъол</p>
             </div>
-            <button class="btn-main" style="background:red; color:white; margin-top:20px" onclick="alert('База тоза шуд!')">ТОЗА КАРДАНИ ТАЪРИХ</button>
+            <input type="text" placeholder="Калиди нави API" id="newKey">
+            <button class="btn-main" onclick="alert('API Нав шуд!')">Update API</button>
+            <button class="btn-main" style="background:red; color:white; margin-top:10px" onclick="confirm('Тоза кардани база?')">Clear Data</button>
         </div>
     </div>
 </div>
 
 <script>
     const KEY = atob("QUl6YVN5QVFjNGY1Um9LdlhXTklwN2ZSeFlOX2QxNlFLSFVlTk9N");
-    let user = { nick: "", pass: "", name: "", isPremium: false };
+    let user = { name: "", nick: "", id: "", country: "", pass: "", photo: "" };
 
-    function switchAuth(type) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        event.target.classList.add('active');
-        document.getElementById('reg-form').classList.toggle('hidden', type !== 'reg');
-        document.getElementById('login-form').classList.toggle('hidden', type !== 'login');
-    }
-
-    function handleAuth(type) {
-        if(type === 'reg') {
-            user.name = document.getElementById('regName').value;
-            user.nick = document.getElementById('regNick').value;
-            user.pass = document.getElementById('regPass').value;
-            user.country = document.getElementById('regCountry').value;
-            user.lang = document.getElementById('regLang').value;
-            if(!user.name || !user.nick) return alert("Пур кунед!");
-        } else {
-            const lNick = document.getElementById('loginNick').value;
-            const lPass = document.getElementById('loginPass').value;
-            if(lNick === "admin" && lPass === "saidjon777") {
-                user.name = "Saidjon Admin"; user.nick = "admin"; user.isPremium = true;
-            } else if (lNick !== user.nick || lPass !== user.pass) {
-                return alert("Логин ё парол хатост!");
-            }
-        }
-        setupApp();
-    }
-
-    function setupApp() {
+    function register() {
+        user.name = document.getElementById('regName').value;
+        user.nick = document.getElementById('regNick').value;
+        user.pass = document.getElementById('regPass').value;
+        user.country = document.getElementById('regCountry').value;
+        user.id = user.nick === "admin" ? "77777" : Math.floor(10000 + Math.random() * 90000);
+        
+        if(!user.name || !user.nick) return alert("Пур кунед!");
+        
+        syncUI();
         document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('profName').innerText = user.name;
-        document.getElementById('profNick').innerText = "@" + user.nick;
-        document.getElementById('headerAvatar').innerText = user.name[0];
-        document.getElementById('profAvatar').innerText = user.name[0];
-        if(user.isPremium) {
-            document.getElementById('profAvatar').classList.add('prem-glow');
-            document.getElementById('headTitle').innerHTML += ' <span class="badge-prem">PREMIUM</span>';
-        }
-        addMsg("Хуш омадед ба V17! Системаи пардохт ва админка фаъол аст.", "bot");
+        addMsg(`Хуш омадед, ${user.name}! ID-и шумо: ${user.id}`, "bot");
+    }
+
+    function syncUI() {
+        document.getElementById('headName').innerText = user.name;
+        document.getElementById('pName').innerText = user.name;
+        document.getElementById('pNick').innerText = "@" + user.nick;
+        document.getElementById('pID').innerText = "ID: " + user.id;
+        document.getElementById('pCountry').innerText = user.country;
+        document.getElementById('editName').value = user.name;
+        document.getElementById('editNick').value = user.nick;
+        
+        const avatarText = user.name[0].toUpperCase();
+        document.getElementById('headAv').innerText = user.photo ? "" : avatarText;
+        document.getElementById('profAv').innerText = user.photo ? "" : avatarText;
+    }
+
+    function updateProfile() {
+        user.name = document.getElementById('editName').value;
+        user.nick = document.getElementById('editNick').value;
+        syncUI();
+    }
+
+    function changeProfilePic(e) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            user.photo = reader.result;
+            document.getElementById('headAv').innerHTML = `<img src="${user.photo}">`;
+            document.getElementById('profAv').innerHTML = `<img src="${user.photo}">`;
+        };
+        reader.readAsDataURL(e.target.files[0]);
     }
 
     async function send() {
@@ -198,7 +187,7 @@
             });
             const data = await res.json();
             addMsg(data.candidates[0].content.parts[0].text, "bot");
-        } catch(e) { addMsg("Хатогии API", "bot"); }
+        } catch(e) { addMsg("Хатогӣ дар пайвастшавӣ", "bot"); }
         document.getElementById('status').innerText = "online";
     }
 
@@ -206,14 +195,14 @@
         const win = document.getElementById('chat-window');
         const d = document.createElement('div');
         d.className = `msg ${s}`;
-        d.innerHTML = t + `<br><small style="opacity:0.5;font-size:10px">${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} ✓✓</small>`;
+        d.innerHTML = t + `<br><small style="opacity:0.5; font-size:10px">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${s==='user'?'<span class="ticks">✓✓</span>':''}</small>`;
         win.appendChild(d);
         win.scrollTop = win.scrollHeight;
     }
 
     function checkAdmin() {
-        if(user.nick === "admin") openModal('admin-modal');
-        else alert("Ин тугма танҳо барои Админ аст!");
+        if(user.nick === "admin" && user.pass === "saidjon777") openModal('admin-panel');
+        else alert("Ин танҳо барои админ аст!");
     }
 
     function openModal(id) { document.getElementById(id).classList.add('open'); }
