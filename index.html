@@ -6,84 +6,62 @@
     <title>SAIDJON AI PRO</title>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: sans-serif; }
         canvas { display: block; position: absolute; top: 0; left: 0; z-index: 1; }
-        
-        /* Welcome Screen */
-        #welcome-screen { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: rgba(0, 0, 0, 0.7); transition: 0.5s; }
-        .box { padding: 40px 25px; background: rgba(15, 23, 42, 0.85); border: 2px solid #00ff9d; border-radius: 35px; text-align: center; backdrop-filter: blur(20px); box-shadow: 0 0 50px rgba(0, 255, 157, 0.3); width: 85%; max-width: 350px; }
-        .logo { font-size: 80px; font-weight: 900; color: #00ff9d; text-shadow: 0 0 20px #00ff9d; margin-bottom: 10px; }
-        h1 { color: #00ff9d; font-size: 22px; letter-spacing: 5px; margin-bottom: 30px; text-transform: uppercase; }
-        .start-btn { padding: 20px 40px; background: #00ff9d; color: #000; border-radius: 20px; font-weight: bold; font-size: 16px; cursor: pointer; border: none; box-shadow: 0 10px 20px rgba(0, 255, 157, 0.4); transition: 0.3s; }
-        .start-btn:active { transform: scale(0.95); }
-
-        /* Chat Interface */
+        #welcome-screen { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; background: rgba(0, 0, 0, 0.7); }
+        .box { padding: 40px 25px; background: rgba(15, 23, 42, 0.85); border: 2px solid #00ff9d; border-radius: 35px; text-align: center; backdrop-filter: blur(15px); width: 85%; max-width: 350px; }
+        .logo { font-size: 70px; font-weight: 900; color: #00ff9d; text-shadow: 0 0 20px #00ff9d; margin-bottom: 10px; }
+        .start-btn { padding: 20px 40px; background: #00ff9d; color: #000; border-radius: 20px; font-weight: bold; cursor: pointer; border: none; font-size: 16px; box-shadow: 0 0 15px #00ff9d; }
         #chat-interface { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 20; display: none; flex-direction: column; }
-        .chat-header { padding: 20px; background: #1e293b; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .chat-header h2 { color: #00ff9d; font-size: 18px; margin: 0; letter-spacing: 1px; }
-        
-        #chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); }
-        .msg { padding: 14px 18px; border-radius: 20px; max-width: 85%; font-size: 15px; line-height: 1.5; word-wrap: break-word; position: relative; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .bot { background: #334155; color: #e2e8f0; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #475569; }
-        .user { background: linear-gradient(135deg, #00ff9d 0%, #00cc7a 100%); color: #000; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 500; box-shadow: 0 4px 12px rgba(0, 255, 157, 0.2); }
-
-        .input-area { padding: 15px; background: #1e293b; display: flex; gap: 10px; padding-bottom: env(safe-area-inset-bottom, 30px); border-top: 1px solid #334155; }
-        input { flex: 1; background: #0f172a; border: 1px solid #334155; padding: 15px; border-radius: 15px; color: #fff; outline: none; font-size: 16px; transition: 0.3s; }
-        input:focus { border-color: #00ff9d; box-shadow: 0 0 10px rgba(0, 255, 157, 0.1); }
-        
-        .send-btn { background: #00ff9d; border: none; width: 55px; height: 50px; border-radius: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 22px; transition: 0.3s; }
-        .send-btn:active { transform: scale(0.9); }
-        
-        #typing { display: none; color: #00ff9d; font-size: 12px; padding: 5px 25px; font-family: monospace; }
+        .chat-header { padding: 20px; background: #1e293b; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+        .chat-header h2 { color: #00ff9d; font-size: 18px; margin: 0; }
+        #chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .msg { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
+        .bot { background: #334155; color: white; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .user { background: #00ff9d; color: black; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: bold; }
+        .input-area { padding: 15px; background: #1e293b; display: flex; gap: 10px; padding-bottom: 30px; border-top: 1px solid #334155; }
+        input { flex: 1; background: #0f172a; border: 1px solid #334155; padding: 15px; border-radius: 15px; color: white; outline: none; }
+        .send-btn { background: #00ff9d; border: none; width: 50px; height: 50px; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 20px; }
+        #typing { display: none; color: #00ff9d; font-size: 12px; padding: 5px 20px; font-style: italic; }
     </style>
 </head>
 <body>
-
 <canvas id="m"></canvas>
-
 <div id="welcome-screen">
     <div class="box">
         <div class="logo">S</div>
-        <h1>Saidjon AI</h1>
+        <h1 style="color:#00ff9d; font-size: 20px; letter-spacing: 3px;">SAIDJON AI</h1>
         <button class="start-btn" onclick="startApp()">ВАРУД БА СИСТЕМА</button>
     </div>
 </div>
-
 <div id="chat-interface">
     <div class="chat-header">
         <h2>SAIDJON AI PRO</h2>
-        <button onclick="location.reload()" style="background:none; border:none; color:#ff4444; font-size: 24px; cursor:pointer;">✕</button>
+        <button onclick="location.reload()" style="background:none; border:none; color:#ff4444; font-size: 24px;">✕</button>
     </div>
     <div id="chat-messages">
-        <div class="msg bot">Система фаъол шуд. Салом Саидҷон! Ман майнаи нави сунъӣ ва овози зинда дорам. Чӣ савол дорӣ?</div>
+        <div class="msg bot">Система фаъол шуд. Салом Саидҷон! Ман омодаи суҳбат ҳастам.</div>
     </div>
-    <div id="typing">Система фикр мекунад...</div>
+    <div id="typing">Saidjon AI фикр мекунад...</div>
     <div class="input-area">
-        <input type="text" id="user-input" placeholder="Савол диҳед..." autocomplete="off">
+        <input type="text" id="user-input" placeholder="Савол диҳед...">
         <button class="send-btn" onclick="sendMessage()">➤</button>
     </div>
 </div>
-
 <script>
     const API_KEY = "AIzaSyAQc4f5RoKvHWNIp7fRxYN_d16QKHUeNOM";
 
     function startApp() {
-        document.getElementById('welcome-screen').style.opacity = '0';
-        setTimeout(() => {
-            document.getElementById('welcome-screen').style.display = 'none';
-            document.getElementById('chat-interface').style.display = 'flex';
-        }, 500);
+        document.getElementById('welcome-screen').style.display = 'none';
+        document.getElementById('chat-interface').style.display = 'flex';
     }
 
-    // Функсияи Овоз (Text-to-Speech)
+    // Овози бот
     function speak(text) {
         if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'ru-RU'; // Чун тоҷикӣ камёфт аст, русиро истифода мебарем барои сифат
-            utterance.rate = 1.0;
-            window.speechSynthesis.speak(utterance);
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'ru-RU'; 
+            window.speechSynthesis.speak(u);
         }
     }
 
@@ -91,7 +69,6 @@
         const input = document.getElementById('user-input');
         const text = input.value.trim();
         const typing = document.getElementById('typing');
-        
         if (!text) return;
 
         addMessage(text, 'user');
@@ -99,27 +76,35 @@
         typing.style.display = "block";
 
         try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+            // Кӯшиши пайваст шудан ба Gemini
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
             });
 
-            const data = await response.json();
+            const data = await res.json();
             
             if (data.candidates && data.candidates[0].content.parts[0].text) {
-                const aiResponse = data.candidates[0].content.parts[0].text;
+                const reply = data.candidates[0].content.parts[0].text;
                 typing.style.display = "none";
-                addMessage(aiResponse, 'bot');
-                speak(aiResponse); // Бот ҷавобро мегӯяд
-            } else {
-                throw new Error();
-            }
+                addMessage(reply, 'bot');
+                speak(reply);
+            } else { throw new Error(); }
+
         } catch (e) {
-            typing.style.display = "none";
-            const errorMsg = "Салом Саидҷон! Пайвастшавӣ бо сервери Google каме душвор шуд. Лутфан, интернетро тафтиш кун ва дубора навис.";
-            addMessage(errorMsg, 'bot');
-            speak(errorMsg);
+            // Агар Gemini хато диҳад - Майнаи эҳтиётӣ (DuckDuckGo)
+            try {
+                const res2 = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(text)}&format=json`);
+                const data2 = await res2.json();
+                const reply2 = data2.AbstractText || "Ман дар ҳолати тестӣ ҳастам. Салом Саидҷон!";
+                typing.style.display = "none";
+                addMessage(reply2, 'bot');
+                speak(reply2);
+            } catch(e2) {
+                typing.style.display = "none";
+                addMessage("Хатогии техникӣ. Лутфан интернет ё API-ро тафтиш кунед.", 'bot');
+            }
         }
     }
 
@@ -132,7 +117,7 @@
         container.scrollTop = container.scrollHeight;
     }
 
-    // Matrix Background
+    // Matrix Logic
     const c = document.getElementById("m");
     const ctx = c.getContext("2d");
     c.height = window.innerHeight; c.width = window.innerWidth;
@@ -155,11 +140,9 @@
     }
     setInterval(draw, 35);
 
-    // Enter key support
-    document.getElementById('user-input').addEventListener('keypress', function (e) {
+    document.getElementById('user-input').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
 </script>
-
 </body>
 </html>
