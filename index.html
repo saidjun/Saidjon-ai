@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GALAXY V72 | SUPREME SYSTEM</title>
+    <title>GALAXY SUPREME | V72</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -13,9 +13,9 @@
     <style>
         :root {
             --primary: #00f2ff; --bg: #010409; --panel: #0d1117; 
-            --gold: #ffd700; --success: #238636; --danger: #f85149; --online: #39d353;
+            --gold: #ffd700; --success: #238636; --danger: #f85149;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: var(--bg); color: #fff; height: 100vh; overflow: hidden; }
 
         .glass-card { background: rgba(22, 27, 34, 0.9); border: 1px solid #30363d; border-radius: 20px; padding: 15px; margin-bottom: 15px; }
@@ -24,112 +24,98 @@
         input { width: 100%; padding: 12px; background: #010409; border: 1px solid #30363d; border-radius: 10px; color: white; margin: 8px 0; outline: none; }
 
         #app { display: none; grid-template-columns: 80px 1fr; height: 100vh; }
-        .sidebar { background: #010409; border-right: 1px solid #30363d; display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 2000; }
+        .sidebar { background: #010409; border-right: 1px solid #30363d; display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 1000; }
         .nav-item { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px; margin-bottom: 15px; cursor: pointer; color: #8b949e; font-size: 20px; position: relative; }
         .nav-item.active { background: rgba(0, 242, 255, 0.1); color: var(--primary); }
-        .badge { position: absolute; top: 5px; right: 5px; background: var(--danger); color: white; font-size: 10px; padding: 2px 5px; border-radius: 50%; }
 
-        .screen { display: none; padding: 20px; height: 100vh; overflow-y: auto; padding-bottom: 100px; }
-        .screen.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .screen { display: none; padding: 20px; height: 100vh; overflow-y: auto; padding-bottom: 80px; }
+        .screen.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        /* CHAT UI */
-        .chat-box { height: 60vh; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.2); border-radius: 15px; margin-bottom: 10px; }
-        .msg { max-width: 80%; padding: 10px; border-radius: 12px; font-size: 14px; }
-        .msg.sent { align-self: flex-end; background: var(--primary); color: #000; }
-        .msg.received { align-self: flex-start; background: #30363d; color: #fff; }
-
-        .p-img { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
+        .chat-box { height: 60vh; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 85%; padding: 10px 15px; border-radius: 15px; font-size: 14px; line-height: 1.4; }
+        .msg.sent { align-self: flex-end; background: var(--primary); color: #000; border-bottom-right-radius: 2px; }
+        .msg.received { align-self: flex-start; background: #30363d; color: #fff; border-bottom-left-radius: 2px; }
 
         @media (max-width: 600px) {
             #app { grid-template-columns: 1fr; }
-            .sidebar { position: fixed; bottom: 0; width: 100%; height: 65px; flex-direction: row; justify-content: space-around; padding: 0; border-top: 1px solid #30363d; background: var(--bg); }
+            .sidebar { position: fixed; bottom: 0; width: 100%; height: 70px; flex-direction: row; justify-content: space-around; padding: 0; border-top: 1px solid #30363d; background: var(--bg); }
             .nav-item { margin-bottom: 0; }
         }
     </style>
 </head>
 <body>
 
-    <audio id="coinSound" src="https://www.myinstants.com/media/sounds/coin-collect.mp3"></audio>
-    <audio id="msgSound" src="https://www.myinstants.com/media/sounds/notification.mp3"></audio>
+    <audio id="notifySound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
 
     <div id="auth-screen" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
-        <div class="glass-card" style="width: 90%; max-width: 360px; text-align: center; padding: 30px;">
-            <h1 style="color: var(--primary); margin-bottom: 25px;">GALAXY SUPREME</h1>
+        <div class="glass-card" style="width: 90%; max-width: 380px; text-align: center;">
+            <h1 style="color: var(--primary); letter-spacing: 2px; margin-bottom: 20px;">GALAXY SUPREME</h1>
             <input type="email" id="log-email" placeholder="Email">
             <input type="password" id="log-pass" placeholder="Password">
             <button onclick="handleAuth('login')" class="btn btn-primary">ДАРОМАДАН</button>
-            <p onclick="handleAuth('signup')" style="margin-top: 15px; font-size: 13px; color: var(--primary); cursor: pointer;">Сабти номи нав</p>
+            <p onclick="handleAuth('signup')" style="margin-top: 15px; font-size: 13px; color: var(--primary); cursor: pointer; opacity: 0.7;">Сабти номи нав</p>
         </div>
     </div>
 
     <div id="app">
         <nav class="sidebar">
             <div class="nav-item active" onclick="tab('home', this)"><i class="fa-solid fa-house"></i></div>
-            <div class="nav-item" onclick="tab('chat', this)"><i class="fa-solid fa-comments"></i><span id="chat-badge" class="badge" style="display:none;">!</span></div>
+            <div class="nav-item" onclick="tab('chat', this)"><i class="fa-solid fa-comment-dots"></i></div>
             <div class="nav-item" onclick="tab('wallet', this)"><i class="fa-solid fa-wallet"></i></div>
-            <div class="nav-item" onclick="tab('profile', this)"><i class="fa-solid fa-user-gear"></i></div>
             <div id="adm-nav" class="nav-item" style="display:none; color: var(--gold);" onclick="tab('admin', this)"><i class="fa-solid fa-crown"></i></div>
             <div class="nav-item" onclick="logout()" style="margin-top: auto; color: var(--danger);"><i class="fa-solid fa-power-off"></i></div>
         </nav>
 
         <main>
             <div id="home" class="screen active">
-                <div class="glass-card" style="text-align: center; padding: 30px;">
-                    <img id="h-avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="p-img" style="margin-bottom:10px;">
-                    <h2 id="u-display-name">...</h2>
-                    <p id="u-balance" style="font-size: 45px; font-weight: 900; color: var(--gold);">0 TJS</p>
-                    <div style="font-size:12px; color:var(--online)"><i class="fa-solid fa-circle"></i> Онлайн</div>
+                <div class="glass-card" style="text-align: center; background: linear-gradient(145deg, #0d1117, #161b22);">
+                    <img id="u-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width:90px; height:90px; border-radius:50%; border:3px solid var(--primary); padding:3px;">
+                    <h2 id="u-name-display" style="margin-top:10px;">Боргузорӣ...</h2>
+                    <p id="u-bal-display" style="font-size: 45px; font-weight: 800; color: var(--gold); text-shadow: 0 0 10px rgba(255,215,0,0.3);">0 TJS</p>
                 </div>
                 <div class="glass-card">
-                    <b style="color:var(--primary)">Хабари муҳим:</b>
-                    <p id="global-news" style="font-size:13px; margin-top:5px; opacity:0.8;">Хуш омадед!</p>
+                    <h4 style="color:var(--primary)"><i class="fa-solid fa-bullhorn"></i> Хабарҳои охирин:</h4>
+                    <p id="news-box" style="margin-top:8px; font-size:14px; opacity:0.9;">Хуш омадед ба версияи нави Galaxy Supreme!</p>
                 </div>
             </div>
 
             <div id="chat" class="screen">
                 <div class="glass-card chat-box" id="chat-msgs"></div>
-                <div style="display:flex; gap:10px;">
-                    <input type="text" id="chat-input" placeholder="Паём нависед...">
+                <div style="display:flex; gap:10px; background: #0d1117; padding: 10px; border-radius: 15px;">
+                    <input type="text" id="chat-input" placeholder="Нависед..." style="margin:0;">
                     <button class="btn btn-primary" style="width:60px;" onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
 
             <div id="wallet" class="screen">
-                <div class="glass-card" style="border:1px solid var(--gold)">
-                    <small>РЕКВИЗИТҲО:</small>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
-                        <b>+79005778557</b>
-                        <button onclick="copyNum()" class="btn" style="width:auto; padding:5px 10px; font-size:12px; background:var(--gold)">Нусха</button>
-                    </div>
+                <div class="glass-card" style="border-left: 5px solid var(--gold);">
+                    <small>Реквизит барои пардохт:</small>
+                    <p style="font-size:18px; font-weight:bold; margin:5px 0;">+79005778557</p>
+                    <small style="opacity:0.6;">Сбербанк / Т-Банк</small>
                 </div>
                 <div class="glass-card">
-                    <input type="number" id="topup-amount" placeholder="Маблағ">
-                    <input type="file" id="topup-file" accept="image/*" onchange="previewImg(this)">
-                    <img id="img-preview" style="width:100%; display:none; border-radius:10px; margin:10px 0;">
-                    <button class="btn btn-primary" onclick="requestTopup()">ФИРИСТОДАНИ ЧЕК</button>
+                    <input type="number" id="dep-amt" placeholder="Маблағи фиристода (TJS)">
+                    <label style="display:block; margin:10px 0 5px; font-size:12px;">Расми чекро бор кунед:</label>
+                    <input type="file" id="dep-file" accept="image/*">
+                    <button class="btn btn-primary" onclick="sendRequest()">ФИРИСТОДАНИ ДАРХОСТ</button>
                 </div>
-                <div id="user-history-list"></div>
-            </div>
-
-            <div id="profile" class="screen">
-                <div class="glass-card" style="text-align:center;">
-                    <img id="p-avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="p-img">
-                    <input type="file" id="p-file" style="margin-top:10px;" onchange="updateAvatar(this)">
-                    <input type="text" id="p-name" placeholder="Номи шумо">
-                    <button class="btn btn-primary" onclick="saveProfile()">ЗАХИРА КАРДАН</button>
-                </div>
+                <h4 style="margin-bottom:10px;">Таърихи транзаксияҳо:</h4>
+                <div id="hist-list"></div>
             </div>
 
             <div id="admin" class="screen">
-                <h2>Админ Панел 👑</h2>
-                <button class="btn" style="background:var(--gold); margin:10px 0;" onclick="sendGlobalNews()">Нашри хабари нав</button>
-                <div id="admin-req-list"></div>
+                <h2 style="color:var(--gold); margin-bottom:20px;">👑 Панели Админ</h2>
+                <div class="glass-card">
+                    <button class="btn" style="background:var(--gold); color:#000;" onclick="postNews()">НАШРИ ХАБАР</button>
+                </div>
+                <div id="adm-req-list"></div>
             </div>
         </main>
     </div>
 
     <script>
+        // Танзимоти ту аз расм гирифта шудааст
         const firebaseConfig = {
             apiKey: "AIzaSyBdPoSKgrMgEdVdcZprdVayVOb7cUm8TsM",
             authDomain: "saidjon-forabes.firebaseapp.com",
@@ -143,140 +129,140 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        let uData = null, selectedImg = null, lastBal = null;
+        let currentU = null;
 
-        function handleAuth(t) {
-            const e = document.getElementById('log-email').value, p = document.getElementById('log-pass').value;
-            if(t==='signup') auth.createUserWithEmailAndPassword(e,p); else auth.signInWithEmailAndPassword(e,p);
+        // AUTH
+        function handleAuth(mode) {
+            const e = document.getElementById('log-email').value;
+            const p = document.getElementById('log-pass').value;
+            if(!e || !p) return alert("Пур кунед!");
+            if(mode === 'signup') {
+                auth.createUserWithEmailAndPassword(e, p).catch(err => alert(err.message));
+            } else {
+                auth.signInWithEmailAndPassword(e, p).catch(err => alert(err.message));
+            }
         }
 
         auth.onAuthStateChanged(user => {
             if(user) {
-                document.getElementById('auth-screen').style.display='none';
-                document.getElementById('app').style.display='grid';
-                loadUser(user.uid);
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('app').style.display = 'grid';
+                initApp(user.uid);
             } else {
-                document.getElementById('auth-screen').style.display='flex';
-                document.getElementById('app').style.display='none';
+                document.getElementById('auth-screen').style.display = 'flex';
+                document.getElementById('app').style.display = 'none';
             }
         });
 
-        function loadUser(uid) {
+        function initApp(uid) {
             db.ref('users/' + uid).on('value', snap => {
-                uData = snap.val();
-                if(!uData) {
-                    db.ref('users/'+uid).set({name: 'User', bal: 0, role: 'user', avatar: ''});
+                currentU = snap.val();
+                if(!currentU) {
+                    db.ref('users/' + uid).set({ name: 'Корбар', bal: 0, role: 'user' });
                     return;
                 }
-                
-                document.getElementById('u-display-name').innerText = uData.name;
-                document.getElementById('p-name').value = uData.name;
-                if(uData.avatar) {
-                    document.getElementById('h-avatar').src = uData.avatar;
-                    document.getElementById('p-avatar').src = uData.avatar;
-                }
+                document.getElementById('u-name-display').innerText = currentU.name;
+                document.getElementById('u-bal-display').innerText = currentU.bal + " TJS";
 
-                // Ислоҳи админ (барои хатои нохунак)
-                if(uData.role === 'admin' || uData.role === '"admin"') {
+                // ИСЛОҲИ АСОСӢ БАРОИ АДМИН
+                // Мо ҳам 'admin' ва ҳам '"admin"'-ро месанҷем
+                let userRole = String(currentU.role).toLowerCase().replace(/['"]+/g, '');
+                if(userRole === 'admin') {
                     document.getElementById('adm-nav').style.display = 'flex';
-                    loadAdminRequests();
+                    loadAdminData();
                 }
-
-                if(lastBal !== null && uData.bal > lastBal) document.getElementById('coinSound').play();
-                lastBal = uData.bal;
-                document.getElementById('u-balance').innerText = uData.bal + " TJS";
-
-                loadUserHistory();
-                loadChat();
             });
+
+            db.ref('settings/news').on('value', s => {
+                document.getElementById('news-box').innerText = s.val() || "Хабар нест.";
+            });
+
+            loadChat();
+            loadHistory(uid);
         }
 
         // CHAT
         function sendMsg() {
-            const text = document.getElementById('chat-input').value;
-            if(!text) return;
-            db.ref('chat').push({ uid: auth.currentUser.uid, name: uData.name, text: text, time: Date.now() });
-            document.getElementById('chat-input').value = '';
+            const input = document.getElementById('chat-input');
+            if(!input.value) return;
+            db.ref('chat').push({
+                name: currentU.name,
+                text: input.value,
+                uid: auth.currentUser.uid,
+                time: Date.now()
+            });
+            input.value = '';
         }
 
         function loadChat() {
             db.ref('chat').limitToLast(30).on('value', snap => {
                 const box = document.getElementById('chat-msgs');
                 box.innerHTML = '';
-                snap.forEach(c => {
-                    const m = c.val();
+                snap.forEach(child => {
+                    const m = child.val();
                     const isMe = m.uid === auth.currentUser.uid;
-                    box.innerHTML += `<div class="msg ${isMe?'sent':'received'}"><b>${m.name}:</b><br>${m.text}</div>`;
+                    box.innerHTML += `<div class="msg ${isMe ? 'sent' : 'received'}">
+                        <small style="font-size:10px; display:block; opacity:0.7;">${m.name}</small>
+                        ${m.text}
+                    </div>`;
                 });
                 box.scrollTop = box.scrollHeight;
-                if(document.getElementById('chat').style.display !== 'block') {
-                    document.getElementById('chat-badge').style.display = 'block';
-                    document.getElementById('msgSound').play();
-                }
+                document.getElementById('notifySound').play();
             });
         }
 
-        // PROFILE
-        function updateAvatar(input) {
+        // WALLET
+        function sendRequest() {
+            const amt = document.getElementById('dep-amt').value;
+            const file = document.getElementById('dep-file').files[0];
+            if(!amt || !file) return alert("Маблағ ва Чекро бор кунед!");
+
             const reader = new FileReader();
-            reader.onload = e => {
-                document.getElementById('p-avatar').src = e.target.result;
-                selectedImg = e.target.result;
+            reader.onload = function(e) {
+                db.ref('requests').push({
+                    uid: auth.currentUser.uid,
+                    name: currentU.name,
+                    amount: amt,
+                    img: e.target.result,
+                    status: 'pending',
+                    time: Date.now()
+                });
+                alert("Дархост фиристода шуд! Интизор шавед.");
             };
-            reader.readAsDataURL(input.files[0]);
+            reader.readAsDataURL(file);
         }
 
-        function saveProfile() {
-            const name = document.getElementById('p-name').value;
-            let updates = { name: name };
-            if(selectedImg) updates.avatar = selectedImg;
-            db.ref('users/'+auth.currentUser.uid).update(updates).then(() => alert("Захира шуд!"));
-        }
-
-        // WALLET & HISTORY
-        function loadUserHistory() {
-            db.ref('requests').orderByChild('uid').equalTo(auth.currentUser.uid).on('value', snap => {
-                const list = document.getElementById('user-history-list');
+        function loadHistory(uid) {
+            db.ref('requests').orderByChild('uid').equalTo(uid).on('value', snap => {
+                const list = document.getElementById('hist-list');
                 list.innerHTML = '';
                 snap.forEach(child => {
                     const r = child.val();
-                    const st = r.status === 'pending' ? 'gold' : (r.status === 'approved' ? '#238636' : '#f85149');
-                    list.innerHTML += `<div class="glass-card" style="display:flex; justify-content:space-between;">
-                        <span>${r.amount} TJS</span> <b style="color:${st}">${r.status}</b>
+                    const color = r.status === 'approved' ? 'var(--success)' : (r.status === 'rejected' ? 'var(--danger)' : 'var(--gold)');
+                    list.innerHTML += `<div class="glass-card" style="display:flex; justify-content:space-between; align-items:center;">
+                        <div><b>${r.amount} TJS</b><br><small>${new Date(r.time).toLocaleDateString()}</small></div>
+                        <div style="color:${color}; font-weight:bold;">${r.status.toUpperCase()}</div>
                     </div>`;
                 });
             });
         }
 
-        function previewImg(input) {
-            const reader = new FileReader();
-            reader.onload = e => {
-                document.getElementById('img-preview').src = e.target.result;
-                document.getElementById('img-preview').style.display = 'block';
-                selectedImg = e.target.result;
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-
-        function requestTopup() {
-            const amt = document.getElementById('topup-amount').value;
-            if(!amt || !selectedImg) return alert("Пур кунед!");
-            db.ref('requests').push({ uid: auth.currentUser.uid, name: uData.name, amount: amt, img: selectedImg, status: 'pending', time: Date.now() });
-            alert("Фиристода шуд!");
-        }
-
-        // ADMIN
-        function loadAdminRequests() {
+        // ADMIN FUNCTIONS
+        function loadAdminData() {
             db.ref('requests').on('value', snap => {
-                const list = document.getElementById('admin-req-list');
+                const list = document.getElementById('adm-req-list');
                 list.innerHTML = '';
                 snap.forEach(child => {
                     const r = child.val();
                     if(r.status === 'pending') {
                         list.innerHTML += `<div class="glass-card">
-                            <b>${r.name} - ${r.amount} TJS</b>
-                            <img src="${r.img}" style="width:100%; margin:10px 0;">
-                            <button class="btn btn-primary" onclick="approve('${child.key}','${r.uid}',${r.amount})">Тасдиқ</button>
+                            <p><b>Корбар:</b> ${r.name}</p>
+                            <p><b>Маблағ:</b> ${r.amount} TJS</p>
+                            <img src="${r.img}" style="width:100%; border-radius:10px; margin:10px 0;">
+                            <div style="display:flex; gap:10px;">
+                                <button class="btn" style="background:var(--success); color:#fff;" onclick="approve('${child.key}', '${r.uid}', ${r.amount})">Тасдиқ</button>
+                                <button class="btn" style="background:var(--danger); color:#fff;" onclick="reject('${child.key}')">Рад</button>
+                            </div>
                         </div>`;
                     }
                 });
@@ -284,25 +270,30 @@
         }
 
         function approve(key, uid, amt) {
-            db.ref('users/'+uid+'/bal').transaction(c => (c||0) + Number(amt));
-            db.ref('requests/'+key).update({status: 'approved'});
+            db.ref('users/' + uid + '/bal').transaction(currentBal => (currentBal || 0) + Number(amt));
+            db.ref('requests/' + key).update({ status: 'approved' });
         }
 
-        function sendGlobalNews() {
-            const news = prompt("Хабари нав:");
-            if(news) db.ref('settings/news').set(news);
+        function reject(key) {
+            db.ref('requests/' + key).update({ status: 'rejected' });
         }
-        db.ref('settings/news').on('value', snap => { document.getElementById('global-news').innerText = snap.val() || ''; });
 
+        function postNews() {
+            const txt = prompt("Матни хабарро нависед:");
+            if(txt) db.ref('settings/news').set(txt);
+        }
+
+        // NAVIGATION
         function tab(id, el) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
-            if(id === 'chat') document.getElementById('chat-badge').style.display = 'none';
         }
-        function copyNum() { navigator.clipboard.writeText("+79005778557"); alert("Нусха шуд!"); }
-        function logout() { auth.signOut().then(() => location.reload()); }
+
+        function logout() {
+            auth.signOut().then(() => location.reload());
+        }
     </script>
 </body>
 </html>
