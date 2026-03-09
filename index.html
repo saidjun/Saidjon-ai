@@ -3,255 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SAIDJON AI V34 - SUPREME CONTROL</title>
+    <title>SAIDJON V37 - SUPREME TERMINAL</title>
     <style>
-        :root { --bg: #0e1621; --panel: #17212b; --blue: #2481cc; --accent: #00ff9d; --text: #f5f5f5; --premium: #f39c12; --error: #e74c3c; --call: #2ecc71; --star: #ffcc00; }
+        :root { --bg: #0e1621; --panel: #17212b; --blue: #2481cc; --accent: #00ff9d; --text: #f5f5f5; --premium: #f39c12; --error: #e74c3c; --call: #2ecc71; --star: #ffcc00; --admin-card: #1c2733; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, system-ui, sans-serif; }
         body { background: #000; color: var(--text); height: 100dvh; overflow: hidden; }
 
-        /* SCREENS */
-        .screen { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
-        .card { background: var(--panel); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; border: 1px solid #232e3c; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .hidden { display: none !important; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #2f3942; background: #0e1621; color: white; outline: none; font-size: 15px; }
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 5px; }
-        .btn-blue { background: var(--blue); }
-        .btn-gold { background: linear-gradient(45deg, #f39c12, #ffcc00); color: #000; }
-        .btn-red { background: var(--error); }
-        .btn-green { background: var(--call); }
-
-        /* APP */
+        /* APP LAYOUT */
         #app { width: 100%; max-width: 500px; height: 100%; margin: auto; display: flex; flex-direction: column; background: var(--bg); position: relative; border-left: 1px solid #1c2733; border-right: 1px solid #1c2733; }
-        .header { padding: 12px 15px; background: var(--panel); display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #000; }
-        .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-weight: bold; overflow: hidden; border: 2px solid transparent; flex-shrink: 0; cursor: pointer; }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .hidden { display: none !important; }
 
-        /* CHAT & MSGS */
-        #chat-window { flex: 1; overflow-y: auto; padding: 15px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 10px; }
-        .msg { max-width: 80%; padding: 10px 14px; border-radius: 18px; font-size: 15px; position: relative; animation: fadeIn 0.3s; line-height: 1.4; }
-        .bot { align-self: flex-start; background: #182533; border-bottom-left-radius: 4px; }
+        /* HEADERS */
+        .header { padding: 12px 15px; background: var(--panel); display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #000; }
+        .tab-bar { display: flex; background: var(--panel); border-bottom: 1px solid #000; }
+        .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; font-size: 13px; opacity: 0.6; font-weight: bold; }
+        .tab.active { opacity: 1; border-bottom: 2px solid var(--blue); color: var(--blue); }
+
+        /* CHAT COMPONENTS */
+        #chat-area { flex: 1; overflow-y: auto; padding: 15px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 85%; padding: 10px 14px; border-radius: 18px; font-size: 15px; animation: slideUp 0.2s; word-wrap: break-word; }
+        .bot, .friend { align-self: flex-start; background: #182533; border-bottom-left-radius: 4px; }
         .user { align-self: flex-end; background: #2b5278; border-bottom-right-radius: 4px; }
-        .msg img { max-width: 100%; border-radius: 10px; margin-top: 5px; }
+
+        /* ADMIN PAGE */
+        .admin-view { position: absolute; inset: 0; background: #000; z-index: 4000; display: none; flex-direction: column; }
+        .adm-header { padding: 15px; background: #111; display: flex; justify-content: space-between; border-bottom: 2px solid var(--premium); }
+        .adm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
+        .adm-box { background: var(--admin-card); padding: 12px; border-radius: 10px; border: 1px solid #333; }
+        .log-box { flex: 1; background: #050505; margin: 10px; border-radius: 10px; padding: 10px; overflow-y: auto; font-family: monospace; font-size: 11px; color: var(--accent); }
 
         /* MODALS */
-        .modal { position: absolute; inset: 0; background: var(--bg); z-index: 1000; transform: translateX(100%); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; }
+        .modal { position: absolute; inset: 0; background: var(--bg); z-index: 3000; transform: translateX(100%); transition: 0.3s; }
         .modal.open { transform: translateX(0); }
-        .m-header { padding: 15px; background: var(--panel); display: flex; align-items: center; gap: 15px; font-weight: bold; border-bottom: 1px solid #000; }
+        input, select { width: 100%; padding: 12px; margin: 5px 0; border-radius: 10px; border: 1px solid #2f3942; background: #0e1621; color: white; outline: none; }
+        .btn { padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
+        .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-weight: bold; }
 
-        /* FOOTER */
-        .footer { padding: 8px 12px; background: var(--panel); border-top: 1px solid #1c2733; }
-        .media-row { display: flex; gap: 20px; padding: 5px 10px; font-size: 22px; color: var(--blue); }
-        
-        /* ADMIN LOGS */
-        .admin-item { background: #111; padding: 12px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #333; }
+        #notif { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: var(--blue); padding: 10px 20px; border-radius: 20px; z-index: 10000; display: none; font-size: 13px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
-<div id="auth-screen" class="screen">
-    <div class="card" id="login-box">
-        <h2 style="text-align:center; color:var(--blue); margin-bottom:15px">SAIDJON V34</h2>
-        <input type="text" id="lUser" placeholder="Логин ё Телефон">
-        <input type="password" id="lPass" placeholder="Парол">
-        <button class="btn btn-blue" onclick="login()">Ворид шудан</button>
-        <p style="text-align:center; margin-top:15px; font-size:13px;">
-            <span onclick="showBox('reg-box')" style="color:var(--blue); cursor:pointer">Регистратсия</span> | 
-            <span onclick="showBox('reset-box')" style="color:var(--error); cursor:pointer">Фаромӯши парол</span>
-        </p>
-    </div>
+<div id="notif">Хабар! 📩</div>
 
-    <div class="card hidden" id="reg-box">
-        <h3>Регистратсия</h3>
-        <input type="text" id="rName" placeholder="Номи пурра">
-        <input type="text" id="rPhone" placeholder="Рақами телефон">
-        <input type="password" id="rPass" placeholder="Парол">
-        <select id="rCountry">
-            <option value="TJ">Тоҷикистон</option>
-            <option value="RU">Россия</option>
-        </select>
-        <button class="btn btn-blue" onclick="register()">Сохтан</button>
-        <button class="btn" onclick="showBox('login-box')">Ба қафо</button>
-    </div>
-
-    <div class="card hidden" id="reset-box">
-        <h3>Барқарорсозӣ</h3>
-        <input type="text" placeholder="Рақами телефон">
-        <button class="btn btn-blue" onclick="alert('Код фиристода шуд!')">Кодро гирифтан</button>
-        <button class="btn" onclick="showBox('login-box')">Ба қафо</button>
+<div id="auth-screen" class="screen" style="position:fixed; inset:0; z-index:9000; background:var(--bg); display:flex; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:var(--panel); padding:30px; border-radius:20px; width:100%; max-width:350px; text-align:center;">
+        <h2 style="color:var(--blue); margin-bottom:20px;">SAIDJON V37</h2>
+        <input type="text" id="lUser" placeholder="Логин (admin)">
+        <input type="password" id="lPass" placeholder="Парол (saidjon777)">
+        <button class="btn" style="background:var(--blue); width:100%; margin-top:10px;" onclick="login()">ВОРИД ШУДАН</button>
+        <p style="font-size:12px; margin-top:15px; opacity:0.5;">Version Supreme Terminal</p>
     </div>
 </div>
 
 <div id="app" class="hidden">
+    
+    <div id="admin-view" class="admin-view">
+        <div class="adm-header">
+            <span onclick="toggleAdmin(false)" style="cursor:pointer">⬅️ BACK</span>
+            <span style="color:var(--premium)">ADMIN COMMAND CENTER</span>
+            <span onclick="location.reload()">🔄</span>
+        </div>
+        <div class="adm-grid">
+            <div class="adm-box">
+                <small>КОРБАРОН</small><br><b id="adm-users-count">1,048</b>
+            </div>
+            <div class="adm-box">
+                <small>ОБОРОТ</small><br><b style="color:var(--accent)">12,400 TJS</b>
+            </div>
+        </div>
+        <div class="adm-box" style="margin:10px;">
+            <h4 style="margin-bottom:10px;">📥 ТАСДИҚИ ЧЕКҲО</h4>
+            <div id="admin-checks-container">
+                <div style="background:#111; padding:10px; border-radius:8px; display:flex; justify-content:space-between;">
+                    <span>ID: 9942 | 150 TJS</span>
+                    <button class="btn" style="background:var(--call); padding:4px 10px; font-size:12px;" onclick="approveCheck('9942', 150)">OK</button>
+                </div>
+            </div>
+        </div>
+        <div class="adm-box" style="margin:10px;">
+            <h4>🔧 ИДОРАИ ID</h4>
+            <input type="text" id="adm-target-id" placeholder="ID Корбар">
+            <div style="display:flex; gap:5px;">
+                <button class="btn" style="flex:1; background:var(--blue); font-size:11px;" onclick="admAction('money')">+ PUL</button>
+                <button class="btn" style="flex:1; background:var(--premium); font-size:11px;" onclick="admAction('star')">+ STAR</button>
+                <button class="btn" style="flex:1; background:var(--error); font-size:11px;" onclick="admAction('block')">BLOCK</button>
+            </div>
+        </div>
+        <div class="log-box" id="admin-logs">
+            [SYSTEM] Admin session started...<br>
+            [LOG] API Gemini 1.5 Flash Connected...<br>
+        </div>
+    </div>
+
     <div class="header">
-        <div id="h-av" class="avatar" onclick="openM('sidebar')">S</div>
-        <div style="flex:1" onclick="openM('sidebar')">
-            <h4 id="h-name">Saidjon</h4>
-            <p style="font-size:11px; color:var(--accent)">online • ✓✓</p>
+        <div id="h-av" class="avatar" onclick="openM('profile-p')">S</div>
+        <div style="flex:1">
+            <h4 id="h-title">Saidjon AI</h4>
+            <p style="font-size:11px; color:var(--accent)" id="h-status">online</p>
         </div>
         <div style="display:flex; gap:15px; font-size:20px">
-            <span onclick="alert('Занги аудиоӣ...')">📞</span>
-            <span id="adm-btn" class="hidden" onclick="openM('admin-p')" style="color:var(--premium)">⚙️</span>
+            <span onclick="callUI('audio')">📞</span>
+            <span id="adm-btn-top" class="hidden" onclick="toggleAdmin(true)" style="color:var(--premium); cursor:pointer;">⚡</span>
         </div>
     </div>
 
-    <div id="chat-window"></div>
-
-    <div class="footer">
-        <div class="media-row">
-            <label>📷<input type="file" hidden accept="image/*" onchange="sendPhoto(this)"></label>
-            <span id="vBtn" onmousedown="startV()" onmouseup="stopV()" style="cursor:pointer">🎤</span>
-            <span onclick="openM('wallet-p')">💰</span>
-            <span onclick="openM('settings-p')">⚙️</span>
-        </div>
-        <div style="display:flex; gap:10px">
-            <textarea id="userInput" placeholder="Нависед..."></textarea>
-            <button class="btn btn-blue" style="width:50px; border-radius:50%" onclick="sendMsg()">➤</button>
-        </div>
+    <div class="tab-bar">
+        <div class="tab active" onclick="switchTab('ai', this)">🤖 AI BOT</div>
+        <div class="tab" onclick="switchTab('chats', this)">👥 ЧАТҲО</div>
+        <div class="tab" onclick="switchTab('bots', this)">🛠 BOT FATHER</div>
     </div>
 
-    <div id="sidebar" class="modal">
-        <div class="m-header"><span onclick="closeM('sidebar')" style="cursor:pointer">←</span> Профил</div>
-        <div style="text-align:center; padding:30px; background:var(--panel)">
-            <div id="p-av" class="avatar" style="width:100px; height:100px; margin:auto; font-size:40px">S</div>
-            <h3 id="p-name-disp" style="margin-top:10px">User</h3>
-            <p id="p-id-disp" style="color:var(--blue)">@id0000</p>
-        </div>
-        <div style="padding:15px">
-            <div class="admin-item">
-                <p>📞 Телефон: <span id="p-phone-disp">Сабт нашудааст</span></p>
-                <p>🌍 Давлат: <span id="p-country-disp">Тоҷикистон</span></p>
+    <div id="tab-ai" style="display:flex; flex-direction:column; flex:1">
+        <div id="chat-area"></div>
+        <div style="padding:10px; background:var(--panel); border-top:1px solid #1c2733">
+            <div style="display:flex; gap:20px; padding-bottom:10px; font-size:22px; color:var(--blue)">
+                <label>📷<input type="file" hidden onchange="sendPhoto(this)"></label>
+                <span id="vBtn" onmousedown="startV()" onmouseup="stopV()">🎤</span>
+                <span onclick="openM('wallet-p')">💰</span>
             </div>
-            <button class="btn btn-blue" onclick="openM('settings-p')">✏️ Таҳрири Профил</button>
-            <button class="btn btn-red" style="margin-top:10px" onclick="location.reload()">🚪 Баромадан</button>
+            <div style="display:flex; gap:10px">
+                <textarea id="userInput" placeholder="Нависед..." style="flex:1; background:#0e1621; border:1px solid #2f3942; border-radius:20px; color:white; padding:10px; outline:none; resize:none; height:42px;"></textarea>
+                <button class="btn" style="width:50px; border-radius:50%; background:var(--blue)" onclick="sendMsg()">➤</button>
+            </div>
         </div>
     </div>
 
-    <div id="settings-p" class="modal">
-        <div class="m-header"><span onclick="closeM('settings-p')" style="cursor:pointer">←</span> Танзимот</div>
-        <div style="padding:20px">
-            <p style="color:var(--blue); font-size:12px">Ивази сурат:</p>
-            <input type="file" accept="image/*" onchange="previewAvatar(this)">
+    <div id="tab-chats" class="hidden" style="flex:1; overflow-y:auto">
+        <div style="padding:15px; border-bottom:1px solid #1c2733; cursor:pointer;" onclick="openPrivate('Алишер', 'ID: 4421')">
+            <b>👤 Алишер</b><br><small style="opacity:0.5;">Паёми охирин: Салом!</small>
+        </div>
+        <div style="padding:15px; border-bottom:1px solid #1c2733; cursor:pointer;" onclick="openPrivate('Гурӯҳи V37', 'Group')">
+            <b style="color:var(--premium);">👨‍👩‍👧‍👦 Гурӯҳи Оила</b><br><small style="opacity:0.5;">Падар: Хӯрок тайёр?</small>
+        </div>
+    </div>
+
+    <div id="tab-bots" class="hidden" style="padding:20px;">
+        <h3>🛠 Bot Father V3</h3>
+        <p style="font-size:12px; opacity:0.6;">Эҷоди ботҳои автоматӣ</p>
+        <input type="text" id="new-bot-name" placeholder="Номи бот">
+        <button class="btn" style="background:var(--premium); width:100%; margin-top:10px;" onclick="createBot()">🚀 СОХТАНИ БОТ</button>
+    </div>
+
+    <div id="profile-p" class="modal">
+        <div class="header"><span onclick="closeM('profile-p')">⬅️</span> ПРОФИЛИ МАН</div>
+        <div style="padding:30px; text-align:center;">
+            <div class="avatar" style="width:100px; height:100px; margin:auto; font-size:40px;">S</div>
+            <h2 id="p-display-name" style="margin:15px;">User</h2>
             <input type="text" id="set-name" placeholder="Номи нав">
-            <input type="text" id="set-nick" placeholder="Никнейми нав (@)">
-            <input type="text" id="set-phone" placeholder="Рақами нав">
-            <p style="margin-top:10px">Забон:</p>
-            <select id="set-lang">
-                <option>Тоҷикӣ</option>
-                <option>Русский</option>
-                <option>English</option>
-            </select>
-            <button class="btn btn-blue" onclick="saveSettings()">💾 Захира кардан</button>
+            <button class="btn" style="background:var(--blue); width:100%;" onclick="saveProfile()">💾 ЗАХИРА</button>
+            <button class="btn" style="background:var(--error); width:100%; margin-top:10px;" onclick="location.reload()">🚪 БАРОМАД</button>
         </div>
     </div>
 
     <div id="wallet-p" class="modal">
-        <div class="m-header"><span onclick="closeM('wallet-p')" style="cursor:pointer">←</span> Кошелёк</div>
-        <div style="padding:20px; text-align:center">
-            <h1 id="w-bal" style="font-size:35px">0.00 TJS</h1>
-            <p>Ситораҳо: <span id="w-stars" style="color:var(--star)">0</span> ⭐</p>
-            <hr style="margin:20px 0; opacity:0.1">
-            <input type="number" id="depAmt" placeholder="Маблағ (TJS)">
-            <label class="btn btn-blue">📷 Бор кардани Чек <input type="file" id="depCheck" hidden accept="image/*"></label>
-            <button class="btn btn-gold" style="margin-top:10px" onclick="submitToAdmin()">📤 Фиристодан ба Админ</button>
-            <button class="btn" style="margin-top:10px; background:#333" onclick="alert('Функсияи P2P Transfer фаъол шуд')">💸 Интиқоли P2P</button>
+        <div class="header"><span onclick="closeM('wallet-p')">⬅️</span> ҲАМЁН / WALLET</div>
+        <div style="padding:20px; text-align:center;">
+            <p>Баланси шумо:</p>
+            <h1 id="w-bal" style="font-size:45px; margin:10px 0;">0.00 TJS</h1>
+            <p style="color:var(--star)">Ситораҳо: <span id="w-star">0</span> ⭐</p>
+            <hr style="opacity:0.1; margin:20px 0;">
+            <input type="number" id="depAmt" placeholder="Миқдори пул">
+            <label class="btn" style="background:#222; display:block; margin:10px 0;">📸 Интихоби Чек <input type="file" hidden id="depCheck"></label>
+            <button class="btn" style="background:var(--premium); width:100%;" onclick="sendCheck()">📤 ФИРИСТОДАН БА АДМИН</button>
         </div>
     </div>
 
-    <div id="admin-p" class="modal">
-        <div class="m-header"><span onclick="closeM('admin-p')" style="cursor:pointer">←</span> ADMIN SUPREME</div>
-        <div style="padding:20px">
-            <div style="background:var(--blue); padding:15px; border-radius:12px; margin-bottom:20px">
-                <p>Омори Сервер:</p>
-                <h3>Корбарон: 1,042</h3>
-                <h3>Баланси умумӣ: 42,500 TJS</h3>
-            </div>
-            
-            <h4>📥 Чекҳои интизорӣ:</h4>
-            <div id="admin-checks-list" style="margin-top:10px">
-                </div>
-
-            <hr style="margin:20px 0; opacity:0.1">
-            <h4>🔧 Идоракунии мустақим:</h4>
-            <input type="text" id="adm-tid" placeholder="ID-и Корбар">
-            <input type="number" id="adm-amt" placeholder="Маблағ">
-            <div style="display:flex; gap:10px">
-                <button class="btn btn-blue" onclick="admAction('money')">+ Пул</button>
-                <button class="btn btn-gold" onclick="admAction('stars')">+ Ситора</button>
-            </div>
-        </div>
+    <div id="call-ui" class="hidden" style="position:fixed; inset:0; z-index:10000; background:radial-gradient(circle, #17212b, #000); display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        <div class="avatar" style="width:120px; height:120px; font-size:50px;">👤</div>
+        <h2 id="call-status" style="margin-top:20px;">Занги аудиоӣ...</h2>
+        <button class="btn" style="background:var(--error); width:80px; height:80px; border-radius:50%; margin-top:50px;" onclick="endCall()">❌</button>
     </div>
+
 </div>
 
 <script>
     const API_K = atob("QUl6YVN5QVFjNGY1Um9LdlhXTklwN2ZSeFlOX2QxNlFLSFVlTk9N");
-    let u = { name: "User", nick: "user", phone: "", country: "Тоҷикистон", id: "0000", bal: 0, stars: 0, photo: null, role: "user" };
+    let user = { name: "Saidjon User", bal: 0, stars: 0, role: "user", id: "9942" };
     let mediaRec; let chunks = [];
-    let pendingChecks = [];
-
-    function showBox(id) {
-        ['login-box', 'reg-box', 'reset-box'].forEach(b => document.getElementById(b).classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-    }
-
-    function register() {
-        u.name = document.getElementById('rName').value || "User";
-        u.phone = document.getElementById('rPhone').value;
-        u.country = document.getElementById('rCountry').value;
-        u.id = Math.floor(1000 + Math.random() * 8999);
-        alert("Регистратсия муваффақ! Акнун ворид шавед.");
-        showBox('login-box');
-    }
 
     function login() {
-        const user = document.getElementById('lUser').value;
-        const pass = document.getElementById('lPass').value;
-        
-        if(user === "admin" && pass === "saidjon777") {
-            u.role = "admin"; u.name = "Саидҷон (Админ)"; u.bal = 999999;
-            document.getElementById('adm-btn').classList.remove('hidden');
+        const u = document.getElementById('lUser').value;
+        const p = document.getElementById('lPass').value;
+        if(u === "admin" && p === "saidjon777") {
+            user.role = "admin"; user.name = "Саидҷон (Админ)";
+            document.getElementById('adm-btn-top').classList.remove('hidden');
+            logAdmin("Admin logged in successfully.");
         } else {
-            u.name = user || "User";
+            user.name = u || "Корбари V37";
         }
-        
         document.getElementById('auth-screen').classList.add('hidden');
         document.getElementById('app').classList.remove('hidden');
-        sync();
-        addMsg("Салом! Системаи V34 Supreme омода аст.", "bot");
+        syncUI();
+        addMsg("Хуш омадед! Платформаи V37 SUPREME омодаи кор аст.", "bot");
     }
 
-    function sync() {
-        document.getElementById('h-name').innerText = u.name;
-        document.getElementById('p-name-disp').innerText = u.name;
-        document.getElementById('p-id-disp').innerText = "@" + u.nick;
-        document.getElementById('p-phone-disp').innerText = u.phone || "Навишта нашудааст";
-        document.getElementById('p-country-disp').innerText = u.country;
-        document.getElementById('w-bal').innerText = u.bal.toFixed(2) + " TJS";
-        document.getElementById('w-stars').innerText = u.stars;
-        
-        const avs = [document.getElementById('h-av'), document.getElementById('p-av')];
-        avs.forEach(av => {
-            if(u.photo) av.innerHTML = `<img src="${u.photo}">`;
-            else av.innerText = u.name[0];
-        });
+    function toggleAdmin(show) {
+        document.getElementById('admin-view').style.display = show ? 'flex' : 'none';
+        if(show) logAdmin("Navigated to Command Center.");
     }
 
-    // SETTINGS
-    function saveSettings() {
-        u.name = document.getElementById('set-name').value || u.name;
-        u.nick = document.getElementById('set-nick').value || u.nick;
-        u.phone = document.getElementById('set-phone').value || u.phone;
-        sync(); alert("Маълумот захира шуд!"); closeM('settings-p');
+    function switchTab(tab, el) {
+        ['ai', 'chats', 'bots'].forEach(t => document.getElementById('tab-'+t).classList.add('hidden'));
+        document.getElementById('tab-'+tab).classList.remove('hidden');
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
     }
 
-    function previewAvatar(inp) {
-        if(inp.files[0]) {
-            const r = new FileReader();
-            r.onload = e => { u.photo = e.target.result; sync(); };
-            r.readAsDataURL(inp.files[0]);
-        }
+    async function sendMsg() {
+        const inp = document.getElementById('userInput');
+        const txt = inp.value.trim();
+        if(!txt) return;
+        addMsg(txt, "user");
+        inp.value = "";
+        try {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_K}`, {
+                method: "POST", headers: {"Content-Type":"application/json"},
+                body: JSON.stringify({contents:[{parts:[{text:txt}]}]})
+            });
+            const data = await res.json();
+            const reply = data.candidates[0].content.parts[0].text;
+            addMsg(reply, "bot");
+        } catch { addMsg("Хатогии пайвастшавӣ ба AI", "bot"); }
     }
 
-    // VOICES & MSGS
+    function addMsg(t, s) {
+        const area = document.getElementById('chat-area');
+        const d = document.createElement('div');
+        d.className = `msg ${s}`;
+        d.innerText = t;
+        area.appendChild(d);
+        area.scrollTop = area.scrollHeight;
+    }
+
+    function openPrivate(name, id) {
+        document.getElementById('h-title').innerText = name;
+        document.getElementById('chat-area').innerHTML = "";
+        addMsg(`Чат бо ${name} (${id}) кушода шуд.`, "friend");
+        switchTab('ai', document.querySelectorAll('.tab')[0]);
+    }
+
+    // ADMIN CORE
+    function logAdmin(m) {
+        const l = document.getElementById('admin-logs');
+        l.innerHTML += `[${new Date().toLocaleTimeString()}] ${m}<br>`;
+        l.scrollTop = l.scrollHeight;
+    }
+
+    function approveCheck(id, amt) {
+        user.bal += amt;
+        syncUI();
+        notify(`Чек ${id} тасдиқ шуд! +${amt} TJS`);
+        logAdmin(`Approved check for ID ${id}: ${amt} TJS`);
+        document.getElementById('admin-checks-container').innerHTML = "<small>Чеки нав нест</small>";
+    }
+
+    function admAction(type) {
+        const tid = document.getElementById('adm-target-id').value;
+        if(!tid) return alert("ID-ро нависед!");
+        notify(`Амалиёти ${type} ба ID ${tid} иҷро шуд`);
+        logAdmin(`Manual action: ${type} on User ID ${tid}`);
+    }
+
+    // USER ACTIONS
+    function sendCheck() {
+        const amt = document.getElementById('depAmt').value;
+        if(!amt) return alert("Маблағро нависед!");
+        notify("Чек фиристода шуд. Интизор шавед.");
+        logAdmin(`User ${user.id} submitted a check for ${amt} TJS`);
+    }
+
+    function saveProfile() {
+        user.name = document.getElementById('set-name').value || user.name;
+        syncUI();
+        closeM('profile-p');
+        notify("Профил нав шуд!");
+    }
+
+    function syncUI() {
+        document.getElementById('h-title').innerText = user.name;
+        document.getElementById('p-display-name').innerText = user.name;
+        document.getElementById('w-bal').innerText = user.bal.toFixed(2) + " TJS";
+        document.getElementById('w-star').innerText = user.stars;
+    }
+
+    // MEDIA
     async function startV() {
         try {
             const s = await navigator.mediaDevices.getUserMedia({audio:true});
@@ -261,97 +297,34 @@
             mediaRec.onstop = () => {
                 const blob = new Blob(chunks, {type:'audio/ogg'});
                 const url = URL.createObjectURL(blob);
-                addVoice(url);
+                const d = document.createElement('div'); d.className = "msg user";
+                d.innerHTML = `<audio src="${url}" controls style="width:180px;"></audio>`;
+                document.getElementById('chat-area').appendChild(d);
             };
             mediaRec.start();
             document.getElementById('vBtn').style.color = 'red';
-        } catch(e) { alert("Микрофон дастрас нест"); }
+        } catch { alert("Микрофон дастрас нест!"); }
     }
     function stopV() { if(mediaRec) { mediaRec.stop(); document.getElementById('vBtn').style.color = 'var(--blue)'; } }
 
-    function addVoice(url) {
-        const d = document.createElement('div'); d.className = "msg user";
-        d.innerHTML = `<audio src="${url}" controls style="width:160px"></audio>`;
-        document.getElementById('chat-window').appendChild(d);
-    }
-
-    async function sendMsg() {
-        const inp = document.getElementById('userInput'); const txt = inp.value.trim();
-        if(!txt) return; addMsg(txt, "user"); inp.value = "";
-        try {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_K}`, {
-                method: "POST", headers: {"Content-Type":"application/json"},
-                body: JSON.stringify({contents:[{parts:[{text:txt}]}]})
-            });
-            const data = await res.json();
-            addMsg(data.candidates[0].content.parts[0].text, "bot");
-        } catch { addMsg("Хатогии AI ё интернет", "bot"); }
-    }
-
-    function addMsg(t, s) {
-        const win = document.getElementById('chat-window');
-        const d = document.createElement('div'); d.className = `msg ${s}`;
-        d.innerText = t;
-        win.appendChild(d); win.scrollTop = win.scrollHeight;
-    }
-
-    function sendPhoto(inp) { 
-        if(inp.files[0]) { 
-            const r = new FileReader(); 
+    function sendPhoto(i) {
+        if(i.files[0]) {
+            const r = new FileReader();
             r.onload = e => {
-                const win = document.getElementById('chat-window');
                 const d = document.createElement('div'); d.className = "msg user";
-                d.innerHTML = `<img src="${e.target.result}">`;
-                win.appendChild(d); win.scrollTop = win.scrollHeight;
-            }; 
-            r.readAsDataURL(inp.files[0]); 
-        } 
+                d.innerHTML = `<img src="${e.target.result}" style="max-width:100%; border-radius:10px;">`;
+                document.getElementById('chat-area').appendChild(d);
+            };
+            r.readAsDataURL(i.files[0]);
+        }
     }
 
-    // ADMIN ACTIONS
-    function submitToAdmin() {
-        const amt = document.getElementById('depAmt').value;
-        const file = document.getElementById('depCheck').files[0];
-        if(!amt || !file) return alert("Маблағ ва Чекро ворид кунед!");
-        
-        pendingChecks.push({ id: u.id, name: u.name, amt: amt });
-        alert("Чек фиристода шуд! Интизори тасдиқи Админ шавед.");
-        renderAdminChecks();
-        closeM('wallet-p');
-    }
-
-    function renderAdminChecks() {
-        const list = document.getElementById('admin-checks-list');
-        list.innerHTML = "";
-        pendingChecks.forEach((c, i) => {
-            const div = document.createElement('div');
-            div.className = "admin-item";
-            div.innerHTML = `
-                <p>Корбар: ${c.name} (ID: ${c.id})</p>
-                <p>Маблағ: <b>${c.amt} TJS</b></p>
-                <button class="btn btn-green" style="padding:5px; height:30px" onclick="approveCheck(${i})">Тасдиқ</button>
-            `;
-            list.appendChild(div);
-        });
-    }
-
-    function approveCheck(index) {
-        const c = pendingChecks[index];
-        if(u.role === 'admin') { u.bal += parseFloat(c.amt); sync(); } // Дар барномаи аслӣ ба баланси корбар меравад
-        pendingChecks.splice(index, 1);
-        renderAdminChecks();
-        alert("Баланс бо муваффақият илова шуд!");
-    }
-
-    function admAction(type) {
-        const tid = document.getElementById('adm-tid').value;
-        const amt = parseFloat(document.getElementById('adm-amt').value);
-        if(!tid || !amt) return alert("Маълумотро пурра нависед");
-        alert(`Иҷро шуд! Ба ID ${tid} миқдори ${amt} ${type} илова шуд.`);
-    }
-
+    function callUI(t) { document.getElementById('call-ui').classList.remove('hidden'); }
+    function endCall() { document.getElementById('call-ui').classList.add('hidden'); }
+    function notify(m) { const n = document.getElementById('notif'); n.innerText = m; n.style.display="block"; setTimeout(()=>n.style.display="none",3000); }
     function openM(id) { document.getElementById(id).classList.add('open'); }
     function closeM(id) { document.getElementById(id).classList.remove('open'); }
+    function createBot() { const n = document.getElementById('new-bot-name').value; if(n) notify(`Боти '${n}' сохта шуд!`); }
 </script>
 </body>
 </html>
