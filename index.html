@@ -3,72 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GALAXY V67 | GOOGLE EDITION</title>
+    <title>GALAXY V67 | BUSINESS</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
             --primary: #00f2ff; --bg: #010409; --panel: #0d1117; --text: #e6edf3;
-            --ai: #8957e5; --premium: linear-gradient(45deg, #ffd700, #ffa500); 
-            --danger: #da3633; --bot: #00ff88; --google: #ffffff;
+            --gold: #ffd700; --vip: #ff00ea; --success: #238636;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
 
-        /* AUTH SCREEN */
-        #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: var(--panel); padding: 30px; border-radius: 25px; border: 1px solid #30363d; width: 100%; max-width: 400px; text-align: center; }
-        input { width: 100%; padding: 14px; background: #010409; border: 1px solid #30363d; border-radius: 12px; color: white; margin: 8px 0; outline: none; }
-        .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        /* UI ELEMENTS */
+        .glass-card { background: rgba(22, 27, 34, 0.8); border: 1px solid #30363d; border-radius: 20px; padding: 15px; margin-bottom: 15px; }
+        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-primary { background: var(--primary); color: #000; }
-        .btn-google { background: var(--google); color: #000; }
+        input, select { width: 100%; padding: 12px; background: #010409; border: 1px solid #30363d; border-radius: 10px; color: white; margin: 8px 0; outline: none; }
 
-        /* MAIN APP */
+        /* APP STRUCTURE */
         #app { display: none; grid-template-columns: 80px 1fr; height: 100vh; }
-        .sidebar { background: #010409; border-right: 1px solid #30363d; display: flex; flex-direction: column; align-items: center; padding: 25px 0; }
-        .nav-item { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 15px; margin-bottom: 20px; cursor: pointer; color: #7d8590; font-size: 20px; }
+        .sidebar { background: #010409; border-right: 1px solid #30363d; display: flex; flex-direction: column; align-items: center; padding: 20px 0; }
+        .nav-item { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px; margin-bottom: 15px; cursor: pointer; color: #8b949e; font-size: 20px; }
         .nav-item.active { background: rgba(0, 242, 255, 0.1); color: var(--primary); }
 
         .screen { display: none; padding: 20px; height: 100vh; overflow-y: auto; padding-bottom: 100px; }
-        .screen.active { display: block; }
-        .glass-card { background: var(--panel); border: 1px solid #30363d; border-radius: 20px; padding: 20px; margin-bottom: 15px; }
+        .screen.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* CHAT MODAL */
+        /* PROFILE & CHAT */
+        .profile-img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; margin-bottom: 10px; }
         #chat-modal { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: none; flex-direction: column; }
-        .chat-flow { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .msg { max-width: 80%; padding: 12px; border-radius: 15px; font-size: 14px; line-height: 1.4; }
-        .sent { align-self: flex-end; background: #0969da; border-bottom-right-radius: 2px; }
-        .received { align-self: flex-start; background: #30363d; border-bottom-left-radius: 2px; }
-        .bot-msg { align-self: center; background: rgba(0, 255, 136, 0.05); border: 1px solid var(--bot); color: var(--bot); width: 95%; text-align: center; font-size: 12px; }
+        .chat-flow { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 14px; }
+        .sent { align-self: flex-end; background: #0969da; }
+        .received { align-self: flex-start; background: #30363d; }
+
+        /* ADMIN PANEL */
+        .admin-request { border-left: 4px solid var(--gold); padding: 10px; background: #161b22; margin-bottom: 10px; border-radius: 5px; }
 
         @media (max-width: 600px) {
             #app { grid-template-columns: 1fr; }
-            .sidebar { position: fixed; bottom: 0; width: 100%; height: 70px; flex-direction: row; justify-content: space-around; padding: 0; border-top: 1px solid #30363d; z-index: 1000; }
+            .sidebar { position: fixed; bottom: 0; width: 100%; height: 65px; flex-direction: row; justify-content: space-around; padding: 0; border-top: 1px solid #30363d; z-index: 1000; }
             .nav-item { margin-bottom: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen">
-        <div class="auth-card">
-            <h1 style="color: var(--primary); letter-spacing: 3px; margin-bottom: 10px;">GALAXY V67</h1>
-            <p style="font-size: 11px; opacity: 0.5; margin-bottom: 25px;">Сабти ном бо як пахш</p>
-            
-            <button onclick="loginWithGoogle()" class="btn btn-google">
-                <i class="fa-brands fa-google"></i> Ворид шудан бо Google
-            </button>
-            
-            <div style="margin: 20px 0; font-size: 12px; opacity: 0.3;">Ё ИСТИФОДАИ ПОЧТА</div>
-            
-            <input type="email" id="email" placeholder="Email">
-            <input type="password" id="pass" placeholder="Password">
-            <button onclick="handleLogin()" class="btn btn-primary">ДАРОМАДАН</button>
-            <p onclick="handleSignup()" style="margin-top: 15px; font-size: 12px; color: var(--primary); cursor: pointer;">Сабти номи нав</p>
+    <div id="auth-screen" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
+        <div class="glass-card" style="width: 90%; max-width: 350px; text-align: center;">
+            <h1 style="color: var(--primary); margin-bottom: 20px;">GALAXY V67</h1>
+            <button onclick="loginGoogle()" class="btn btn-primary" style="background: white;"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> Google Login</button>
+            <div style="margin: 15px 0; opacity: 0.5;">Ё</div>
+            <input type="email" id="log-email" placeholder="Email">
+            <input type="password" id="log-pass" placeholder="Password">
+            <button onclick="handleAuth('login')" class="btn btn-primary">ДАРОМАДАН</button>
+            <p onclick="handleAuth('signup')" style="margin-top: 15px; font-size: 12px; color: var(--primary); cursor: pointer;">Сабти номи нав</p>
         </div>
     </div>
 
@@ -76,77 +70,82 @@
         <nav class="sidebar">
             <div class="nav-item active" onclick="tab('home', this)"><i class="fa-solid fa-house"></i></div>
             <div class="nav-item" onclick="tab('chats', this)"><i class="fa-solid fa-comments"></i></div>
-            <div class="nav-item" onclick="tab('market', this)"><i class="fa-solid fa-shop"></i></div>
             <div class="nav-item" onclick="tab('wallet', this)"><i class="fa-solid fa-wallet"></i></div>
-            <div id="admin-nav" class="nav-item" style="display:none; color:var(--danger);" onclick="tab('admin', this)"><i class="fa-solid fa-shield-halved"></i></div>
-            <div class="nav-item" onclick="logout()"><i class="fa-solid fa-power-off"></i></div>
+            <div class="nav-item" onclick="tab('profile', this)"><i class="fa-solid fa-user-gear"></i></div>
+            <div id="adm-nav" class="nav-item" style="display:none; color: var(--gold);" onclick="tab('admin', this)"><i class="fa-solid fa-crown"></i></div>
         </nav>
 
         <main>
             <div id="home" class="screen active">
-                <div class="glass-card">
-                    <h2 id="u-welcome">Салом!</h2>
-                    <p id="u-status" style="opacity: 0.6;">Статус: Корбар</p>
+                <div class="glass-card" style="text-align: center;">
+                    <img id="u-avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="profile-img">
+                    <h2 id="u-display-name">Борингӣ...</h2>
+                    <p id="u-balance" style="font-size: 32px; font-weight: bold; color: var(--primary); margin: 10px 0;">0 TJS</p>
                 </div>
-                <div class="glass-card" style="border-left: 4px solid var(--bot);">
-                    <b style="color: var(--bot);"><i class="fa-solid fa-robot"></i> Galaxy Bot:</b>
-                    <p style="font-size: 13px; margin-top: 5px;">Барои дидани фармонҳо дар чат <b>!ёрӣ</b> нависед.</p>
+                <div class="glass-card" onclick="tab('wallet', null)" style="cursor: pointer; border: 1px dashed var(--primary); text-align: center;">
+                    <i class="fa-solid fa-plus-circle"></i> Пур кардани ҳисоб (Ҳақиқӣ)
                 </div>
             </div>
 
             <div id="chats" class="screen">
-                <h2>Гурӯҳҳо</h2>
-                <div class="glass-card" onclick="openChat('General Group')" style="cursor:pointer">
-                    <b>Гурӯҳи Асосӣ 🌎</b><br><small>Ҳамаи корбарон дар ин ҷоянд</small>
+                <h2>Паёмрасон</h2>
+                <div class="glass-card" onclick="openChat('Гурӯҳи Асосӣ', 'global')" style="cursor: pointer;">
+                    <b>🌍 Гурӯҳи Умумӣ</b><br><small>Бо ҳамаи корбарон сӯҳбат кунед</small>
                 </div>
-            </div>
-
-            <div id="market" class="screen">
-                <h2>Мағоза 🛒</h2>
-                <div class="glass-card">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>VIP Статус ⭐</span>
-                        <button class="btn btn-primary" style="width:80px; margin:0;" onclick="buyItem('VIP', 50)">50 TJS</button>
-                    </div>
-                </div>
+                <div id="private-chats"></div>
             </div>
 
             <div id="wallet" class="screen">
                 <h2>Ҳамён</h2>
-                <div class="glass-card" style="text-align:center">
-                    <small>Баланси шумо</small>
-                    <h1 id="u-bal" style="color:var(--primary); font-size:40px;">0 TJS</h1>
-                    <p style="margin-top:15px; font-size:10px; opacity:0.5;">UID-И ШУМО:</p>
-                    <code id="u-uid" style="color:var(--primary); font-size:11px;"></code>
+                <div class="glass-card">
+                    <b>Пур кардани ҳисоб (Қадами 1)</b>
+                    <p style="font-size: 13px; margin: 10px 0;">Ба рақами Alif ё Душанбе Сити пул гузаронед:</p>
+                    <div style="background: #000; padding: 10px; border-radius: 10px; color: var(--gold); font-weight: bold; text-align: center;">
+                        999-00-11-22 (САИДҶОН)
+                    </div>
+                    <p style="font-size: 11px; margin-top: 10px; opacity: 0.6;">Пас аз пардохт, маблағро дар инҷо нависед, админ тасдиқ мекунад:</p>
+                    <input type="number" id="topup-amount" placeholder="Маблағи гузарондашуда">
+                    <button class="btn btn-primary" onclick="requestTopup()" style="background: var(--success); color: white;">ТАЛАБИ ПУЛ</button>
                 </div>
                 <div class="glass-card">
-                    <b>Интиқоли Пул 💸</b>
-                    <input type="text" id="tr-id" placeholder="UID-и қабулкунанда">
-                    <input type="number" id="tr-amount" placeholder="Маблағ">
-                    <button class="btn btn-primary" onclick="transferMoney()">ФИРИСТОДАН</button>
+                    <b>Интиқол ба дӯст</b>
+                    <input type="text" id="tr-id" placeholder="ID-и қабулкунанда">
+                    <input type="number" id="tr-amt" placeholder="Маблағ">
+                    <button class="btn btn-primary" onclick="transfer()">ФИРИСТОДАН</button>
                 </div>
             </div>
 
-            <div id="admin" class="screen">
-                <h2 style="color:var(--danger)">Админ Панел</h2>
+            <div id="profile" class="screen">
+                <h2>Танзимоти Профил</h2>
                 <div class="glass-card">
-                    <input type="text" id="adm-uid" placeholder="UID-и корбар">
-                    <input type="number" id="adm-bal" placeholder="Маблағи нав">
-                    <button class="btn btn-primary" onclick="adminUpdateBal()">UPDATE</button>
+                    <label>Номи намоишӣ:</label>
+                    <input type="text" id="set-name" placeholder="Ники нав">
+                    <label>Инки сурат (URL):</label>
+                    <input type="text" id="set-img" placeholder="https://image.url">
+                    <button class="btn btn-primary" onclick="updateProfile()">ЗАХИРА КАРДАН</button>
+                </div>
+                <button onclick="logout()" class="btn" style="background: var(--danger); color: white;">ХУРУҶ</button>
+            </div>
+
+            <div id="admin" class="screen">
+                <h2 style="color: var(--gold);">Админ Панел</h2>
+                <div id="topup-requests" class="glass-card">
+                    <b>Дархостҳои Пуркунӣ:</b>
+                    <div id="req-list"></div>
                 </div>
             </div>
         </main>
     </div>
 
     <div id="chat-modal">
-        <div style="padding:15px; background:var(--panel); display:flex; align-items:center; gap:15px; border-bottom:1px solid #30363d;">
-            <i class="fa-solid fa-chevron-left" onclick="closeChat()"></i>
-            <b id="chat-title">Chat</b>
+        <div style="padding: 15px; background: var(--panel); display: flex; align-items: center; gap: 15px;">
+            <i class="fa-solid fa-arrow-left" onclick="closeChat()"></i>
+            <b id="chat-title">Чат</b>
         </div>
-        <div class="chat-flow" id="chat-flow"></div>
-        <div style="padding:15px; background:var(--panel); display:flex; gap:10px;">
-            <input type="text" id="msg-inp" placeholder="Паём нависед...">
-            <button onclick="send()" class="btn btn-primary" style="width:60px; margin:0;"><i class="fa-solid fa-paper-plane"></i></button>
+        <div id="chat-flow" class="chat-flow"></div>
+        <div style="padding: 10px; background: var(--panel); display: flex; gap: 8px;">
+            <input type="text" id="msg-inp" placeholder="Нависед..." style="margin:0;">
+            <button onclick="sendMsg()" class="btn btn-primary" style="width: 50px; margin:0;"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
 
@@ -164,139 +163,146 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        let userBal = 0;
-        const badWords = ["ҳақорат", "лаънат", "нокас"];
+        let uData = null;
+        let activeChat = 'global';
 
-        // GOOGLE LOGIN
-        function loginWithGoogle() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(res => {
-                const user = res.user;
-                checkUser(user);
-            }).catch(e => alert("Хатогӣ: " + e.message));
+        // AUTH
+        function loginGoogle() {
+            auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
         }
 
-        function checkUser(user) {
-            db.ref('users/' + user.uid).once('value', snap => {
-                if(!snap.exists()) {
-                    db.ref('users/' + user.uid).set({
-                        email: user.email,
-                        bal: 100,
-                        role: 'user'
-                    });
-                }
+        function handleAuth(type) {
+            const e = document.getElementById('log-email').value;
+            const p = document.getElementById('log-pass').value;
+            if(type === 'signup') auth.createUserWithEmailAndPassword(e, p);
+            else auth.signInWithEmailAndPassword(e, p);
+        }
+
+        auth.onAuthStateChanged(user => {
+            if(user) {
                 document.getElementById('auth-screen').style.display = 'none';
                 document.getElementById('app').style.display = 'grid';
-                initApp(user.uid);
-            });
-        }
+                loadData(user.uid);
+            } else {
+                document.getElementById('auth-screen').style.display = 'flex';
+                document.getElementById('app').style.display = 'none';
+            }
+        });
 
-        // REGULAR AUTH
-        function handleSignup() {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('pass').value;
-            auth.createUserWithEmailAndPassword(e, p).then(res => checkUser(res.user))
-            .catch(err => alert(err.message));
-        }
-
-        function handleLogin() {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('pass').value;
-            auth.signInWithEmailAndPassword(e, p).then(res => checkUser(res.user))
-            .catch(err => alert(err.message));
-        }
-
-        function initApp(uid) {
-            document.getElementById('u-uid').innerText = uid;
+        function loadData(uid) {
             db.ref('users/' + uid).on('value', snap => {
-                const u = snap.val();
-                userBal = u.bal;
-                document.getElementById('u-welcome').innerText = "Салом, " + u.email.split('@')[0];
-                document.getElementById('u-bal').innerText = u.bal + " TJS";
-                if(u.role === 'admin') document.getElementById('admin-nav').style.display = 'flex';
+                if(!snap.exists()) {
+                    db.ref('users/' + uid).set({ name: 'User_'+uid.slice(0,4), bal: 0, img: '', role: 'user' });
+                    return;
+                }
+                uData = snap.val();
+                document.getElementById('u-display-name').innerText = uData.name;
+                document.getElementById('u-balance').innerText = uData.bal + " TJS";
+                document.getElementById('u-avatar').src = uData.img || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+                if(uData.role === 'admin') {
+                    document.getElementById('adm-nav').style.display = 'flex';
+                    loadAdminRequests();
+                }
             });
         }
 
-        // CHAT SYSTEM
-        function openChat(t) {
+        // TOP-UP SYSTEM (REAL MONEY)
+        function requestTopup() {
+            const amt = parseInt(document.getElementById('topup-amount').value);
+            if(!amt || amt <= 0) return alert("Маблағро нависед!");
+            db.ref('requests').push({
+                uid: auth.currentUser.uid,
+                name: uData.name,
+                amount: amt,
+                status: 'pending',
+                time: Date.now()
+            });
+            alert("Дархост фиристода шуд. Интизор шавед, админ месанҷад.");
+            document.getElementById('topup-amount').value = '';
+        }
+
+        function loadAdminRequests() {
+            db.ref('requests').on('value', snap => {
+                const list = document.getElementById('req-list');
+                list.innerHTML = '';
+                snap.forEach(child => {
+                    const r = child.val();
+                    if(r.status === 'pending') {
+                        const d = document.createElement('div');
+                        d.className = 'admin-request';
+                        d.innerHTML = `
+                            <b>${r.name}</b>: ${r.amount} TJS
+                            <button onclick="approve('${child.key}', '${r.uid}', ${r.amount})" style="background:green; color:white; border:none; padding:5px; margin-left:10px; border-radius:5px;">✓</button>
+                        `;
+                        list.appendChild(d);
+                    }
+                });
+            });
+        }
+
+        function approve(reqKey, uid, amt) {
+            db.ref('users/' + uid + '/bal').transaction(current => (current || 0) + amt);
+            db.ref('requests/' + reqKey).update({ status: 'approved' });
+        }
+
+        // PROFILE & CHAT
+        function updateProfile() {
+            const name = document.getElementById('set-name').value;
+            const img = document.getElementById('set-img').value;
+            db.ref('users/' + auth.currentUser.uid).update({ name: name || uData.name, img: img || uData.img });
+            alert("Захира шуд!");
+        }
+
+        function openChat(title, id) {
+            activeChat = id;
             document.getElementById('chat-modal').style.display = 'flex';
-            document.getElementById('chat-title').innerText = t;
-            db.ref('messages').limitToLast(40).on('value', snap => {
+            document.getElementById('chat-title').innerText = title;
+            db.ref('messages/' + id).limitToLast(30).on('value', snap => {
                 const flow = document.getElementById('chat-flow');
                 flow.innerHTML = '';
                 snap.forEach(c => {
                     const m = c.val();
                     const d = document.createElement('div');
-                    d.className = `msg ${m.type === 'bot' ? 'bot-msg' : (m.uid === auth.currentUser.uid ? 'sent' : 'received')}`;
-                    d.innerHTML = m.type === 'bot' ? m.text : `<small style="display:block;font-size:10px;opacity:0.6;">${m.user}</small>${m.text}`;
+                    d.className = `msg ${m.uid === auth.currentUser.uid ? 'sent' : 'received'}`;
+                    d.innerHTML = `<small style="display:block; font-size:10px; opacity:0.6;">${m.user}</small>${m.text}`;
                     flow.appendChild(d);
                 });
                 flow.scrollTop = flow.scrollHeight;
             });
         }
 
-        function send() {
-            const val = document.getElementById('msg-inp').value;
-            if(!val) return;
-
-            // Anti-spam
-            if(badWords.some(w => val.toLowerCase().includes(w))) {
-                db.ref('messages').push({ uid: "BOT", user: "🤖 Galaxy Bot", type: "bot", text: `⚠️ Огоҳӣ! @${auth.currentUser.email.split('@')[0]} ҳақорат накунед! -5 TJS.` });
-                db.ref('users/' + auth.currentUser.uid).update({ bal: userBal - 5 });
-                document.getElementById('msg-inp').value = '';
-                return;
-            }
-
-            db.ref('messages').push({
+        function sendMsg() {
+            const txt = document.getElementById('msg-inp').value;
+            if(!txt) return;
+            db.ref('messages/' + activeChat).push({
                 uid: auth.currentUser.uid,
-                user: auth.currentUser.email.split('@')[0],
-                text: val
+                user: uData.name,
+                text: txt,
+                time: Date.now()
             });
-
-            if(val.toLowerCase() === "!ёрӣ") sendBotMsg("!баланс - дидани пул | !интиқол - тарзи фиристодан");
-            if(val.toLowerCase() === "!баланс") sendBotMsg(`Баланси шумо: ${userBal} TJS`);
-
             document.getElementById('msg-inp').value = '';
         }
 
-        function sendBotMsg(txt) {
-            db.ref('messages').push({ uid: "BOT", user: "🤖 Galaxy Bot", type: "bot", text: txt });
-        }
-
-        // ECONOMY
-        function transferMoney() {
+        function transfer() {
             const to = document.getElementById('tr-id').value;
-            const amt = parseInt(document.getElementById('tr-amount').value);
-            if(userBal < amt || amt <= 0) return alert("Маблағи нодуруст!");
-            
-            db.ref('users/' + to).once('value', snap => {
-                if(!snap.exists()) return alert("Корбар ёфт нашуд!");
-                db.ref('users/' + to).update({ bal: snap.val().bal + amt });
-                db.ref('users/' + auth.currentUser.uid).update({ bal: userBal - amt });
-                sendBotMsg(`💸 @${auth.currentUser.email.split('@')[0]} ба @${snap.val().email.split('@')[0]} маблағи ${amt} TJS фиристод.`);
-                alert("Интиқол иҷро шуд!");
+            const amt = parseInt(document.getElementById('tr-amt').value);
+            if(uData.bal < amt) return alert("Пул кам!");
+            db.ref('users/' + to).once('value', s => {
+                if(!s.exists()) return alert("Корбар нест!");
+                db.ref('users/' + to + '/bal').transaction(c => (c || 0) + amt);
+                db.ref('users/' + auth.currentUser.uid + '/bal').transaction(c => c - amt);
+                alert("Фиристода шуд!");
             });
         }
 
-        function buyItem(n, c) {
-            if(userBal < c) return alert("Маблағ нокифоя!");
-            db.ref('users/' + auth.currentUser.uid).update({ bal: userBal - c, role: 'vip' });
-            sendBotMsg(`👑 ТАБРИК! @${auth.currentUser.email.split('@')[0]} статуси VIP харид!`);
-        }
-
-        function adminUpdateBal() {
-            const id = document.getElementById('adm-uid').value;
-            const b = parseInt(document.getElementById('adm-bal').value);
-            db.ref('users/' + id).update({ bal: b }).then(() => alert("Нав шуд!"));
-        }
-
-        // NAVIGATION
         function closeChat() { document.getElementById('chat-modal').style.display = 'none'; }
         function tab(id, el) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            el.classList.add('active');
+            if(el) {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                el.classList.add('active');
+            }
         }
         function logout() { auth.signOut().then(() => location.reload()); }
     </script>
