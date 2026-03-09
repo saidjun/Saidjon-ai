@@ -2,68 +2,38 @@
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GALAXY SUPREME | V72</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GALAXY SUPREME</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        :root { --primary: #00f2ff; --bg: #0b0e14; --gold: #ffd700; --danger: #f85149; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--bg); color: #fff; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        
-        .auth-card { background: #161b22; padding: 30px; border-radius: 20px; border: 1px solid #30363d; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h1 { color: var(--primary); margin-bottom: 20px; letter-spacing: 1px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #0d1117; border: 1px solid #30363d; border-radius: 10px; color: #fff; outline: none; }
-        .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn-main { background: var(--primary); color: #000; }
-        .btn-google { background: #fff; color: #000; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px; }
-        .links { margin-top: 15px; font-size: 13px; color: var(--primary); cursor: pointer; opacity: 0.8; }
-        
-        #main-app { display: none; width: 100%; height: 100%; flex-direction: column; }
-        .header { padding: 20px; background: #161b22; border-bottom: 1px solid #30363d; display: flex; justify-content: space-between; align-items: center; }
-        .balance-card { padding: 40px 20px; text-align: center; }
-        .balance-card h2 { font-size: 40px; color: var(--gold); }
+        body { background: #0b0e14; color: white; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { background: #161b22; padding: 30px; border-radius: 15px; border: 1px solid #30363d; width: 300px; text-align: center; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #30363d; background: #0d1117; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; border-radius: 5px; border: none; background: #00f2ff; color: black; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        #main-content { display: none; text-align: center; }
+        .admin-btn { background: gold; margin-top: 20px; display: none; }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen" class="auth-card">
-        <h1>GALAXY SUPREME</h1>
-        <div id="email-fields">
-            <input type="email" id="email" placeholder="Email">
-            <input type="password" id="password" placeholder="Парол">
-            <button class="btn btn-main" onclick="emailAuth('login')">ДАРОМАДАН</button>
-            <button class="btn" style="background:transparent; color:#8b949e; border:1px solid #30363d;" onclick="emailAuth('signup')">Сабти номи нав</button>
-        </div>
-        
-        <div style="margin: 20px 0; color: #484f58;">ОРОМ</div>
-        
-        <button class="btn btn-google" onclick="googleLogin()">
-            <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="20"> Бо Google даромадан
-        </button>
+    <div id="auth-screen" class="card">
+        <h2 style="color:#00f2ff">GALAXY SUPREME</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">ДАРОМАДАН</button>
+        <p style="font-size: 12px; color: #8b949e; cursor: pointer;" onclick="register()">Сабти номи нав</p>
     </div>
 
-    <div id="main-app">
-        <div class="header">
-            <span id="user-name" style="font-weight:bold;">...</span>
-            <button onclick="logout()" style="background:none; border:none; color:var(--danger); cursor:pointer;"><i class="fa-solid fa-power-off"></i></button>
-        </div>
-        <div class="balance-card">
-            <p style="opacity:0.6;">Баланси шумо:</p>
-            <h2 id="user-balance">0 TJS</h2>
-            <div id="admin-badge" style="display:none; color:var(--gold); margin-top:10px;"><i class="fa-solid fa-crown"></i> АДМИН</div>
-        </div>
-        <div style="padding: 20px; text-align: center;">
-            <p>Хуш омадед ба Galaxy Supreme V72!</p>
-        </div>
+    <div id="main-content" class="card">
+        <h2 id="user-name">Хуш омадед!</h2>
+        <h1 id="user-balance" style="color:gold">0 TJS</h1>
+        <button class="admin-btn" id="admin-link">👑 ПАНЕЛИ АДМИН</button>
+        <button onclick="logout()" style="background:#f85149; color:white; margin-top:20px;">БАРОМАДАН</button>
     </div>
 
     <script>
-        // Танзимоти Firebase аз расмҳои ту
         const firebaseConfig = {
             apiKey: "AIzaSyBdPoSKgrMgEdVdcZprdVayVOb7cUm8TsM",
             authDomain: "saidjon-forabes.firebaseapp.com",
@@ -73,65 +43,50 @@
             messagingSenderId: "13121799381",
             appId: "1:13121799381:web:2b515c4497ce4ea8d50e5c"
         };
-
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.database();
 
-        // Email Auth
-        function emailAuth(type) {
+        function login() {
             const e = document.getElementById('email').value;
             const p = document.getElementById('password').value;
-            if(!e || !p) return alert("Email ва паролро нависед!");
-
-            if(type === 'signup') {
-                auth.createUserWithEmailAndPassword(e, p).catch(err => alert("Хатогӣ: " + err.message));
-            } else {
-                auth.signInWithEmailAndPassword(e, p).catch(err => alert("Email ё парол нодуруст аст!"));
-            }
+            if(!e || !p) return alert("Пур кунед!");
+            firebase.auth().signInWithEmailAndPassword(e, p).catch(err => alert("Хато: " + err.message));
         }
 
-        // Google Login
-        function googleLogin() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch(err => alert(err.message));
+        function register() {
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('password').value;
+            if(!e || !p) return alert("Пур кунед!");
+            firebase.auth().createUserWithEmailAndPassword(e, p).catch(err => alert("Хато: " + err.message));
         }
 
-        // Auth State
-        auth.onAuthStateChanged(user => {
+        firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('main-app').style.display = 'flex';
-                loadUserData(user);
+                document.getElementById('main-content').style.display = 'block';
+                loadData(user.uid);
             } else {
                 document.getElementById('auth-screen').style.display = 'block';
-                document.getElementById('main-app').style.display = 'none';
+                document.getElementById('main-content').style.display = 'none';
             }
         });
 
-        function loadUserData(user) {
-            db.ref('users/' + user.uid).on('value', snap => {
-                let data = snap.val();
-                if (!data) {
-                    // Агар бори аввал бошад, профил месозем
-                    data = { name: user.displayName || "Корбар", bal: 0, role: "user", email: user.email };
-                    db.ref('users/' + user.uid).set(data);
-                }
-                
-                document.getElementById('user-name').innerText = data.name;
-                document.getElementById('user-balance').innerText = data.bal + " TJS";
-
-                // Санҷиши Админ (ҳатто бо нохунак)
-                let role = String(data.role).replace(/['"]+/g, '');
-                if (role === 'admin') {
-                    document.getElementById('admin-badge').style.display = 'block';
+        function loadData(uid) {
+            firebase.database().ref('users/' + uid).on('value', snap => {
+                const data = snap.val();
+                if (data) {
+                    document.getElementById('user-balance').innerText = (data.bal || 0) + " TJS";
+                    // Ислоҳи мушкили "admin"
+                    let role = String(data.role).replace(/['"]+/g, '');
+                    if (role === 'admin') {
+                        document.getElementById('admin-link').style.display = 'block';
+                    }
+                } else {
+                    firebase.database().ref('users/' + uid).set({ bal: 0, role: 'user' });
                 }
             });
         }
 
-        function logout() {
-            auth.signOut().then(() => location.reload());
-        }
+        function logout() { firebase.auth().signOut(); }
     </script>
 </body>
 </html>
