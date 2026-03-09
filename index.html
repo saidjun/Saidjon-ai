@@ -11,111 +11,59 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        :root {
-            --primary: #00f2ff; --bg: #010409; --panel: #0d1117; 
-            --gold: #ffd700; --success: #238636; --danger: #f85149;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: var(--bg); color: #fff; height: 100vh; overflow: hidden; }
-
-        .glass-card { background: rgba(22, 27, 34, 0.9); border: 1px solid #30363d; border-radius: 20px; padding: 15px; margin-bottom: 15px; }
-        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-primary { background: var(--primary); color: #000; }
-        input { width: 100%; padding: 12px; background: #010409; border: 1px solid #30363d; border-radius: 10px; color: white; margin: 8px 0; outline: none; }
-
-        #app { display: none; grid-template-columns: 80px 1fr; height: 100vh; }
-        .sidebar { background: #010409; border-right: 1px solid #30363d; display: flex; flex-direction: column; align-items: center; padding: 20px 0; z-index: 1000; }
-        .nav-item { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px; margin-bottom: 15px; cursor: pointer; color: #8b949e; font-size: 20px; position: relative; }
-        .nav-item.active { background: rgba(0, 242, 255, 0.1); color: var(--primary); }
-
-        .screen { display: none; padding: 20px; height: 100vh; overflow-y: auto; padding-bottom: 80px; }
-        .screen.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-
-        .chat-box { height: 60vh; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .msg { max-width: 85%; padding: 10px 15px; border-radius: 15px; font-size: 14px; line-height: 1.4; }
-        .msg.sent { align-self: flex-end; background: var(--primary); color: #000; border-bottom-right-radius: 2px; }
-        .msg.received { align-self: flex-start; background: #30363d; color: #fff; border-bottom-left-radius: 2px; }
-
-        @media (max-width: 600px) {
-            #app { grid-template-columns: 1fr; }
-            .sidebar { position: fixed; bottom: 0; width: 100%; height: 70px; flex-direction: row; justify-content: space-around; padding: 0; border-top: 1px solid #30363d; background: var(--bg); }
-            .nav-item { margin-bottom: 0; }
-        }
+        :root { --primary: #00f2ff; --bg: #0b0e14; --gold: #ffd700; --danger: #f85149; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); color: #fff; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        
+        .auth-card { background: #161b22; padding: 30px; border-radius: 20px; border: 1px solid #30363d; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h1 { color: var(--primary); margin-bottom: 20px; letter-spacing: 1px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #0d1117; border: 1px solid #30363d; border-radius: 10px; color: #fff; outline: none; }
+        .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-main { background: var(--primary); color: #000; }
+        .btn-google { background: #fff; color: #000; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px; }
+        .links { margin-top: 15px; font-size: 13px; color: var(--primary); cursor: pointer; opacity: 0.8; }
+        
+        #main-app { display: none; width: 100%; height: 100%; flex-direction: column; }
+        .header { padding: 20px; background: #161b22; border-bottom: 1px solid #30363d; display: flex; justify-content: space-between; align-items: center; }
+        .balance-card { padding: 40px 20px; text-align: center; }
+        .balance-card h2 { font-size: 40px; color: var(--gold); }
     </style>
 </head>
 <body>
 
-    <audio id="notifySound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
+    <div id="auth-screen" class="auth-card">
+        <h1>GALAXY SUPREME</h1>
+        <div id="email-fields">
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="password" placeholder="Парол">
+            <button class="btn btn-main" onclick="emailAuth('login')">ДАРОМАДАН</button>
+            <button class="btn" style="background:transparent; color:#8b949e; border:1px solid #30363d;" onclick="emailAuth('signup')">Сабти номи нав</button>
+        </div>
+        
+        <div style="margin: 20px 0; color: #484f58;">ОРОМ</div>
+        
+        <button class="btn btn-google" onclick="googleLogin()">
+            <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="20"> Бо Google даромадан
+        </button>
+    </div>
 
-    <div id="auth-screen" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
-        <div class="glass-card" style="width: 90%; max-width: 380px; text-align: center;">
-            <h1 style="color: var(--primary); letter-spacing: 2px; margin-bottom: 20px;">GALAXY SUPREME</h1>
-            <input type="email" id="log-email" placeholder="Email">
-            <input type="password" id="log-pass" placeholder="Password">
-            <button onclick="handleAuth('login')" class="btn btn-primary">ДАРОМАДАН</button>
-            <p onclick="handleAuth('signup')" style="margin-top: 15px; font-size: 13px; color: var(--primary); cursor: pointer; opacity: 0.7;">Сабти номи нав</p>
+    <div id="main-app">
+        <div class="header">
+            <span id="user-name" style="font-weight:bold;">...</span>
+            <button onclick="logout()" style="background:none; border:none; color:var(--danger); cursor:pointer;"><i class="fa-solid fa-power-off"></i></button>
+        </div>
+        <div class="balance-card">
+            <p style="opacity:0.6;">Баланси шумо:</p>
+            <h2 id="user-balance">0 TJS</h2>
+            <div id="admin-badge" style="display:none; color:var(--gold); margin-top:10px;"><i class="fa-solid fa-crown"></i> АДМИН</div>
+        </div>
+        <div style="padding: 20px; text-align: center;">
+            <p>Хуш омадед ба Galaxy Supreme V72!</p>
         </div>
     </div>
 
-    <div id="app">
-        <nav class="sidebar">
-            <div class="nav-item active" onclick="tab('home', this)"><i class="fa-solid fa-house"></i></div>
-            <div class="nav-item" onclick="tab('chat', this)"><i class="fa-solid fa-comment-dots"></i></div>
-            <div class="nav-item" onclick="tab('wallet', this)"><i class="fa-solid fa-wallet"></i></div>
-            <div id="adm-nav" class="nav-item" style="display:none; color: var(--gold);" onclick="tab('admin', this)"><i class="fa-solid fa-crown"></i></div>
-            <div class="nav-item" onclick="logout()" style="margin-top: auto; color: var(--danger);"><i class="fa-solid fa-power-off"></i></div>
-        </nav>
-
-        <main>
-            <div id="home" class="screen active">
-                <div class="glass-card" style="text-align: center; background: linear-gradient(145deg, #0d1117, #161b22);">
-                    <img id="u-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width:90px; height:90px; border-radius:50%; border:3px solid var(--primary); padding:3px;">
-                    <h2 id="u-name-display" style="margin-top:10px;">Боргузорӣ...</h2>
-                    <p id="u-bal-display" style="font-size: 45px; font-weight: 800; color: var(--gold); text-shadow: 0 0 10px rgba(255,215,0,0.3);">0 TJS</p>
-                </div>
-                <div class="glass-card">
-                    <h4 style="color:var(--primary)"><i class="fa-solid fa-bullhorn"></i> Хабарҳои охирин:</h4>
-                    <p id="news-box" style="margin-top:8px; font-size:14px; opacity:0.9;">Хуш омадед ба версияи нави Galaxy Supreme!</p>
-                </div>
-            </div>
-
-            <div id="chat" class="screen">
-                <div class="glass-card chat-box" id="chat-msgs"></div>
-                <div style="display:flex; gap:10px; background: #0d1117; padding: 10px; border-radius: 15px;">
-                    <input type="text" id="chat-input" placeholder="Нависед..." style="margin:0;">
-                    <button class="btn btn-primary" style="width:60px;" onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
-                </div>
-            </div>
-
-            <div id="wallet" class="screen">
-                <div class="glass-card" style="border-left: 5px solid var(--gold);">
-                    <small>Реквизит барои пардохт:</small>
-                    <p style="font-size:18px; font-weight:bold; margin:5px 0;">+79005778557</p>
-                    <small style="opacity:0.6;">Сбербанк / Т-Банк</small>
-                </div>
-                <div class="glass-card">
-                    <input type="number" id="dep-amt" placeholder="Маблағи фиристода (TJS)">
-                    <label style="display:block; margin:10px 0 5px; font-size:12px;">Расми чекро бор кунед:</label>
-                    <input type="file" id="dep-file" accept="image/*">
-                    <button class="btn btn-primary" onclick="sendRequest()">ФИРИСТОДАНИ ДАРХОСТ</button>
-                </div>
-                <h4 style="margin-bottom:10px;">Таърихи транзаксияҳо:</h4>
-                <div id="hist-list"></div>
-            </div>
-
-            <div id="admin" class="screen">
-                <h2 style="color:var(--gold); margin-bottom:20px;">👑 Панели Админ</h2>
-                <div class="glass-card">
-                    <button class="btn" style="background:var(--gold); color:#000;" onclick="postNews()">НАШРИ ХАБАР</button>
-                </div>
-                <div id="adm-req-list"></div>
-            </div>
-        </main>
-    </div>
-
     <script>
-        // Танзимоти ту аз расм гирифта шудааст
+        // Танзимоти Firebase аз расмҳои ту
         const firebaseConfig = {
             apiKey: "AIzaSyBdPoSKgrMgEdVdcZprdVayVOb7cUm8TsM",
             authDomain: "saidjon-forabes.firebaseapp.com",
@@ -129,166 +77,56 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        let currentU = null;
 
-        // AUTH
-        function handleAuth(mode) {
-            const e = document.getElementById('log-email').value;
-            const p = document.getElementById('log-pass').value;
-            if(!e || !p) return alert("Пур кунед!");
-            if(mode === 'signup') {
-                auth.createUserWithEmailAndPassword(e, p).catch(err => alert(err.message));
+        // Email Auth
+        function emailAuth(type) {
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('password').value;
+            if(!e || !p) return alert("Email ва паролро нависед!");
+
+            if(type === 'signup') {
+                auth.createUserWithEmailAndPassword(e, p).catch(err => alert("Хатогӣ: " + err.message));
             } else {
-                auth.signInWithEmailAndPassword(e, p).catch(err => alert(err.message));
+                auth.signInWithEmailAndPassword(e, p).catch(err => alert("Email ё парол нодуруст аст!"));
             }
         }
 
+        // Google Login
+        function googleLogin() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).catch(err => alert(err.message));
+        }
+
+        // Auth State
         auth.onAuthStateChanged(user => {
-            if(user) {
+            if (user) {
                 document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('app').style.display = 'grid';
-                initApp(user.uid);
+                document.getElementById('main-app').style.display = 'flex';
+                loadUserData(user);
             } else {
-                document.getElementById('auth-screen').style.display = 'flex';
-                document.getElementById('app').style.display = 'none';
+                document.getElementById('auth-screen').style.display = 'block';
+                document.getElementById('main-app').style.display = 'none';
             }
         });
 
-        function initApp(uid) {
-            db.ref('users/' + uid).on('value', snap => {
-                currentU = snap.val();
-                if(!currentU) {
-                    db.ref('users/' + uid).set({ name: 'Корбар', bal: 0, role: 'user' });
-                    return;
+        function loadUserData(user) {
+            db.ref('users/' + user.uid).on('value', snap => {
+                let data = snap.val();
+                if (!data) {
+                    // Агар бори аввал бошад, профил месозем
+                    data = { name: user.displayName || "Корбар", bal: 0, role: "user", email: user.email };
+                    db.ref('users/' + user.uid).set(data);
                 }
-                document.getElementById('u-name-display').innerText = currentU.name;
-                document.getElementById('u-bal-display').innerText = currentU.bal + " TJS";
+                
+                document.getElementById('user-name').innerText = data.name;
+                document.getElementById('user-balance').innerText = data.bal + " TJS";
 
-                // ИСЛОҲИ АСОСӢ БАРОИ АДМИН
-                // Мо ҳам 'admin' ва ҳам '"admin"'-ро месанҷем
-                let userRole = String(currentU.role).toLowerCase().replace(/['"]+/g, '');
-                if(userRole === 'admin') {
-                    document.getElementById('adm-nav').style.display = 'flex';
-                    loadAdminData();
+                // Санҷиши Админ (ҳатто бо нохунак)
+                let role = String(data.role).replace(/['"]+/g, '');
+                if (role === 'admin') {
+                    document.getElementById('admin-badge').style.display = 'block';
                 }
             });
-
-            db.ref('settings/news').on('value', s => {
-                document.getElementById('news-box').innerText = s.val() || "Хабар нест.";
-            });
-
-            loadChat();
-            loadHistory(uid);
-        }
-
-        // CHAT
-        function sendMsg() {
-            const input = document.getElementById('chat-input');
-            if(!input.value) return;
-            db.ref('chat').push({
-                name: currentU.name,
-                text: input.value,
-                uid: auth.currentUser.uid,
-                time: Date.now()
-            });
-            input.value = '';
-        }
-
-        function loadChat() {
-            db.ref('chat').limitToLast(30).on('value', snap => {
-                const box = document.getElementById('chat-msgs');
-                box.innerHTML = '';
-                snap.forEach(child => {
-                    const m = child.val();
-                    const isMe = m.uid === auth.currentUser.uid;
-                    box.innerHTML += `<div class="msg ${isMe ? 'sent' : 'received'}">
-                        <small style="font-size:10px; display:block; opacity:0.7;">${m.name}</small>
-                        ${m.text}
-                    </div>`;
-                });
-                box.scrollTop = box.scrollHeight;
-                document.getElementById('notifySound').play();
-            });
-        }
-
-        // WALLET
-        function sendRequest() {
-            const amt = document.getElementById('dep-amt').value;
-            const file = document.getElementById('dep-file').files[0];
-            if(!amt || !file) return alert("Маблағ ва Чекро бор кунед!");
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                db.ref('requests').push({
-                    uid: auth.currentUser.uid,
-                    name: currentU.name,
-                    amount: amt,
-                    img: e.target.result,
-                    status: 'pending',
-                    time: Date.now()
-                });
-                alert("Дархост фиристода шуд! Интизор шавед.");
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function loadHistory(uid) {
-            db.ref('requests').orderByChild('uid').equalTo(uid).on('value', snap => {
-                const list = document.getElementById('hist-list');
-                list.innerHTML = '';
-                snap.forEach(child => {
-                    const r = child.val();
-                    const color = r.status === 'approved' ? 'var(--success)' : (r.status === 'rejected' ? 'var(--danger)' : 'var(--gold)');
-                    list.innerHTML += `<div class="glass-card" style="display:flex; justify-content:space-between; align-items:center;">
-                        <div><b>${r.amount} TJS</b><br><small>${new Date(r.time).toLocaleDateString()}</small></div>
-                        <div style="color:${color}; font-weight:bold;">${r.status.toUpperCase()}</div>
-                    </div>`;
-                });
-            });
-        }
-
-        // ADMIN FUNCTIONS
-        function loadAdminData() {
-            db.ref('requests').on('value', snap => {
-                const list = document.getElementById('adm-req-list');
-                list.innerHTML = '';
-                snap.forEach(child => {
-                    const r = child.val();
-                    if(r.status === 'pending') {
-                        list.innerHTML += `<div class="glass-card">
-                            <p><b>Корбар:</b> ${r.name}</p>
-                            <p><b>Маблағ:</b> ${r.amount} TJS</p>
-                            <img src="${r.img}" style="width:100%; border-radius:10px; margin:10px 0;">
-                            <div style="display:flex; gap:10px;">
-                                <button class="btn" style="background:var(--success); color:#fff;" onclick="approve('${child.key}', '${r.uid}', ${r.amount})">Тасдиқ</button>
-                                <button class="btn" style="background:var(--danger); color:#fff;" onclick="reject('${child.key}')">Рад</button>
-                            </div>
-                        </div>`;
-                    }
-                });
-            });
-        }
-
-        function approve(key, uid, amt) {
-            db.ref('users/' + uid + '/bal').transaction(currentBal => (currentBal || 0) + Number(amt));
-            db.ref('requests/' + key).update({ status: 'approved' });
-        }
-
-        function reject(key) {
-            db.ref('requests/' + key).update({ status: 'rejected' });
-        }
-
-        function postNews() {
-            const txt = prompt("Матни хабарро нависед:");
-            if(txt) db.ref('settings/news').set(txt);
-        }
-
-        // NAVIGATION
-        function tab(id, el) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            el.classList.add('active');
         }
 
         function logout() {
