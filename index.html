@@ -2,315 +2,258 @@
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SAIDJON V40 - QUANTUM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>SAIDJON V41 - HYPER INFINITY</title>
     <style>
         :root {
-            --bg: #0b141d; --panel: #17212b; --blue: #2481cc; --accent: #00ff9d;
-            --text: #f5f5f5; --premium: #f39c12; --error: #e74c3c; --call: #2ecc71;
-            --shadow: 0 4px 15px rgba(0,0,0,0.5);
+            --bg: #050a0f; --panel: #0f171e; --blue: #0088cc; --accent: #00ffa3;
+            --text: #ffffff; --premium: #ffb800; --error: #ff4d4d; --glass: rgba(255, 255, 255, 0.05);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background: #000; color: var(--text); height: 100dvh; overflow: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); height: 100dvh; overflow: hidden; }
 
-        /* SPLASH SCREEN */
-        #splash {
-            position: fixed; inset: 0; background: var(--bg); z-index: 9999;
+        /* --- 1. PRELOADER & LOGO --- */
+        #preloader {
+            position: fixed; inset: 0; background: var(--bg); z-index: 10000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: 0.8s ease-out;
         }
-        .logo-anim {
-            width: 100px; height: 100px; background: var(--blue); border-radius: 25%;
-            display: flex; align-items: center; justify-content: center; font-size: 50px;
-            font-weight: bold; box-shadow: 0 0 30px var(--blue);
-            animation: pulse 2s infinite;
+        .v-logo {
+            width: 120px; height: 120px; background: linear-gradient(45deg, var(--blue), var(--accent));
+            border-radius: 30%; display: flex; align-items: center; justify-content: center;
+            font-size: 60px; font-weight: 900; color: white; box-shadow: 0 0 50px rgba(0, 136, 204, 0.5);
+            animation: bounce 2s infinite ease-in-out;
         }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(10deg); } }
 
-        /* MAIN APP */
-        #app { width: 100%; max-width: 500px; height: 100%; margin: auto; position: relative; background: var(--bg); display: none; flex-direction: column; }
+        /* --- 2. LAYOUT --- */
+        #main-app { display: none; height: 100%; flex-direction: column; }
         .hidden { display: none !important; }
 
         /* HEADER */
-        .header { padding: 15px; background: var(--panel); display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #000; box-shadow: var(--shadow); }
-        .avatar-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--blue); cursor: pointer; }
+        header { 
+            padding: 15px 20px; background: var(--panel); display: flex; align-items: center; 
+            border-bottom: 1px solid var(--glass); justify-content: space-between;
+        }
+        .user-profile { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; background: var(--glass); border: 2px solid var(--blue); }
 
-        /* TABS */
-        .tab-bar { display: flex; background: var(--panel); border-bottom: 1px solid #000; }
-        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-size: 13px; opacity: 0.6; font-weight: bold; transition: 0.3s; }
-        .tab.active { opacity: 1; border-bottom: 3px solid var(--blue); color: var(--blue); }
+        /* TABS NAVIGATION */
+        .nav-tabs { display: flex; background: var(--panel); border-bottom: 1px solid #000; padding: 5px; }
+        .nav-btn { flex: 1; padding: 12px; text-align: center; font-size: 11px; font-weight: bold; opacity: 0.5; transition: 0.3s; }
+        .nav-btn.active { opacity: 1; color: var(--blue); border-bottom: 2px solid var(--blue); }
 
-        /* CHATS */
-        #chat-container { flex: 1; overflow-y: auto; padding: 15px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 10px; }
-        .msg { max-width: 80%; padding: 10px 14px; border-radius: 18px; font-size: 15px; position: relative; line-height: 1.4; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .user { align-self: flex-end; background: #2b5278; border-bottom-right-radius: 2px; }
-        .friend { align-self: flex-start; background: #182533; border-bottom-left-radius: 2px; }
-        .msg-info { font-size: 10px; opacity: 0.5; margin-top: 5px; text-align: right; }
+        /* CHAT AREA */
+        #chat-viewport { flex: 1; overflow-y: auto; padding: 15px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-attachment: fixed; }
+        .msg-bubble { 
+            max-width: 85%; padding: 10px 15px; border-radius: 20px; margin-bottom: 10px; font-size: 15px;
+            position: relative; animation: fadeIn 0.3s;
+        }
+        .msg-user { align-self: flex-end; background: var(--blue); margin-left: auto; border-bottom-right-radius: 4px; }
+        .msg-friend { align-self: flex-start; background: var(--panel); border-bottom-left-radius: 4px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* INPUT AREA */
-        .input-area { padding: 10px; background: var(--panel); display: flex; align-items: center; gap: 8px; }
-        textarea { flex: 1; background: #0e1621; border: 1px solid #2f3942; border-radius: 20px; padding: 10px 15px; color: #fff; resize: none; height: 40px; outline: none; }
-        .btn-send { width: 45px; height: 45px; border-radius: 50%; background: var(--blue); border: none; color: #fff; font-size: 20px; cursor: pointer; }
+        /* --- 3. ADMIN PANEL DESIGN --- */
+        #admin-screen {
+            position: fixed; inset: 0; background: #000; z-index: 9000; padding-top: 50px;
+        }
+        .admin-header { position: absolute; top: 0; width: 100%; padding: 15px; background: var(--premium); color: #000; font-weight: bold; display: flex; justify-content: space-between; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
+        .stat-card { background: #111; padding: 15px; border-radius: 12px; border-top: 3px solid var(--blue); }
 
-        /* ADMIN SCREEN */
-        #screen-admin { position: absolute; inset: 0; background: #050505; z-index: 5000; display: flex; flex-direction: column; }
-        .adm-card { background: #111; margin: 10px; padding: 15px; border-radius: 12px; border-left: 5px solid var(--premium); }
-        .log-box { flex: 1; background: #000; font-family: monospace; color: var(--accent); padding: 10px; overflow-y: auto; font-size: 12px; border: 1px solid #222; }
+        /* INPUTS & BUTTONS */
+        .input-group { padding: 15px; background: var(--panel); display: flex; gap: 10px; border-top: 1px solid var(--glass); }
+        input, textarea { flex: 1; background: #1c2732; border: none; padding: 12px 18px; border-radius: 25px; color: #fff; outline: none; }
+        .btn-circle { width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--blue); color: #fff; cursor: pointer; }
 
-        /* BUTTONS */
-        .btn { padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: white; margin: 5px 0; width: 100%; transition: 0.2s; }
-        .btn:active { transform: scale(0.98); }
-        
-        #notif { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); background: var(--blue); padding: 10px 25px; border-radius: 30px; z-index: 10000; display: none; box-shadow: var(--shadow); }
+        /* NOTIFICATION */
+        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--blue); padding: 10px 30px; border-radius: 50px; z-index: 10001; display: none; }
     </style>
 </head>
 <body>
 
-<div id="notif">📩 Паёми нав!</div>
-
-<div id="splash">
-    <div class="logo-anim">S</div>
-    <h2 style="margin-top: 20px; letter-spacing: 5px; color: var(--blue);">SAIDJON</h2>
-    <p style="opacity: 0.5; font-size: 12px; margin-top: 10px;">QUANTUM V40 ULTIMATE</p>
-</div>
-
-<div id="screen-auth" class="hidden" style="position:fixed; inset:0; background:var(--bg); z-index:2000; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px;">
-    <div style="width:100%; max-width:350px;">
-        <h1 style="text-align:center; margin-bottom:20px; color:var(--blue);">Воридшавӣ</h1>
-        <input type="text" id="log-u" placeholder="Логин ё ID">
-        <input type="password" id="log-p" placeholder="Парол">
-        <button class="btn" style="background:var(--blue);" onclick="handleAuth()">ДАРОМАД</button>
-        <p style="text-align:center; font-size:12px; opacity:0.5; margin-top:15px; cursor:pointer;" onclick="alert('Код ба рақами телефон фиристода шуд')">Фаромӯши парол?</p>
-    </div>
-</div>
-
-<div id="app">
-    <div class="header">
-        <label>
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" id="user-img" class="avatar-img">
-            <input type="file" id="file-avatar" hidden onchange="changeAvatar(this)">
-        </label>
-        <div style="flex:1">
-            <h4 id="h-name">Saidjon Admin</h4>
-            <small id="h-status" style="color:var(--accent);">online</small>
-        </div>
-        <div id="adm-trigger" class="hidden" onclick="openAdmin()" style="color:var(--premium); cursor:pointer; font-size:24px;">⚙️</div>
+    <div id="preloader">
+        <div class="v-logo">S</div>
+        <h2 style="margin-top:20px; letter-spacing:3px;">SAIDJON V41</h2>
+        <p style="opacity:0.4; font-size:12px; margin-top:10px;">HYPER INFINITY ENGINE</p>
     </div>
 
-    <div class="tab-bar">
-        <div class="tab active" onclick="setTab('chat', this)">ЧАТҲО</div>
-        <div class="tab" onclick="setTab('wallet', this)">ҲАМЁН</div>
-        <div class="tab" onclick="setTab('prof', this)">ПРОФИЛ</div>
-    </div>
-
-    <div id="view-chat" class="tab-content" style="flex:1; display:flex; flex-direction:column;">
-        <div id="chat-container"></div>
-        <div class="input-area">
-            <span style="font-size:20px; cursor:pointer;">📎</span>
-            <textarea id="msg-input" placeholder="Паём нависед..."></textarea>
-            <button class="btn-send" onclick="sendMsg()">➤</button>
+    <div id="auth-screen" style="position:fixed; inset:0; background:var(--bg); z-index:5000; display:flex; align-items:center; justify-content:center; padding:20px;">
+        <div style="width:100%; max-width:320px; text-align:center;">
+            <h1 style="color:var(--blue); margin-bottom:30px;">Воридшавӣ</h1>
+            <input type="text" id="user-id" placeholder="Логин ё ID" style="margin-bottom:10px; width:100%;">
+            <input type="password" id="user-pass" placeholder="Парол" style="margin-bottom:20px; width:100%;">
+            <button onclick="login()" style="width:100%; padding:15px; border-radius:30px; background:var(--blue); border:none; color:white; font-weight:bold;">ДАРОМАД</button>
         </div>
     </div>
 
-    <div id="view-wallet" class="tab-content hidden" style="padding:20px; text-align:center;">
-        <div style="background:var(--panel); padding:30px; border-radius:20px; box-shadow:var(--shadow);">
-            <p style="opacity:0.6;">Баланси умумӣ</p>
-            <h1 id="w-bal" style="font-size:40px; color:var(--accent);">0.00 TJS</h1>
-        </div>
-        <div style="margin-top:20px; text-align:left; background:#111; padding:15px; border-radius:12px; border:1px solid #222;">
-            <p style="color:var(--premium); font-size:12px;">РЕКВИЗИТҲО БАРОИ ПУР КАРДАН:</p>
-            <p style="margin-top:5px;"><b>Сбербанк / СБП:</b> +79005778557</p>
-            <p><b>Қабулкунанда:</b> Саидҷон</p>
-        </div>
-        <button class="btn" style="background:var(--call); margin-top:20px;" onclick="openModal('modal-dep')">Пур кардани ҳисоб</button>
-        <button class="btn" style="background:#222;">Таърихи транзаксияҳо</button>
-    </div>
-
-    <div id="view-prof" class="tab-content hidden" style="padding:20px; text-align:center;">
-        <div style="background:var(--panel); padding:20px; border-radius:20px;">
-            <h2 id="p-name">Saidjon</h2>
-            <p id="p-id" style="opacity:0.5;">ID: 9942</p>
-            <textarea id="p-bio" placeholder="Дар бораи худ нависед..." style="margin-top:15px; height:80px;"></textarea>
-            <button class="btn" style="background:var(--blue);" onclick="saveProfile()">Захира кардан</button>
-            <button class="btn" style="background:var(--error); margin-top:40px;" onclick="location.reload()">Баромадан аз ҳисоб</button>
-        </div>
-    </div>
-</div>
-
-<div id="modal-dep" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:3000; padding:20px; display:flex; flex-direction:column; justify-content:center;">
-    <div style="background:var(--panel); padding:20px; border-radius:20px;">
-        <h3>Тасдиқи пардохт</h3>
-        <p style="font-size:12px; opacity:0.6; margin-bottom:15px;">Маблағ ва чекро фиристед</p>
-        <input type="number" id="dep-amt" placeholder="Маблағ (TJS)">
-        <input type="file" id="dep-file" accept="image/*">
-        <button class="btn" style="background:var(--accent); color:#000;" onclick="submitDeposit()">ФИРИСТОДАНИ ЧЕК</button>
-        <button class="btn" style="background:var(--error);" onclick="closeModal('modal-dep')">БЕКОР КАРДАН</button>
-    </div>
-</div>
-
-<div id="screen-admin" class="hidden">
-    <div class="header" style="background:var(--premium); color:#000;">
-        <b onclick="closeAdmin()" style="cursor:pointer;">⬅️ БОЗГАШТ</b>
-        <h4 style="flex:1; text-align:center;">SUPREME ADMIN PANEL</h4>
-    </div>
-    <div style="flex:1; overflow-y:auto; padding:10px;">
-        <div class="adm-card">
-            <h4>📊 Омори система</h4>
-            <p>Корбарон: 1,240 | Ҳаҷми пул: 45,600 TJS</p>
-        </div>
-        <div class="adm-card" id="adm-pending-deposits">
-            <h4>📥 Чекҳои интизорӣ</h4>
-            <div id="checks-list"><p style="font-size:12px; opacity:0.5;">Чек нест</p></div>
-        </div>
-        <div class="adm-card">
-            <h4>📢 Хабари глобалӣ</h4>
-            <textarea id="adm-msg" placeholder="Ҳама мебинанд..."></textarea>
-            <button class="btn" style="background:var(--blue);" onclick="admBroadcast()">ПАХШ КАРДАН</button>
-        </div>
-        <div class="log-box" id="adm-logs">
-            [SYSTEM] V40 Quantum Engine Started...<br>
-            [SEC] Firewall Active...<br>
-        </div>
-    </div>
-</div>
-
-<script>
-    const API_K = atob("QUl6YVN5QVFjNGY1Um9LdlhXTklwN2ZSeFlOX2QxNlFLSFVlTk9N");
-    let user = { name: "Saidjon Admin", bal: 0, id: 9942, role: "user", avatar: "" };
-
-    // 1. SPLASH SCREEN LOGIC
-    window.onload = () => {
-        setTimeout(() => {
-            document.getElementById('splash').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('splash').style.display = 'none';
-                document.getElementById('screen-auth').style.display = 'flex';
-            }, 800);
-        }, 2500);
-    };
-
-    // 2. AUTH LOGIC
-    function handleAuth() {
-        const u = document.getElementById('log-u').value;
-        const p = document.getElementById('log-p').value;
-        
-        if(u === 'admin' && p === 'saidjon777') {
-            user.role = 'admin';
-            document.getElementById('adm-trigger').classList.remove('hidden');
-        }
-        
-        user.name = u || "Корбари V40";
-        document.getElementById('screen-auth').style.display = 'none';
-        document.getElementById('app').style.display = 'flex';
-        syncUI();
-        addMsg("Хуш омадед ба V40 QUANTUM! Чӣ кӯмак кунам?", "friend");
-    }
-
-    function syncUI() {
-        document.getElementById('h-name').innerText = user.name;
-        document.getElementById('p-name').innerText = user.name;
-        document.getElementById('w-bal').innerText = user.bal.toFixed(2) + " TJS";
-    }
-
-    // 3. TABS
-    function setTab(t, el) {
-        document.querySelectorAll('.tab-content').forEach(v => v.classList.add('hidden'));
-        document.getElementById('view-' + t).classList.remove('hidden');
-        document.querySelectorAll('.tab').forEach(i => i.classList.remove('active'));
-        el.classList.add('active');
-    }
-
-    // 4. MESSAGING
-    async function sendMsg() {
-        const inp = document.getElementById('msg-input');
-        const txt = inp.value.trim();
-        if(!txt) return;
-
-        addMsg(txt, 'user');
-        inp.value = "";
-
-        try {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_K}`, {
-                method: "POST", headers: {"Content-Type":"application/json"},
-                body: JSON.stringify({contents:[{parts:[{text:txt}]}]})
-            });
-            const data = await res.json();
-            addMsg(data.candidates[0].content.parts[0].text, 'friend');
-        } catch { addMsg("Хатогии AI", "friend"); }
-    }
-
-    function addMsg(t, s) {
-        const cont = document.getElementById('chat-container');
-        const d = document.createElement('div');
-        d.className = `msg ${s}`;
-        d.innerHTML = `${t} <div class="msg-info">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`;
-        cont.appendChild(d);
-        cont.scrollTop = cont.scrollHeight;
-    }
-
-    // 5. AVATAR CHANGE
-    function changeAvatar(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = e => {
-                document.getElementById('user-img').src = e.target.result;
-                showNotif("Расм иваз шуд!");
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    // 6. ADMIN SYSTEM
-    function openAdmin() { document.getElementById('screen-admin').classList.remove('hidden'); }
-    function closeAdmin() { document.getElementById('screen-admin').classList.add('hidden'); }
-
-    function submitDeposit() {
-        const amt = document.getElementById('dep-amt').value;
-        if(!amt) return alert("Маблағро нависед!");
-        showNotif("Чек фиристода шуд!");
-        logAdm(`User sent check: ${amt} TJS`);
-        
-        document.getElementById('checks-list').innerHTML = `
-            <div style="background:#000; padding:10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
-                <span>ID: 9942 | ${amt} TJS</span>
-                <button onclick="admApprove(${amt})" style="background:var(--call); border:none; color:#fff; padding:5px 10px; border-radius:5px; cursor:pointer;">ТАСДИҚ</button>
+    <div id="main-app">
+        <header>
+            <div class="user-profile">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="avatar" id="my-avatar" onclick="document.getElementById('avatar-input').click()">
+                <div>
+                    <b id="display-name">Saidjon</b><br>
+                    <small style="color:var(--accent)">online</small>
+                </div>
             </div>
-        `;
-        closeModal('modal-dep');
-    }
+            <div id="admin-icon" class="hidden" onclick="toggleScreen('admin-screen')" style="color:var(--premium); cursor:pointer; font-size:22px;">🛠</div>
+        </header>
 
-    function admApprove(amt) {
-        user.bal += parseFloat(amt);
-        syncUI();
-        showNotif(`Пул тасдиқ шуд: +${amt} TJS`);
-        document.getElementById('checks-list').innerHTML = `<p style="font-size:12px; opacity:0.5;">Чек нест</p>`;
-        logAdm(`Approved ${amt} TJS for ID 9942`);
-    }
+        <nav class="nav-tabs">
+            <div class="nav-btn active" onclick="changeTab('chat', this)">💬 ЧАТҲО</div>
+            <div class="nav-btn" onclick="changeTab('wallet', this)">💰 ҲАМЁН</div>
+            <div class="nav-btn" onclick="changeTab('global', this)">🌐 ГЛОБАЛ</div>
+            <div class="nav-btn" onclick="changeTab('settings', this)">⚙️ ТАНЗИМОТ</div>
+        </nav>
 
-    function logAdm(m) {
-        const lb = document.getElementById('adm-logs');
-        lb.innerHTML += `[${new Date().toLocaleTimeString()}] ${m}<br>`;
-        lb.scrollTop = lb.scrollHeight;
-    }
+        <div id="view-chat" class="tab-content" style="flex:1; display:flex; flex-direction:column;">
+            <div id="chat-viewport"></div>
+            <div class="input-group">
+                <textarea id="msg-text" placeholder="Нависед..." rows="1"></textarea>
+                <button class="btn-circle" onclick="sendMessage()">➤</button>
+            </div>
+        </div>
 
-    function admBroadcast() {
-        const m = document.getElementById('adm-msg').value;
-        if(m) {
-            alert("Хабар ба ҳама фиристода шуд: " + m);
-            document.getElementById('adm-msg').value = "";
+        <div id="view-wallet" class="tab-content hidden" style="padding:20px; overflow-y:auto;">
+            <div style="background:linear-gradient(135deg, #1e3c72, #2a5298); padding:30px; border-radius:20px; text-align:center;">
+                <p style="opacity:0.7">Баланси Шумо</p>
+                <h1 id="user-balance" style="font-size:45px; margin:10px 0;">0.00 TJS</h1>
+                <small>ID: <span id="my-id">9942</span></small>
+            </div>
+            <div style="margin-top:20px; background:var(--panel); padding:15px; border-radius:15px;">
+                <p style="color:var(--premium)">РЕКВИЗИТҲОИ САИДҶОН:</p>
+                <b>+79005778557</b> (СБП/Сбербанк)
+            </div>
+            <button onclick="openDeposit()" style="width:100%; background:var(--call); padding:15px; border-radius:15px; margin-top:15px; border:none; color:white; font-weight:bold;">ПУР КАРДАНИ ҲИСОБ</button>
+        </div>
+
+        <div id="admin-screen" class="hidden">
+            <div class="admin-header">
+                <span>ПАНЕЛИ АДМИНИСТРАТОР (V41)</span>
+                <span onclick="toggleScreen('admin-screen')">✖</span>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-card"><b>Корбарон</b><br>4,821</div>
+                <div class="stat-card"><b>Оборот</b><br>12,500 TJS</div>
+            </div>
+            <div style="padding:15px;">
+                <h4>📥 Чекҳои интизорӣ</h4>
+                <div id="admin-pending-list" style="margin-top:10px;">
+                    <div style="background:#222; padding:10px; border-radius:10px; display:flex; justify-content:space-between;">
+                        <span>ID: 5521 (20 TJS)</span>
+                        <button onclick="approve(20, 5521)" style="color:var(--accent); background:none; border:none;">ОК</button>
+                    </div>
+                </div>
+                <h4 style="margin-top:20px;">📢 Хабари Глобалӣ</h4>
+                <textarea id="global-news" placeholder="Ҳама мебинанд..." style="width:100%; margin-top:10px;"></textarea>
+                <button onclick="broadcast()" style="width:100%; padding:10px; background:var(--blue); border:none; color:white; margin-top:5px; border-radius:10px;">ФИРИСТОДАН</button>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="avatar-input" class="hidden" accept="image/*" onchange="updateAvatar(this)">
+    <div id="toast">Хабар!</div>
+
+    <script>
+        const API_KEY = atob("QUl6YVN5QVFjNGY1Um9LdlhXTklwN2ZSeFlOX2QxNlFLSFVlTk9N");
+        let currentUser = { name: "Saidjon", balance: 0, role: "user", id: 9942 };
+
+        // 1. PRELOADER
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').style.display = 'none';
+            }, 3000);
+        });
+
+        // 2. AUTH SYSTEM
+        function login() {
+            const id = document.getElementById('user-id').value;
+            const pass = document.getElementById('user-pass').value;
+
+            if(id === 'admin' && pass === 'saidjon777') {
+                currentUser.role = 'admin';
+                document.getElementById('admin-icon').classList.remove('hidden');
+            }
+            currentUser.name = id || "Меҳмон";
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-app').style.display = 'flex';
+            document.getElementById('display-name').innerText = currentUser.name;
+            notify(`Хуш омадед, ${currentUser.name}!`);
         }
-    }
 
-    // UTILS
-    function showNotif(m) {
-        const n = document.getElementById('notif');
-        n.innerText = m; n.style.display = 'block';
-        setTimeout(() => n.style.display = 'none', 3000);
-    }
-    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-    function saveProfile() { showNotif("Профил захира шуд!"); }
-</script>
+        // 3. CHAT SYSTEM
+        async function sendMessage() {
+            const input = document.getElementById('msg-text');
+            const text = input.value.trim();
+            if(!text) return;
+
+            addBubble(text, 'user');
+            input.value = "";
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({contents: [{parts: [{text: text}]}]})
+                });
+                const data = await response.json();
+                addBubble(data.candidates[0].content.parts[0].text, 'friend');
+            } catch (e) {
+                addBubble("Хатогии пайвастшавӣ...", 'friend');
+            }
+        }
+
+        function addBubble(text, sender) {
+            const container = document.getElementById('chat-viewport');
+            const div = document.createElement('div');
+            div.className = `msg-bubble msg-${sender}`;
+            div.innerText = text;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // 4. ADMIN & WALLET
+        function approve(amt, id) {
+            currentUser.balance += amt;
+            document.getElementById('user-balance').innerText = currentUser.balance.toFixed(2) + " TJS";
+            document.getElementById('admin-pending-list').innerHTML = "<small>Ҳама тасдиқ шуд!</small>";
+            notify(`ID ${id} тасдиқ шуд!`);
+        }
+
+        function broadcast() {
+            const msg = document.getElementById('global-news').value;
+            if(msg) {
+                alert("ХАБАРИ ГЛОБАЛӢ: " + msg);
+                document.getElementById('global-news').value = "";
+            }
+        }
+
+        // 5. UTILITIES
+        function changeTab(tab, btn) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById('view-' + tab).classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function toggleScreen(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
+        function notify(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+
+        function updateAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => document.getElementById('my-avatar').src = e.target.result;
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
 </body>
 </html>
