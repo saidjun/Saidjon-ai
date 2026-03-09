@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GALAXY V72 | SAIDJON EMPIRE</title>
+    <title>GALAXY V70 | SAIDJON EDITION</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -12,104 +12,124 @@
 
     <style>
         :root {
-            --primary: #00f2ff; --gold: #ffd700; --bg: #050505;
-            --glass: rgba(255, 255, 255, 0.05); --border: rgba(255, 255, 255, 0.1);
+            --primary: #00f2ff; --bg: #010409; --panel: #0d1117; --text: #e6edf3;
+            --gold: #ffd700; --success: #238636; --danger: #f85149;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: #fff; height: 100vh; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
 
         /* UI ELEMENTS */
-        .card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
+        .glass-card { background: rgba(22, 27, 34, 0.9); border: 1px solid #30363d; border-radius: 20px; padding: 15px; margin-bottom: 15px; }
+        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: #000; }
+        input { width: 100%; padding: 12px; background: #010409; border: 1px solid #30363d; border-radius: 10px; color: white; margin: 8px 0; outline: none; }
+
+        /* APP LAYOUT */
+        #app { display: none; grid-template-columns: 80px 1fr; height: 100vh; }
+        .sidebar { background: #010409; border-right: 1px solid #30363d; display: flex; flex-direction: column; align-items: center; padding: 20px 0; }
+        .nav-item { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px; margin-bottom: 15px; cursor: pointer; color: #8b949e; font-size: 20px; }
+        .nav-item.active { background: rgba(0, 242, 255, 0.1); color: var(--primary); box-shadow: 0 0 15px rgba(0,242,255,0.1); }
+
         .screen { display: none; padding: 20px; height: 100vh; overflow-y: auto; padding-bottom: 100px; }
-        .active { display: block !important; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .screen.active { display: block; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* BUTTONS & INPUTS */
-        input { width: 100%; padding: 15px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 12px; color: #fff; margin: 10px 0; outline: none; }
-        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-main { background: linear-gradient(135deg, var(--primary), #0062ff); color: white; }
+        /* HISTORY & ADMIN */
+        .history-item { border-bottom: 1px solid #30363d; padding: 12px 0; display: flex; justify-content: space-between; align-items: center; }
+        .admin-req-card { border-left: 4px solid var(--gold); background: #161b22; padding: 15px; border-radius: 15px; margin-bottom: 15px; }
+        .check-preview { width: 100%; border-radius: 10px; margin: 10px 0; border: 1px solid #333; }
 
-        /* WHEEL GAME */
-        .wheel-box { position: relative; width: 280px; height: 280px; margin: 20px auto; border-radius: 50%; border: 5px solid var(--gold); overflow: hidden; transition: 4s cubic-bezier(0.1, 0.7, 0.1, 1); }
-        .wheel-img { width: 100%; height: 100%; object-fit: cover; }
-        .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 30px; height: 30px; background: var(--gold); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
-
-        /* NAVBAR */
-        .nav { position: fixed; bottom: 15px; left: 15px; right: 15px; background: rgba(10,10,10,0.9); height: 70px; border-radius: 18px; display: flex; justify-content: space-around; align-items: center; border: 1px solid var(--border); z-index: 1000; }
-        .nav-i { color: #555; font-size: 22px; cursor: pointer; transition: 0.3s; }
-        .nav-i.active { color: var(--primary); transform: scale(1.1); }
+        @media (max-width: 600px) {
+            #app { grid-template-columns: 1fr; }
+            .sidebar { position: fixed; bottom: 0; width: 100%; height: 65px; flex-direction: row; justify-content: space-around; padding: 0; border-top: 1px solid #30363d; z-index: 2000; background: var(--bg); }
+            .nav-item { margin-bottom: 0; }
+        }
     </style>
 </head>
 <body>
 
     <audio id="coinSound" src="https://www.myinstants.com/media/sounds/coin-collect.mp3"></audio>
 
-    <div id="auth-screen" class="screen active" style="display:flex; align-items:center; justify-content:center;">
-        <div class="card" style="width:100%; max-width:380px; text-align:center;">
-            <h1 style="color:var(--primary);">GALAXY V72</h1>
-            <input type="email" id="email" placeholder="Email">
-            <input type="password" id="pass" placeholder="Password">
-            <button class="btn btn-main" onclick="authAction('login')">ДАРОМАДАН</button>
-            <p style="margin-top:15px; font-size:12px; opacity:0.5; cursor:pointer;" onclick="authAction('signup')">Сабти номи нав</p>
+    <div id="auth-screen" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
+        <div class="glass-card" style="width: 90%; max-width: 360px; text-align: center; padding: 30px;">
+            <h1 style="color: var(--primary); font-size: 28px; margin-bottom: 25px;">GALAXY GOLD</h1>
+            <button onclick="loginGoogle()" class="btn" style="background: white; color: black;"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> Google Login</button>
+            <div style="margin: 20px 0; opacity: 0.3; font-size: 12px;">Ё БО ПОЧТА</div>
+            <input type="email" id="log-email" placeholder="Email">
+            <input type="password" id="log-pass" placeholder="Password">
+            <button onclick="handleAuth('login')" class="btn btn-primary">ДАРОМАДАН</button>
+            <p onclick="handleAuth('signup')" style="margin-top: 20px; font-size: 13px; color: var(--primary); cursor: pointer;">Сабти номи нав</p>
         </div>
     </div>
 
-    <div id="app" style="display:none;">
-        <div id="home" class="screen">
-            <div class="card" style="text-align:center;">
-                <h3 id="u-name">...</h3>
-                <h1 id="u-bal" style="font-size:50px; color:var(--gold);">0 TJS</h1>
-                <small style="opacity:0.4;">ID: <span id="u-uid">...</span></small>
+    <div id="app">
+        <nav class="sidebar">
+            <div class="nav-item active" onclick="tab('home', this)"><i class="fa-solid fa-house"></i></div>
+            <div class="nav-item" onclick="tab('wallet', this)"><i class="fa-solid fa-wallet"></i></div>
+            <div class="nav-item" onclick="tab('profile', this)"><i class="fa-solid fa-user-circle"></i></div>
+            <div id="adm-nav" class="nav-item" style="display:none; color: var(--gold);" onclick="tab('admin', this)"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="nav-item" onclick="logout()" style="margin-top: auto; color: var(--danger);"><i class="fa-solid fa-power-off"></i></div>
+        </nav>
+
+        <main>
+            <div id="home" class="screen active">
+                <div class="glass-card" style="text-align: center; padding: 40px 20px;">
+                    <h2 id="u-display-name" style="margin-bottom: 10px;">...</h2>
+                    <p id="u-balance" style="font-size: 45px; font-weight: 900; color: var(--gold);">0 TJS</p>
+                    <span style="opacity: 0.5; font-size: 12px; letter-spacing: 1px;">БАЛАНСИ ШУМО</span>
+                </div>
+                <div class="glass-card" style="border-left: 4px solid var(--primary);">
+                    <i class="fa-solid fa-bell" style="color: var(--primary);"></i> 
+                    <small style="margin-left:10px;">Хуш омадед ба Galaxy! Барои пур кардани ҳисоб ба бахши Ҳамён равед.</small>
+                </div>
             </div>
-            
-            <div class="card" style="text-align:center;">
-                <b><i class="fa-solid fa-spinner"></i> Чархи Иқбол</b>
-                <div style="position:relative;">
-                    <div class="pointer"></div>
-                    <div id="wheel" class="wheel-box">
-                        <img src="https://i.imgur.com/K5f4pA1.png" class="wheel-img">
+
+            <div id="wallet" class="screen">
+                <h2>Ҳамён & Пуркунӣ</h2>
+                <div class="glass-card" style="border: 1px solid var(--gold);">
+                    <small style="color: var(--gold);">ҚАДАМИ 1: Пулро гузаронед (Сбербанк СБП)</small>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 15px; border-radius: 12px; margin: 10px 0;">
+                        <b id="wallet-num" style="font-size: 20px;">+79005778557</b>
+                        <button onclick="copyNum()" class="btn" style="width: auto; padding: 5px 15px; font-size: 12px; background: var(--gold); color: black;">НУСХА</button>
                     </div>
+                    <p style="font-size: 11px; opacity: 0.6;">Қабулкунанда: Саидҷон (Сбербанк)</p>
                 </div>
-                <button class="btn btn-main" onclick="spinWheel()">ЧАРХ ЗАДАН (10 TJS)</button>
-            </div>
-        </div>
 
-        <div id="wallet" class="screen">
-            <h2>Ҳамён</h2>
-            <div class="card" style="border: 1px solid var(--gold);">
-                <small>СБЕРБАНК / СБП:</small>
-                <div style="display:flex; justify-content:space-between; margin-top:5px;">
-                    <b id="num">+79005778557</b>
-                    <i class="fa-solid fa-copy" onclick="copyNum()"></i>
+                <div class="glass-card">
+                    <small>ҚАДАМИ 2: Скриншотро бор кунед</small>
+                    <input type="number" id="topup-amount" placeholder="Маблағи гузарондашуда">
+                    <label style="display: block; background: #161b22; padding: 15px; border-radius: 12px; text-align: center; border: 1px dashed #444; margin: 10px 0; cursor: pointer;">
+                        <i class="fa-solid fa-image"></i> Интихоби Чек
+                        <input type="file" id="topup-file" accept="image/*" style="display: none;" onchange="previewImg(this)">
+                    </label>
+                    <img id="img-preview" style="width: 100%; border-radius: 10px; display: none; margin-bottom: 10px;">
+                    <button class="btn btn-primary" style="background: var(--success); color: white;" onclick="requestTopup()">ФИРИСТОДАНИ ДАРХОСТ</button>
                 </div>
-                <p style="font-size:12px; color:var(--primary); margin-top:5px;">Қабулкунанда: САИДҶОН</p>
+
+                <div class="glass-card">
+                    <b>Таърихи пардохтҳо</b>
+                    <div id="user-history" style="margin-top: 10px;"></div>
+                </div>
             </div>
 
-            <div class="card">
-                <b>Боргузории Чек:</b>
-                <input type="number" id="t-amt" placeholder="Маблағи гузарондашуда">
-                <input type="file" id="t-file" accept="image/*" onchange="preview(this)">
-                <img id="pre" style="width:100%; border-radius:12px; display:none; margin:10px 0;">
-                <button class="btn btn-main" onclick="sendReq()">ФИРИСТОДАНИ ЧЕК</button>
+            <div id="profile" class="screen">
+                <h2>Танзимот</h2>
+                <div class="glass-card">
+                    <label>Номи нав:</label>
+                    <input type="text" id="new-name" placeholder="Ники худро нависед">
+                    <button class="btn btn-primary" onclick="updateName()">ЗАХИРА</button>
+                </div>
+                <div class="glass-card">
+                    <small>ID-и Шумо:</small>
+                    <code id="u-uid" style="display: block; color: var(--primary); margin-top: 5px;">...</code>
+                </div>
             </div>
 
-            <div class="card">
-                <b>Таърихи пардохтҳо:</b>
-                <div id="user-history-list"></div>
+            <div id="admin" class="screen">
+                <h2 style="color: var(--gold);">Назорати Админ</h2>
+                <div id="admin-req-list"></div>
             </div>
-        </div>
-
-        <div id="admin" class="screen">
-            <h2 style="color:var(--gold);">Админ Панел</h2>
-            <div id="admin-reqs"></div>
-        </div>
-
-        <div class="nav">
-            <div class="nav-i active" onclick="tab('home', this)"><i class="fa-solid fa-house"></i></div>
-            <div class="nav-i" onclick="tab('wallet', this)"><i class="fa-solid fa-wallet"></i></div>
-            <div id="adm-btn" class="nav-i" style="display:none;" onclick="tab('admin', this)"><i class="fa-solid fa-crown"></i></div>
-            <div class="nav-i" onclick="logout()"><i class="fa-solid fa-power-off"></i></div>
-        </div>
+        </main>
     </div>
 
     <script>
@@ -123,119 +143,161 @@
             appId: "1:13121799381:web:2b515c4497ce4ea8d50e5c"
         };
 
-        const TG_TOKEN = "7165191876:AAGH5DRH7bEqmoC4OoGcJ5JUqNvJgSkTSYs";
-        const TG_ID = "7165191876";
+        // ТОКЕНИ ШУМО НАСБ ШУД
+        const TELEGRAM_TOKEN = "7165191876:AAGH5DRH7bEqmoC4OoGcJ5JUqNvJgSkTSYs"; 
+        const TELEGRAM_CHAT_ID = "7165191876";
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        let uData, selImg, lastBal, spinning = false;
+        let uData = null;
+        let selectedImg = null;
+        let lastBal = null;
 
-        // AUTH
-        function authAction(t) {
-            const e = document.getElementById('email').value, p = document.getElementById('pass').value;
-            if(t==='login') auth.signInWithEmailAndPassword(e, p);
-            else auth.createUserWithEmailAndPassword(e, p).then(r => db.ref('users/'+r.user.uid).set({name: e.split('@')[0], bal:0, role:'user'}));
+        function loginGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
+        function handleAuth(t) {
+            const e = document.getElementById('log-email').value;
+            const p = document.getElementById('log-pass').value;
+            if(t==='signup') auth.createUserWithEmailAndPassword(e,p); else auth.signInWithEmailAndPassword(e,p);
         }
 
         auth.onAuthStateChanged(user => {
             if(user) {
-                document.getElementById('auth-screen').classList.remove('active');
-                document.getElementById('app').style.display = 'block';
+                document.getElementById('auth-screen').style.display='none';
+                document.getElementById('app').style.display='grid';
                 loadUser(user.uid);
             } else {
-                document.getElementById('auth-screen').classList.add('active');
-                document.getElementById('app').style.display = 'none';
+                document.getElementById('auth-screen').style.display='flex';
+                document.getElementById('app').style.display='none';
             }
         });
 
         function loadUser(uid) {
-            db.ref('users/'+uid).on('value', snap => {
-                uData = snap.val(); if(!uData) return;
-                document.getElementById('u-name').innerText = uData.name;
+            db.ref('users/' + uid).on('value', snap => {
+                if(!snap.exists()) {
+                    db.ref('users/' + uid).set({ name: 'User_'+uid.slice(0,4), bal: 0, role: 'user' });
+                    return;
+                }
+                uData = snap.val();
+                document.getElementById('u-display-name').innerText = uData.name;
                 document.getElementById('u-uid').innerText = uid;
-                if(lastBal !== null && uData.bal > lastBal) document.getElementById('coinSound').play();
+                
+                if(lastBal !== null && uData.bal > lastBal) {
+                    document.getElementById('coinSound').play();
+                }
                 lastBal = uData.bal;
-                document.getElementById('u-bal').innerText = uData.bal + " TJS";
-                if(uData.role === 'admin') { document.getElementById('adm-btn').style.display = 'block'; loadAdmin(); }
-                loadHistory(uid);
+                document.getElementById('u-balance').innerText = uData.bal + " TJS";
+
+                if(uData.role === 'admin') {
+                    document.getElementById('adm-nav').style.display = 'flex';
+                    loadAdminRequests();
+                }
+                loadUserHistory(uid);
             });
         }
 
-        // WHEEL GAME LOGIC
-        function spinWheel() {
-            if(spinning || uData.bal < 10) return alert("Пул кам аст (10 TJS лозим) ё чарх зада истодааст!");
-            spinning = true;
-            db.ref('users/'+auth.currentUser.uid+'/bal').transaction(c => c - 10);
-            
-            const deg = Math.floor(5000 + Math.random() * 5000);
-            document.getElementById('wheel').style.transform = `rotate(${deg}deg)`;
-            
-            setTimeout(() => {
-                spinning = false;
-                const win = Math.floor(Math.random() * 50); // Бурди тасодуфӣ
-                db.ref('users/'+auth.currentUser.uid+'/bal').transaction(c => c + win);
-                alert(`Шумо ${win} TJS бурд кардед!`);
-            }, 4000);
+        function previewImg(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('img-preview').src = e.target.result;
+                    document.getElementById('img-preview').style.display = 'block';
+                    selectedImg = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
-        // WALLET
-        function preview(i) {
-            const r = new FileReader(); r.onload = e => { document.getElementById('pre').src = e.target.result; document.getElementById('pre').style.display='block'; selImg = e.target.result; };
-            r.readAsDataURL(i.files[0]);
-        }
+        function requestTopup() {
+            const amt = parseInt(document.getElementById('topup-amount').value);
+            if(!amt || !selectedImg) return alert("Маблағ ва Чекро ворид кунед!");
 
-        function sendReq() {
-            const amt = document.getElementById('t-amt').value;
-            if(!amt || !selImg) return alert("Пур кунед!");
-            db.ref('requests').push({uid: auth.currentUser.uid, name: uData.name, amount: amt, img: selImg, status: 'pending', time: Date.now()})
-            .then(() => {
-                fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_ID}&text=${encodeURIComponent("💰 ЧЕК: "+uData.name+" | "+amt+" TJS")}`);
-                alert("Дархост рафт!");
+            const reqData = {
+                uid: auth.currentUser.uid,
+                name: uData.name,
+                amount: amt,
+                img: selectedImg,
+                status: 'pending',
+                time: Date.now()
+            };
+
+            db.ref('requests').push(reqData).then(() => {
+                alert("Дархост фиристода шуд!");
+                sendTG(`🚀 ЧЕКИ НАВ!\n👤 Корбар: ${uData.name}\n💰 Маблағ: ${amt} TJS\n🆔 UID: ${auth.currentUser.uid}`);
+                document.getElementById('topup-amount').value = '';
+                document.getElementById('img-preview').style.display = 'none';
+                selectedImg = null;
             });
         }
 
-        function loadHistory(uid) {
+        function loadUserHistory(uid) {
             db.ref('requests').orderByChild('uid').equalTo(uid).on('value', snap => {
-                const list = document.getElementById('user-history-list'); list.innerHTML = '';
+                const div = document.getElementById('user-history');
+                div.innerHTML = '';
                 snap.forEach(c => {
                     const r = c.val();
-                    list.innerHTML += `<div style="border-bottom:1px solid #222; padding:10px; display:flex; justify-content:space-between;">
-                        <span>${r.amount} TJS</span>
-                        <b style="color:${r.status==='approved'?'#00ff88':'#ffd700'}">${r.status}</b>
-                    </div>`;
+                    const color = r.status==='pending'?'gold':(r.status==='approved'?'#238636' : '#f85149');
+                    const statusText = r.status==='pending'?'Дар баррасӣ':(r.status==='approved'?'Тасдиқ шуд' : 'Рад шуд');
+                    div.innerHTML += `
+                        <div class="history-item">
+                            <div>
+                                <b>${r.amount} TJS</b><br>
+                                <small style="opacity:0.5">${new Date(r.time).toLocaleString()}</small>
+                            </div>
+                            <span style="color:${color}; font-weight:bold;">${statusText}</span>
+                        </div>`;
                 });
             });
         }
 
-        function loadAdmin() {
+        function loadAdminRequests() {
             db.ref('requests').on('value', snap => {
-                const div = document.getElementById('admin-reqs'); div.innerHTML = '';
-                snap.forEach(c => {
-                    const r = c.val();
+                const list = document.getElementById('admin-req-list');
+                list.innerHTML = '';
+                snap.forEach(child => {
+                    const r = child.val();
                     if(r.status === 'pending') {
-                        div.innerHTML += `<div class="card">
-                            <b>${r.name} (${r.amount} TJS)</b>
-                            <img src="${r.img}" style="width:100%; border-radius:10px;">
-                            <button class="btn btn-main" onclick="approve('${c.key}', '${r.uid}', ${r.amount})">ТАСДИҚ</button>
-                        </div>`;
+                        const d = document.createElement('div');
+                        d.className = 'admin-req-card';
+                        d.innerHTML = `
+                            <b>${r.name} (${r.amount} TJS)</b><br>
+                            <small>UID: ${r.uid}</small>
+                            <img src="${r.img}" class="check-preview" onclick="window.open(this.src)">
+                            <div style="display:flex; gap:10px;">
+                                <button class="btn" style="background:var(--success);color:white" onclick="approve('${child.key}', '${r.uid}', ${r.amount})">Тасдиқ</button>
+                                <button class="btn" style="background:var(--danger);color:white" onclick="db.ref('requests/${child.key}').update({status:'rejected'})">Рад</button>
+                            </div>`;
+                        list.appendChild(d);
                     }
                 });
             });
         }
 
         function approve(key, uid, amt) {
-            db.ref('users/'+uid+'/bal').transaction(c => (c||0) + Number(amt));
-            db.ref('requests/'+key).update({status:'approved'});
+            db.ref('users/' + uid + '/bal').transaction(c => (c || 0) + Number(amt));
+            db.ref('requests/' + key).update({ status: 'approved' });
+        }
+
+        function sendTG(m) {
+            fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(m)}`);
+        }
+
+        function copyNum() {
+            navigator.clipboard.writeText("+79005778557");
+            alert("Рақами Сбербанк нусха шуд!");
+        }
+
+        function updateName() {
+            const n = document.getElementById('new-name').value;
+            if(n) db.ref('users/'+auth.currentUser.uid).update({name: n});
         }
 
         function tab(id, el) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-i').forEach(n => n.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
         }
-        function copyNum() { navigator.clipboard.writeText("+79005778557"); alert("Рақам нусха шуд!"); }
         function logout() { auth.signOut().then(() => location.reload()); }
     </script>
 </body>
