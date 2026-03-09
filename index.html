@@ -2,277 +2,232 @@
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SAIDJON MESSENGER V36 - ULTRA ADMIN & USER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SAIDJON V48 - ULTIMATE GALAXY</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
-        :root { --bg: #0e1621; --panel: #17212b; --blue: #2481cc; --accent: #00ff9d; --text: #f5f5f5; --premium: #f39c12; --error: #e74c3c; --call: #2ecc71; --star: #ffcc00; --admin-bg: #1c2733; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, system-ui, sans-serif; }
-        body { background: #000; color: var(--text); height: 100dvh; overflow: hidden; }
+        :root {
+            --primary: #00f2ff; --premium: linear-gradient(45deg, #ffd700, #ffa500);
+            --bg: #05080a; --panel: #0d121b; --text: #e0e6ed;
+            --success: #00ff41; --danger: #ff0055;
+        }
 
-        /* STRUCTURE */
-        #app { width: 100%; max-width: 500px; height: 100%; margin: auto; display: flex; flex-direction: column; background: var(--bg); position: relative; border-left: 1px solid #1c2733; border-right: 1px solid #1c2733; }
-        .screen { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); height: 100dvh; overflow: hidden; }
+
+        /* UI Elements */
+        .glass { background: rgba(13, 18, 27, 0.85); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
         .hidden { display: none !important; }
-
-        /* HEADER & TABS */
-        .header { padding: 12px 15px; background: var(--panel); display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #000; }
-        .tab-bar { display: flex; background: var(--panel); border-bottom: 1px solid #000; }
-        .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; font-size: 14px; opacity: 0.6; font-weight: bold; }
-        .tab.active { opacity: 1; border-bottom: 2px solid var(--blue); color: var(--blue); }
-
-        /* CHAT WINDOW */
-        #chat-area { flex: 1; overflow-y: auto; padding: 15px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); display: flex; flex-direction: column; gap: 10px; }
-        .msg { max-width: 80%; padding: 10px 14px; border-radius: 18px; font-size: 15px; animation: slideUp 0.2s ease; }
-        .bot, .friend { align-self: flex-start; background: #182533; border-bottom-left-radius: 4px; }
-        .user { align-self: flex-end; background: #2b5278; border-bottom-right-radius: 4px; }
-
-        /* ADMIN PAGE STYLES */
-        .admin-page { position: absolute; inset: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; }
-        .adm-card { background: var(--admin-bg); margin: 10px; padding: 15px; border-radius: 12px; border: 1px solid #2f3942; }
-        .adm-stat { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .stat-box { background: #242f3d; padding: 10px; border-radius: 10px; text-align: center; border-left: 4px solid var(--blue); }
-
-        /* MODALS & INPUTS */
-        .modal { position: absolute; inset: 0; background: var(--bg); z-index: 3000; transform: translateX(100%); transition: 0.3s; overflow-y: auto; }
-        .modal.open { transform: translateX(0); }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #2f3942; background: #0e1621; color: white; outline: none; }
-        .btn { padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; color: white; transition: 0.2s; }
-        .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-weight: bold; overflow: hidden; }
         
-        #notif { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: var(--blue); padding: 10px 20px; border-radius: 20px; z-index: 10000; display: none; font-size: 13px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        /* Layout */
+        #app-shell { display: grid; grid-template-columns: 75px 1fr; height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar { background: #070a0f; display: flex; flex-direction: column; align-items: center; padding: 25px 0; border-right: 1px solid #1a222d; z-index: 100; }
+        .nav-link { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 16px; margin-bottom: 20px; cursor: pointer; transition: 0.3s; color: #505d6b; font-size: 22px; position: relative; }
+        .nav-link.active { background: rgba(0, 242, 255, 0.1); color: var(--primary); box-shadow: 0 0 15px rgba(0,242,255,0.1); }
+        .badge { position: absolute; top: 5px; right: 5px; background: var(--danger); font-size: 10px; padding: 2px 6px; border-radius: 10px; color: #fff; }
+
+        /* Main Content */
+        .content { overflow-y: auto; padding: 20px; padding-bottom: 90px; }
+        .tab-pane { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Chat System */
+        .msg { max-width: 85%; padding: 14px; border-radius: 20px; margin-bottom: 12px; font-size: 14px; position: relative; line-height: 1.4; }
+        .msg.sent { align-self: flex-end; background: #0088cc; border-bottom-right-radius: 4px; color: #fff; }
+        .msg.received { align-self: flex-start; background: #1a222d; border-bottom-left-radius: 4px; }
+        .msg.premium { border: 1.5px solid #ffd700; background: linear-gradient(135deg, #0088cc 0%, #005588 100%); }
+
+        /* Wallet Card */
+        .wallet-card { background: linear-gradient(135deg, #1a222d, #05080a); border: 1px solid var(--primary); padding: 25px; border-radius: 25px; position: relative; overflow: hidden; }
+        
+        /* Admin Overlord */
+        #admin-panel { position: fixed; inset: 0; background: #000; z-index: 50000; display: none; flex-direction: column; }
+        .admin-header { padding: 20px; background: #111; display: flex; justify-content: space-between; border-bottom: 2px solid var(--danger); }
+        .console { flex: 1; margin: 20px; background: #050505; border: 1px solid #333; padding: 15px; font-family: monospace; color: var(--success); overflow-y: auto; font-size: 12px; }
+
+        /* Toast */
+        #toast { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; padding: 15px; border-radius: 15px; z-index: 100000; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 12px; }
+        #toast.show { top: 25px; }
     </style>
 </head>
 <body>
 
-<div id="notif">Хабари нав! 📩</div>
-
-<div id="auth-screen" class="screen">
-    <div style="background:var(--panel); padding:25px; border-radius:20px; width:100%; max-width:350px">
-        <h2 style="text-align:center; color:var(--blue)">SAIDJON V36</h2>
-        <input type="text" id="lUser" placeholder="Логин (admin)">
-        <input type="password" id="lPass" placeholder="Парол (saidjon777)">
-        <button class="btn" style="background:var(--blue)" onclick="login()">Ворид шудан</button>
+    <div id="toast" class="glass">
+        <i id="t-icon" class="fa-solid fa-bell" style="color:var(--primary)"></i>
+        <div><b id="t-title" style="display:block; font-size:14px;">Galaxy System</b><small id="t-body"></small></div>
     </div>
-</div>
 
-<div id="app" class="hidden">
-    <div id="admin-full-page" class="admin-page">
-        <div class="header">
-            <span onclick="toggleAdmin(false)" style="cursor:pointer">⬅️</span>
-            <h4>SUPREME ADMIN PANEL</h4>
-        </div>
-        <div style="flex:1; overflow-y:auto; padding:10px;">
-            <div class="adm-stat">
-                <div class="stat-box"><small>Корбарон</small><br><b>1,240</b></div>
-                <div class="stat-box"><small>Баланс</small><br><b style="color:var(--accent)">45,000 TJS</b></div>
-            </div>
-            
-            <div class="adm-card">
-                <h4>📥 Чекҳои интизорӣ</h4>
-                <div id="pending-list" style="margin-top:10px">
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:#111; padding:8px; border-radius:8px">
-                        <span>ID: 778 | 250 TJS</span>
-                        <button class="btn" style="width:70px; padding:5px; background:var(--call)" onclick="notify('Тасдиқ шуд!')">OK</button>
+    <div id="app-shell">
+        <nav class="sidebar">
+            <div class="nav-link active" onclick="tab('chats', this)"><i class="fa-solid fa-message"></i><span class="badge">3</span></div>
+            <div class="nav-link" onclick="tab('groups', this)"><i class="fa-solid fa-users"></i></div>
+            <div class="nav-link" onclick="tab('wallet', this)"><i class="fa-solid fa-wallet"></i></div>
+            <div class="nav-link" onclick="tab('premium', this)"><i class="fa-solid fa-crown" style="color:gold"></i></div>
+            <div class="nav-link" onclick="tab('settings', this)"><i class="fa-solid fa-sliders"></i></div>
+            <div id="adm-btn" class="nav-link hidden" onclick="openAdmin()" style="margin-top:auto; color:var(--danger)"><i class="fa-solid fa-user-shield"></i></div>
+        </nav>
+
+        <main class="content">
+            <div id="chats" class="tab-pane">
+                <h2 style="margin-bottom:20px;">Паёмҳо</h2>
+                <div onclick="openChat('Алишер', 'online')" style="display:flex; gap:15px; padding:15px; background:rgba(255,255,255,0.03); border-radius:18px; cursor:pointer;">
+                    <div style="width:55px; height:55px; background:#222; border-radius:50%; position:relative;">
+                        <div style="width:14px; height:14px; background:var(--success); border-radius:50%; position:absolute; bottom:2px; right:2px; border:2px solid var(--bg);"></div>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="display:flex; justify-content:space-between;"><b>Алишер</b> <small style="opacity:0.5;">Ҳозир</small></div>
+                        <p style="font-size:13px; opacity:0.6; margin-top:5px;">V48 воқеан зуд кор мекунад!</p>
                     </div>
                 </div>
             </div>
 
-            <div class="adm-card">
-                <h4>🛡 Назорати Корбар</h4>
-                <input type="text" id="target-id" placeholder="ID-и Корбар">
-                <div style="display:flex; gap:5px">
-                    <button class="btn" style="background:var(--blue)" onclick="notify('Пул илова шуд')">+ Пул</button>
-                    <button class="btn" style="background:var(--premium)" onclick="notify('Ситора дода шуд')">+ ⭐</button>
-                    <button class="btn" style="background:var(--error)" onclick="notify('Блок шуд')">Блок</button>
+            <div id="groups" class="tab-pane hidden">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h2>Гурӯҳҳо</h2>
+                    <button onclick="showNotify('Гурӯҳ', 'Функсия дар ҳоли сохт...')" style="background:var(--primary); border:none; padding:8px 15px; border-radius:10px; color:#000; font-weight:bold;">+ Нав</button>
+                </div>
+                <div style="margin-top:20px; padding:15px; background:rgba(0,242,255,0.05); border:1px solid var(--primary); border-radius:15px;">
+                    <b>Galaxy Official TG</b><br><small>42,805 аъзо</small>
                 </div>
             </div>
 
-            <div class="adm-card">
-                <h4>🌐 Танзимоти Система</h4>
-                <p>AI Status: <span style="color:var(--accent)">Active</span></p>
-                <button class="btn" style="background:#444; margin-top:5px" onclick="location.reload()">Reboot Server</button>
+            <div id="wallet" class="tab-pane hidden">
+                <div class="wallet-card">
+                    <small style="opacity:0.6;">БАЛАНСИ ШУМО</small>
+                    <h1 id="user-bal" style="font-size:40px; margin:10px 0;">100.00 TJS</h1>
+                    <div style="display:flex; gap:10px;">
+                        <button onclick="qrPay()" style="flex:1; padding:12px; background:var(--primary); border:none; border-radius:12px; font-weight:bold;">QR PAY</button>
+                        <button onclick="showNotify('Wallet', 'ID: 777-994')" style="flex:1; padding:12px; background:rgba(255,255,255,0.1); color:#fff; border:none; border-radius:12px;">RECEIVE</button>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <div class="header">
-        <div id="h-av" class="avatar" onclick="openM('profile-p')">S</div>
-        <div style="flex:1">
-            <h4 id="h-title">Saidjon AI</h4>
-            <p style="font-size:11px; color:var(--accent)" id="h-status">online</p>
-        </div>
-        <div style="display:flex; gap:15px; font-size:20px">
-            <span onclick="callUI('audio')">📞</span>
-            <span onclick="callUI('video')">📹</span>
-            <span id="adm-btn-top" class="hidden" onclick="toggleAdmin(true)" style="color:var(--premium)">⚙️</span>
-        </div>
-    </div>
-
-    <div class="tab-bar">
-        <div class="tab active" onclick="switchTab('ai', this)">🤖 AI</div>
-        <div class="tab" onclick="switchTab('chats', this)">👥 Чатҳо</div>
-        <div class="tab" onclick="switchTab('bots', this)">🛠 Ботҳо</div>
-    </div>
-
-    <div id="chat-ai" style="display:flex; flex-direction:column; flex:1">
-        <div id="chat-area"></div>
-        <div style="padding:8px 12px; background:var(--panel); border-top:1px solid #1c2733">
-            <div style="display:flex; gap:20px; padding:5px; font-size:22px; color:var(--blue)">
-                <label>📷<input type="file" hidden onchange="sendPhoto(this)"></label>
-                <span id="vBtn" onmousedown="startV()" onmouseup="stopV()">🎤</span>
-                <span onclick="openM('wallet-p')">💰</span>
+            <div id="premium" class="tab-pane hidden">
+                <div style="background:var(--premium); padding:30px; border-radius:25px; color:#000; text-align:center;">
+                    <i class="fa-solid fa-crown" style="font-size:50px; margin-bottom:15px;"></i>
+                    <h2>Galaxy Premium</h2>
+                    <p style="margin:15px 0; font-size:14px;">300+ функсияҳо ва Ghost Mode-ро фаъол кунед</p>
+                    <button onclick="getPremium()" style="width:100%; padding:15px; background:#000; color:#fff; border:none; border-radius:15px; font-weight:bold;">50 TJS / МОҲ</button>
+                </div>
             </div>
-            <div style="display:flex; gap:10px">
-                <textarea id="userInput" placeholder="Нависед..." style="height:40px"></textarea>
-                <button class="btn" style="width:50px; background:var(--blue)" onclick="sendMsg()">➤</button>
+
+            <div id="settings" class="tab-pane hidden">
+                <h2>Танзимот</h2>
+                <div style="margin-top:20px; display:grid; gap:10px;">
+                    <div class="glass" style="padding:15px; border-radius:15px; display:flex; justify-content:space-between;">
+                        <span>Ghost Mode (Ноаён)</span>
+                        <input type="checkbox" onchange="toggleGhost(this)">
+                    </div>
+                    <div class="glass" style="padding:15px; border-radius:15px; display:flex; justify-content:space-between;">
+                        <span>Security 2FA</span>
+                        <b style="color:var(--success)">ACTIVE</b>
+                    </div>
+                    <button onclick="location.reload()" style="padding:15px; background:var(--danger); border:none; border-radius:15px; color:#fff; font-weight:bold;">БАРОМАД (LOGOUT)</button>
+                </div>
             </div>
+        </main>
+    </div>
+
+    <div id="chat-ui" class="hidden" style="position:fixed; inset:0; background:var(--bg); z-index:2000; display:flex; flex-direction:column;">
+        <header class="glass" style="padding:15px; display:flex; align-items:center; gap:15px;">
+            <i class="fa-solid fa-arrow-left" onclick="closeChat()"></i>
+            <div style="width:40px; height:40px; background:#333; border-radius:50%;"></div>
+            <div style="flex:1;"><b id="c-name">User</b><br><small id="c-status" style="color:var(--success)">online</small></div>
+            <i class="fa-solid fa-phone" onclick="call()"></i>
+        </header>
+        <div id="c-flow" style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column;"></div>
+        <div class="glass" style="padding:15px; display:flex; gap:10px; align-items:center;">
+            <i class="fa-solid fa-plus" style="opacity:0.6;"></i>
+            <input type="text" id="c-input" placeholder="Паём..." style="flex:1; background:rgba(255,255,255,0.05); border:none; padding:12px; border-radius:25px; color:#fff; outline:none;">
+            <button onclick="send()" style="width:45px; height:45px; border-radius:50%; background:var(--primary); border:none;"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
 
-    <div id="chat-list" class="hidden" style="flex:1; overflow-y:auto">
-        <div class="adm-card" style="cursor:pointer" onclick="openPrivate('Алишер')">
-            <b>Алишер</b><br><small>Охирин паём: Салом бародар!</small>
+    <div id="admin-panel">
+        <div class="admin-header">
+            <h2 style="color:var(--danger)">OVERLORD V48</h2>
+            <button onclick="document.getElementById('admin-panel').style.display='none'" style="background:var(--danger); border:none; color:#fff; padding:5px 12px; border-radius:5px;">EXIT</button>
         </div>
-        <div class="adm-card" style="cursor:pointer" onclick="openPrivate('Гурӯҳи Оила')">
-            <b style="color:var(--premium)">👪 Гурӯҳи Оила</b><br><small>Падар: Ба ҳама салом</small>
-        </div>
+        <div class="console" id="a-log"></div>
     </div>
 
-    <div id="bot-maker" class="hidden" style="padding:20px">
-        <h3>🤖 Bot Father V2</h3>
-        <input type="text" placeholder="Номи бот">
-        <button class="btn" style="background:var(--premium)" onclick="notify('Бот омода шуд!')">🚀 Сохтан</button>
-    </div>
+    <script>
+        let user = JSON.parse(localStorage.getItem('galaxy_v48')) || {
+            name: "Saidjon", bal: 100, premium: false, role: "admin"
+        };
 
-    <div id="profile-p" class="modal">
-        <div class="header"><span onclick="closeM('profile-p')">⬅️</span> Профил</div>
-        <div style="padding:20px; text-align:center">
-            <div class="avatar" style="width:80px; height:80px; margin:auto; font-size:30px">S</div>
-            <h3 id="p-name" style="margin:10px">User</h3>
-            <input type="text" id="set-name" placeholder="Номи нав">
-            <button class="btn" style="background:var(--blue)" onclick="saveProfile()">Захира</button>
-            <button class="btn" style="background:var(--error); margin-top:10px" onclick="location.reload()">Баромад</button>
-        </div>
-    </div>
+        function tab(id, el) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            el.classList.add('active');
+        }
 
-    <div id="wallet-p" class="modal">
-        <div class="header"><span onclick="closeM('wallet-p')">⬅️</span> Ҳамён</div>
-        <div style="padding:20px; text-align:center">
-            <h1 id="w-bal" style="font-size:40px">0.00 TJS</h1>
-            <p>Ситораҳо: <span style="color:var(--star)">0</span> ⭐</p>
-            <input type="number" id="depAmt" placeholder="Маблағ">
-            <input type="file" id="depFile">
-            <button class="btn" style="background:var(--premium)" onclick="notify('Чек барои админ рафт!')">Боргирии Чек</button>
-        </div>
-    </div>
+        function openChat(name, status) {
+            document.getElementById('chat-ui').classList.remove('hidden');
+            document.getElementById('c-name').innerText = name;
+            document.getElementById('c-status').innerText = status;
+        }
 
-    <div id="call-ui" class="screen hidden" style="background:radial-gradient(circle, #2b5278, #000); flex-direction:column; z-index:10000">
-        <div class="avatar" style="width:120px; height:120px; font-size:40px">📞</div>
-        <h2 id="call-name" style="margin-top:20px">Занг...</h2>
-        <button class="btn" style="background:var(--error); width:80px; margin-top:50px" onclick="endCall()">❌</button>
-    </div>
-</div>
+        function closeChat() { document.getElementById('chat-ui').classList.add('hidden'); }
 
-<script>
-    const API_K = atob("QUl6YVN5QVFjNGY1Um9LdlhXTklwN2ZSeFlOX2QxNlFLSFVlTk9N");
-    let u = { name: "User", bal: 0, role: "user" };
-    let mediaRec; let chunks = [];
+        function send() {
+            const inp = document.getElementById('c-input');
+            const flow = document.getElementById('c-flow');
+            if(!inp.value) return;
 
-    function login() {
-        const user = document.getElementById('lUser').value;
-        const pass = document.getElementById('lPass').value;
-        if(user === "admin" && pass === "saidjon777") {
-            u.role = "admin"; u.name = "Админ Саидҷон";
-            document.getElementById('adm-btn-top').classList.remove('hidden');
-        } else { u.name = user || "User"; }
-        document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('app').classList.remove('hidden');
-        document.getElementById('p-name').innerText = u.name;
-        document.getElementById('h-title').innerText = u.name;
-        addMsg("Хуш омадед ба V36 Ultra! Чӣ кӯмак кунам?", "bot");
-    }
+            const div = document.createElement('div');
+            div.className = `msg sent ${user.premium ? 'premium' : ''}`;
+            div.innerHTML = `${inp.value} <div style="font-size:9px; opacity:0.5; margin-top:5px; text-align:right;">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ✓✓</div>`;
+            flow.appendChild(div);
+            flow.scrollTop = flow.scrollHeight;
+            
+            log(`[MSG] Sent: ${inp.value}`);
+            inp.value = "";
+        }
 
-    function toggleAdmin(show) {
-        document.getElementById('admin-full-page').style.display = show ? 'flex' : 'none';
-    }
+        function showNotify(t, b, type="primary") {
+            const toast = document.getElementById('toast');
+            document.getElementById('t-title').innerText = t;
+            document.getElementById('t-body').innerText = b;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
 
-    function switchTab(t, el) {
-        document.getElementById('chat-ai').classList.toggle('hidden', t !== 'ai');
-        document.getElementById('chat-list').classList.toggle('hidden', t !== 'chats');
-        document.getElementById('bot-maker').classList.toggle('hidden', t !== 'bots');
-        document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-        el.classList.add('active');
-    }
+        function getPremium() {
+            if(user.bal >= 50) {
+                user.bal -= 50; user.premium = true;
+                save();
+                showNotify("Premium", "Табрик! Имкониятҳо кушода шуданд.", "success");
+                setTimeout(() => location.reload(), 1500);
+            } else { showNotify("Хато", "Маблағ кифоя нест."); }
+        }
 
-    async function sendMsg() {
-        const inp = document.getElementById('userInput');
-        const txt = inp.value.trim();
-        if(!txt) return;
-        addMsg(txt, "user");
-        inp.value = "";
-        try {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_K}`, {
-                method: "POST", headers: {"Content-Type":"application/json"},
-                body: JSON.stringify({contents:[{parts:[{text:txt}]}]})
-            });
-            const data = await res.json();
-            addMsg(data.candidates[0].content.parts[0].text, "bot");
-        } catch { addMsg("Хатогии AI ё Интернет", "bot"); }
-    }
+        function openAdmin() {
+            if(prompt("Security Key:") === "saidjon777") {
+                document.getElementById('admin-panel').style.display = "flex";
+                log("[AUTH] Admin access granted.");
+            }
+        }
 
-    function addMsg(t, s) {
-        const area = document.getElementById('chat-area');
-        const d = document.createElement('div');
-        d.className = `msg ${s}`;
-        d.innerText = t;
-        area.appendChild(d);
-        area.scrollTop = area.scrollHeight;
-    }
+        function log(msg) {
+            const l = document.getElementById('a-log');
+            l.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>`;
+            l.scrollTop = l.scrollHeight;
+        }
 
-    function openPrivate(name) {
-        document.getElementById('h-title').innerText = name;
-        document.getElementById('chat-area').innerHTML = "";
-        addMsg(`Чат бо ${name} оғоз шуд. Паёмҳои шумо ҳифз шудаанд.`, "bot");
-        switchTab('ai', document.querySelectorAll('.tab')[0]);
-    }
+        function save() { 
+            localStorage.setItem('galaxy_v48', JSON.stringify(user));
+            document.getElementById('user-bal').innerText = user.bal.toFixed(2) + " TJS";
+        }
 
-    async function startV() {
-        try {
-            const s = await navigator.mediaDevices.getUserMedia({audio:true});
-            mediaRec = new MediaRecorder(s);
-            chunks = [];
-            mediaRec.ondataavailable = e => chunks.push(e.data);
-            mediaRec.onstop = () => {
-                const blob = new Blob(chunks, {type:'audio/ogg'});
-                const url = URL.createObjectURL(blob);
-                const d = document.createElement('div'); d.className = "msg user";
-                d.innerHTML = `<audio src="${url}" controls style="width:180px"></audio>`;
-                document.getElementById('chat-area').appendChild(d);
-            };
-            mediaRec.start();
-            document.getElementById('vBtn').style.color = 'red';
-        } catch { alert("Микрофон дастрас нест"); }
-    }
-    function stopV() { if(mediaRec) { mediaRec.stop(); document.getElementById('vBtn').style.color = 'var(--blue)'; } }
-
-    function notify(m) {
-        const n = document.getElementById('notif');
-        n.innerText = m; n.style.display = "block";
-        setTimeout(() => n.style.display = "none", 3000);
-    }
-    function callUI(t) {
-        document.getElementById('call-ui').classList.remove('hidden');
-        document.getElementById('call-name').innerText = t === 'video' ? "Видеозанг..." : "Аудиозанг...";
-    }
-    function endCall() { document.getElementById('call-ui').classList.add('hidden'); }
-    function openM(id) { document.getElementById(id).classList.add('open'); }
-    function closeM(id) { document.getElementById(id).classList.remove('open'); }
-    function saveProfile() { u.name = document.getElementById('set-name').value || u.name; document.getElementById('p-name').innerText = u.name; closeM('profile-p'); }
-    function sendPhoto(i) { if(i.files[0]) { const r = new FileReader(); r.onload = e => {
-        const d = document.createElement('div'); d.className = "msg user";
-        d.innerHTML = `<img src="${e.target.result}" style="max-width:100%; border-radius:10px">`;
-        document.getElementById('chat-area').appendChild(d);
-    }; r.readAsDataURL(i.files[0]); } }
-</script>
+        window.onload = () => {
+            save();
+            if(user.role === 'admin') document.getElementById('adm-btn').classList.remove('hidden');
+            showNotify("Galaxy V48", `Хуш омадӣ, ${user.name}!`);
+        }
+    </script>
 </body>
 </html>
