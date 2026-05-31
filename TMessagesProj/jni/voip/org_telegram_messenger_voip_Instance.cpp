@@ -1,4 +1,4 @@
-#include "org_telegram_messenger_voip_Instance.h"
+#include "org_tajgram_messenger_voip_Instance.h"
 
 #include <jni.h>
 #include <sdk/android/native_api/video/wrapper.h>
