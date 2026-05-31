@@ -25,7 +25,7 @@ jobs:
           rm -rf TMessagesProj/jni/voip
           
           # 2. СКАЧАТ КАРДАНИ ПАПКАИ НАВИ СОФИ ЗАВОДӢ МУСТАҚИМ АЗ ДУРОВ БО КУЛЛИ ДОХИЛИАШ
-          git clone --depth=1 https://github.com temp_repo
+          git clone --depth=1 https://github.com/DrKLO/Telegram.git temp_repo
           
           # 3. КУЧОНИДАНИ ТАМОМИ ПАПКА БО КУЛЛИ ФАЙЛҲОИ АСЛИАШ БE ЯГOН КАМБУДӢ
           cp -r temp_repo/TMessagesProj/jni/voip TMessagesProj/jni/voip
